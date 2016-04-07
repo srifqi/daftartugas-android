@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="version">0.1.1</string>
+    <string name="app_name">Daftar Tugas</string>
+    <string name="action_logout">Keluar</string>
+    <string name="ambil_data">Sedang mengambil data untuk pertama kalinya.</string>
+    <string name="welcome_text">Halo,</string>
+    <string name="pengumuman">Pengumuman</string>
+    <string name="pengumuman_intro">Pengumuman akan segera muncul.</string>
+    <string name="sembunyikan">Sembunyikan</string>
+    <string name="tampilkan">Tampilkan</string>
+    <string name="daftar_tugas">Daftar Tugas</string>
+    <string name="daftar_tugas_intro">Daftar Tugas akan segera muncul.</string>
+	<string name="tiada_tugas">(tidak ada tugas)</string>
+    <string name="refresh">Perbarui</string>
+    <string name="tersimpan_di_server">Tersimpan pada server</string>
+    <string name="tanpa_koneksi">Tidak ada koneksi tersedia</string>
+    <string name="server_sibuk">Server sibuk, coba lagi besok</string>
+    <string name="title_activity_masuk">Masuk</string>
+    <string name="title_activity_daftar">Daftar</string>
+    <string name="masuk_welcome_text">Silakan masuk untuk melanjutkan.</string>
+    <string name="daftar_welcome_text">Silakan daftar untuk membuat akun baru.</string>
+    <string name="edittext_nama_pengguna">nama pengguna</string>
+    <string name="edittext_kata_sandi">kata sandi</string>
+    <string name="edittext_kata_sandi_simetri">kata sandi simetri</string>
+    <string name="btn_masuk">Masuk</string>
+    <string name="btn_daftar">Daftar</string>
+    <string name="gagal_masuk">Nama pengguna dengan kata sandi tidak cocok.</string>
+    <string name="berhasil_masuk">Berhasil masuk</string>
+    <string name="title_activity_perbarui">Perbarui Daftar Tugas</string>
+    <string name="perbarui_text">Versi Aplikasi Daftar Tugas sudah usang.\n\nKetuk Perbarui untuk memulai pembaruan. Pastikan koneksi internet Anda stabil.</string>
+    <string name="perbarui">Perbarui</string>
+    <string name="pasang_text">Versi Aplikasi Daftar Tugas sudah usang.\n\nVersi baru telah diunduh. Ketuk Pasang untuk memulai pemasangan pembaruan.\n\nJika pemasangan gagal ketuk Unduh ulang.</string>
+    <string name="pasang">Pasang</string>
+	<string name="unduh_ulang">Unduh ulang</string>
+    <string name="pendaftaran_tidak_didukung">Pendaftaran harus dilakukan dengan antarmuka web. Lanjut?</string>
+    <string name="tanya_keluar">Apakah Anda ingin keluar?</string>
+    <string name="title_activity_tentang">Tentang</string>
+    <string name="simple_desc">Dibuat dengan ketulusan hati\nuntuk Simetri Smansa.</string>
+    <string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nSimetri Smansa - Hak Cipta Terlindungi</string>
+    <string name="tos">Syarat dan Ketentuan</string>
+
+</resources>

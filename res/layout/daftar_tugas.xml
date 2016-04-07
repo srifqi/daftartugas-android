@@ -1,0 +1,133 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/srifqi.simetri.daftartugas"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="srifqi.simetri.daftartugas.DaftarTugas" >
+    <android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar1"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="?attr/colorPrimary"
+		android:elevation="4dp"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <TextView
+        android:id="@+id/textAmbilData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:text="@string/ambil_data" />
+    
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+    
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+		    android:paddingLeft="@dimen/activity_horizontal_margin"
+		    android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+        	android:paddingBottom="@dimen/activity_vertical_margin" >
+		            
+		    <TextView
+		        android:id="@+id/welcomeTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/welcome_text"
+		        android:textAppearance="?android:attr/textAppearance"
+		        android:textSize="@dimen/text_size" />
+			
+		    <LinearLayout
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="16dp"
+	            android:orientation="horizontal" >
+	            
+			    <TextView
+			        android:id="@+id/PengumumanHeader"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginBottom="8dp"
+			        android:layout_marginTop="8dp"
+			        android:text="@string/pengumuman"
+			        android:textColor="@color/black" 
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			    <Button
+			        android:id="@+id/btn_pengumuman_buka"
+			        android:layout_width="wrap_content"
+			        android:layout_height="48dp"
+			        android:layout_marginLeft="16dp"
+			        android:layout_marginStart="16dp"
+			        android:elevation="2dp"
+			        android:onClick="hidePengumuman"
+			        android:text="@string/tampilkan" />
+			    
+			</LinearLayout>
+		    
+		    <TextView
+		        android:id="@+id/PengumumanTextView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="8dp"
+		        android:paddingEnd="4dp"
+		        android:paddingLeft="4dp"
+		        android:paddingRight="4dp"
+		        android:paddingStart="4dp"
+		        android:text="@string/pengumuman_intro"
+		        android:visibility="gone"
+		        android:textAppearance="?android:attr/textAppearance"
+		        android:textSize="@dimen/text_size" />
+		
+		    <TextView
+		        android:id="@+id/DaftarTugasHeader"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+        		android:layout_marginTop="16dp"
+		        android:text="@string/daftar_tugas"
+		        android:textColor="@color/black" 
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    
+		    <LinearLayout
+		        android:id="@+id/DaftarTugasLinearLayout"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+			    android:paddingLeft="@dimen/activity_horizontal_margin"
+			    android:paddingRight="@dimen/activity_horizontal_margin"
+	            android:paddingTop="8dp" >
+	            
+            	<TextView
+            	    android:layout_width="wrap_content"
+            	    android:layout_height="wrap_content"
+            	    android:layout_marginTop="8dp"
+            	    android:paddingEnd="4dp"
+            	    android:paddingLeft="4dp"
+            	    android:paddingRight="4dp"
+            	    android:paddingStart="4dp"
+            	    android:text="@string/daftar_tugas_intro"
+            	    android:textAppearance="?android:attr/textAppearance"
+            	    android:textSize="@dimen/text_size" />
+            	
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

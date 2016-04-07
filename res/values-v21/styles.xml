@@ -1,0 +1,16 @@
+<resources>
+
+    <!--
+        Base application theme for API 21+. This theme completely replaces
+        AppBaseTheme from BOTH res/values/styles.xml and
+        res/values-v11/styles.xml on API 21+ devices.
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- API 21 theme customizations can go here. -->
+		<!-- Actually, this already existed in res/values/style.xml. -->
+        <item name="android:colorPrimary">@color/purple</item>
+        <item name="android:colorPrimaryDark">@color/purple800</item>
+        <item name="android:colorAccent">@color/orangeA200</item>
+    </style>
+
+</resources>
