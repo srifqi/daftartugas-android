@@ -42,7 +42,7 @@ public class MD5Checksum {
 			
 			return returnVal;
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		} finally {
 			if (inputStream != null) {
