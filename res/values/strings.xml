@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version">0.1.1</string>
+    <string name="version">0.1.2-alpha-1</string>
     <string name="app_name">Daftar Tugas</string>
     <string name="action_logout">Keluar</string>
     <string name="ambil_data">Sedang mengambil data untuk pertama kalinya.</string>
@@ -12,7 +12,7 @@
     <string name="tampilkan">Tampilkan</string>
     <string name="daftar_tugas">Daftar Tugas</string>
     <string name="daftar_tugas_intro">Daftar Tugas akan segera muncul.</string>
-	<string name="tiada_tugas">(tidak ada tugas)</string>
+	<string name="tiada_tugas"><i>(tidak ada tugas)</i></string>
     <string name="refresh">Perbarui</string>
     <string name="tersimpan_di_server">Tersimpan pada server</string>
     <string name="tanpa_koneksi">Tidak ada koneksi tersedia</string>

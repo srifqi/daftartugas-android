@@ -25,6 +25,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -166,10 +167,9 @@ public class DaftarTugas extends AppCompatActivity {
 			// Pengumuman //
 			////////////////
 			String teksPengumuman = "● "+
-					fetch[1].replaceAll("</?([^>])*>", "")
-							.replaceAll("\n","\n● ");
+					fetch[1].replaceAll("\n","<br>● ");
 			
-			PengumumanTextView.setText(teksPengumuman);
+			PengumumanTextView.setText(Html.fromHtml(teksPengumuman));
 			
 			//////////////////
 			// Daftar Tugas //
@@ -288,9 +288,9 @@ public class DaftarTugas extends AppCompatActivity {
 				// Header for each day.
 				TextView dayTextView = new TextView(getApplicationContext());
 				if (undone > 0) {
-					dayTextView.setText(hari[da] + " (" + undone + ")");
+					dayTextView.setText(Html.fromHtml("<b>" + hari[da] + " (" + undone + ")</b>"));
 				} else {
-					dayTextView.setText(hari[da]);
+					dayTextView.setText(Html.fromHtml("<b>" + hari[da] + "</b>"));
 				}
 				dayTextView.setTextColor(0xFFE040FB);
 				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
