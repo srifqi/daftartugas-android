@@ -1,0 +1,6 @@
+<resources>
+
+    <!-- Widget padding already given by Android -->
+    <dimen name="widget_margin">0dp</dimen>
+
+</resources>

@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/AW_LL"
+	android:background="@color/white"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_gravity="center_vertical"
+	android:layout_margin="@dimen/widget_margin"
+    android:orientation="vertical"
+	tools:context="srifqi.simetri.daftartugas.DaftarTugasAppWidget" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/purple"
+        android:elevation="4dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="8dp"
+            android:text="@string/app_name"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white" />
+        
+        <ImageButton
+            android:id="@+id/AW_btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="8dp"
+            android:background="@color/purple"
+            android:contentDescription="@string/perbarui"
+            android:clickable="true"
+            android:src="@drawable/ic_action_refresh"
+            android:visibility="gone" />
+    </RelativeLayout>
+        
+    <TextView
+        android:id="@+id/AW_text_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/daftar_tugas_intro" />
+    
+    <LinearLayout
+        android:id="@+id/AW_DaftarTugasLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+</LinearLayout>
