@@ -51,8 +51,10 @@ public class Tentang extends Activity {
 		
 		@Override
 		public boolean onAfterExecute(String result) {
-			TOS = result;
-			TOSdlgb.setMessage(TOS);
+			if (result != "") {
+				TOS = result;
+				TOSdlgb.setMessage(TOS);
+			}
 			return true;
 			
 		}

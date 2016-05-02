@@ -42,7 +42,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
 	// public final static String FETCHURL = "http://192.168.1.14/daftar_tugas";
-	public final static int VERSION_CODE = 11;
+	public final static int VERSION_CODE = 12;
 	private ProgressDialog pd;
 	private TextView textAmbilData;
 	private SwipeRefreshLayout swipeContainer;
