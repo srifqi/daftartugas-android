@@ -36,7 +36,8 @@
         </activity>
         <activity
             android:name=".PerbaruiActivity"
-            android:label="@string/title_activity_perbarui" >
+            android:label="@string/title_activity_perbarui"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Tentang"

@@ -10,10 +10,12 @@ import android.view.View;
 public class Tentang extends Activity {
 
 	public AlertDialog.Builder TOSdlgb;
+	public AlertDialog TOSdlg;
 	// Cache
 	public String TOS = "Syarat dan Ketentuan Aplikasi Daftar Tugas\n"+
 "\n\n"+
 "Sedang mengambil…\n"+
+"Coba tutup lalu sentuh Syarat dan Ketentuan lagi.\n"+
 "Info lebih lanjut buka Daftar Tugas versi web."+
 "\n\n"+
 "Hak Cipta Muhammad Rifqi Priyo Susanto dkk. Simetri Creative Code Labs";
@@ -43,8 +45,8 @@ public class Tentang extends Activity {
 	}
 	
 	public void openTOS(View view) {
-		AlertDialog dlg = TOSdlgb.create();
-		dlg.show();
+		TOSdlg = TOSdlgb.create();
+		TOSdlg.show();
 	}
 	
 	public class DownloadTOSTask extends DownloadTask {

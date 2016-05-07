@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -26,6 +27,8 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.StrikethroughSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -312,7 +315,6 @@ public class DaftarTugas extends AppCompatActivity {
 					
 					// Id starts from ten thousand to prevent Id overlap.
 					taskCB.setId(10000+id);
-					taskCB.setText(teksCaption);
 					taskCB.setOnClickListener(new OnClickListener() {
 
 						@Override
@@ -352,6 +354,11 @@ public class DaftarTugas extends AppCompatActivity {
 			        boolean done = dataPerTugas[5].compareTo("1") == 0;
 			        if (done == true) d ++;
 					taskCB.setChecked(done);
+					SpannableString teksCaptionR = new SpannableString(teksCaption);
+					if (done) {
+						teksCaptionR.setSpan(new StrikethroughSpan(), 0, teksCaption.length()-1, 0);
+					}
+					taskCB.setText(teksCaptionR);
 					
 					DaftarTugasLinearLayout.addView(taskCB);
 				}
@@ -363,6 +370,27 @@ public class DaftarTugas extends AppCompatActivity {
 				}
 			}
 			
+			// Information about data.
+			String[] Info = teks[0].split("\n");
+			TextView infoTextView = new TextView(getApplicationContext());
+			infoTextView.setTextColor(0xFF000000);
+			LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT
+			);
+			paramd.setMargins(0, 32, 0, 4);
+			infoTextView.setLayoutParams(paramd);
+			long time4 = Long.parseLong(Info[1]);
+			long time5 = Long.parseLong(Info[2]);
+			String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
+			String rds5 = DaftarTugas.timestampToRelativeDateString(time5);
+			infoTextView.setText(Html.fromHtml(
+				"<b><i>Pembaruan daftar terakhir:<br>&nbsp;" + rds4 +
+				"<br>Sinkronasi terakhir:<br>&nbsp;" + rds5 + "</i></b>"
+			));
+			DaftarTugasLinearLayout.addView(infoTextView);
+			
+			// Show the progress.
 			DaftarTugasHeader.setText(
 				getResources().getString(R.string.daftar_tugas) +
 				" - " + d + "/" + teksPerTugas.length +
@@ -590,6 +618,66 @@ public class DaftarTugas extends AppCompatActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	/**
+	 * <p>Convert from timestamp into relative date string (Indonesian).</p>
+	 * <p>
+	 * For example:<br>
+	 * - If the timestamp is today, then: "Hari ini, &lt;time&gt;"<br>
+	 * - If the timestamp is yesterday, then: "Kemarin, &lt;time&gt;"<br>
+	 * - Else: "&lt;date&gt; &lt;time&gt;"<br>
+	 * </p>
+	 *
+	 * @param timestamp
+	 *			Timestamp to be converted (in seconds)
+	 *
+	 * @return Converted timestamp
+	 */
+	public static String timestampToRelativeDateString(long timestamp) {
+		String str = "";
+		// GregorianCalendar object of now.
+		GregorianCalendar gcn = new GregorianCalendar();
+		int nowD = gcn.get(Calendar.DATE);
+		int nowM = gcn.get(Calendar.MONTH);
+		int nowY = gcn.get(Calendar.YEAR);
+		
+		// GregorianCalendar of yesterday.
+		GregorianCalendar gcy = new GregorianCalendar();
+		gcy.setTimeInMillis(gcn.getTimeInMillis()-86400000);
+		int yD = gcy.get(Calendar.DATE);
+		int yM = gcy.get(Calendar.MONTH);
+		int yY = gcy.get(Calendar.YEAR);
+		
+		// GregorianCalendar of the timestamp.
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis(timestamp*1000);
+		int tD = gc.get(Calendar.DATE);
+		int tM = gc.get(Calendar.MONTH);
+		int tY = gc.get(Calendar.YEAR);
+		
+		if (
+			nowD == tD &&
+			nowM == tM &&
+			nowY == tY
+		) {
+			str += "Hari ini, ";
+		} else if (
+			yD == tD &&
+			yM == tM &&
+			yY == tY
+		) {
+			str += "Kemarin, ";
+		} else {
+			str += tD + "-" + tM + "-" + tY + " ";
+		}
+		String hour = "" + gc.get(Calendar.HOUR_OF_DAY);
+		String minute = "" + gc.get(Calendar.MINUTE);
+		if (hour.length() < 2) hour = "0" + hour;
+		if (minute.length() < 2) minute = "0" + minute;
+		str += hour + ":" + minute;
+		
+		return str;
 	}
 	
 	public void hidePengumuman(View view) {
