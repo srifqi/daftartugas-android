@@ -44,7 +44,7 @@ import android.widget.Toast;
 public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
-	// public final static String FETCHURL = "http://192.168.1.14/daftar_tugas";
+	// public final static String FETCHURL = "http://192.168.1.x/daftar_tugas";
 	public final static int VERSION_CODE = 12;
 	private ProgressDialog pd;
 	private TextView textAmbilData;
@@ -129,9 +129,25 @@ public class DaftarTugas extends AppCompatActivity {
 			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pd.setCancelable(false);
 			pd.setCanceledOnTouchOutside(false);
-			pd.show();
+			if (pd != null) pd.show();
 		}
 		refreshDaftarTugas();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// Bugfix: Crash when dismiss dialog after activity destroyed.
+		if (pd != null) pd.dismiss();
+		pd = null;
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Re-initiate variable.
+		// It's okay to re-initiate because at onPause, pd already dismissed.
+		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 	}
 	
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -400,7 +416,7 @@ public class DaftarTugas extends AppCompatActivity {
 			
 			textAmbilData.setVisibility(View.GONE);
 			swipeContainer.setVisibility(View.VISIBLE);
-			pd.dismiss();
+			if (pd != null) pd.dismiss();
 		}
 	}
 	
@@ -497,7 +513,7 @@ public class DaftarTugas extends AppCompatActivity {
 						pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 						pd.setCancelable(false);
 						pd.setCanceledOnTouchOutside(false);
-						pd.show();
+						if (pd != null) pd.show();
 						refreshDaftarTugas();
 					}
 				});
@@ -524,7 +540,7 @@ public class DaftarTugas extends AppCompatActivity {
 				AlertDialog dlg = dlgb.create();
 				dlg.show();
 				
-				pd.dismiss();
+				if (pd != null) pd.dismiss();
 			}
 			return true;
 		}
@@ -656,6 +672,14 @@ public class DaftarTugas extends AppCompatActivity {
 		int tM = gc.get(Calendar.MONTH);
 		int tY = gc.get(Calendar.YEAR);
 		
+		// Months in Indonesian.
+		String[] months = {
+			"Januari",	"Februari",	"Maret",
+			"April",	"Mei",		"Juni",
+			"Juli",		"Agustus",	"September",
+			"Oktober",	"November",	"Desember"
+		};
+		
 		if (
 			nowD == tD &&
 			nowM == tM &&
@@ -669,7 +693,7 @@ public class DaftarTugas extends AppCompatActivity {
 		) {
 			str += "Kemarin, ";
 		} else {
-			str += tD + "-" + tM + "-" + tY + " ";
+			str += tD + " " + months[tM] + " " + tY + ", ";
 		}
 		String hour = "" + gc.get(Calendar.HOUR_OF_DAY);
 		String minute = "" + gc.get(Calendar.MINUTE);
