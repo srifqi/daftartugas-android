@@ -44,7 +44,7 @@ import android.widget.Toast;
 public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
-	// public final static String FETCHURL = "http://192.168.1.x/daftar_tugas";
+	// public final static String FETCHURL = "http://192.168.x.y/daftar_tugas";
 	public final static int VERSION_CODE = 12;
 	private ProgressDialog pd;
 	private TextView textAmbilData;
@@ -121,15 +121,17 @@ public class DaftarTugas extends AppCompatActivity {
 		pd = new ProgressDialog(DaftarTugas.this);
 		
 		if (IOFile.read(getApplicationContext(), "fetchdata.txt") == "") {
-			pd.setTitle("Memulai");
-			pd.setMessage(
-				getResources().getString(R.string.ambil_data)
-			);
-			pd.setIndeterminate(true);
-			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pd.setCancelable(false);
-			pd.setCanceledOnTouchOutside(false);
-			if (pd != null) pd.show();
+			if (pd != null) {
+				pd.setTitle("Memulai");
+				pd.setMessage(
+					getResources().getString(R.string.ambil_data)
+				);
+				pd.setIndeterminate(true);
+				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				pd.setCancelable(false);
+				pd.setCanceledOnTouchOutside(false);
+				pd.show();
+			}
 		}
 		refreshDaftarTugas();
 	}
@@ -505,15 +507,17 @@ public class DaftarTugas extends AppCompatActivity {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						pd.setTitle("Memulai");
-						pd.setMessage(
-							getResources().getString(R.string.ambil_data)
-						);
-						pd.setIndeterminate(true);
-						pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-						pd.setCancelable(false);
-						pd.setCanceledOnTouchOutside(false);
-						if (pd != null) pd.show();
+						if (pd != null) {
+							pd.setTitle("Memulai");
+							pd.setMessage(
+								getResources().getString(R.string.ambil_data)
+							);
+							pd.setIndeterminate(true);
+							pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+							pd.setCancelable(false);
+							pd.setCanceledOnTouchOutside(false);
+							pd.show();
+						}
 						refreshDaftarTugas();
 					}
 				});

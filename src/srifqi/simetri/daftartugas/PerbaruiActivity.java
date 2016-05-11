@@ -30,6 +30,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 	public ProgressDialog pd;
 	private DownloadAppAPKTask daat;
 	private String[] VERSION;
+	public boolean activityPaused;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +56,6 @@ public class PerbaruiActivity extends AppCompatActivity {
 		toolbar1.setBackgroundColor(0xFF9C27B0);
 		toolbar1.setTitleTextColor(0xFFFFFFFF);
 		
-		TextView textVersion = (TextView) findViewById(R.id.textVersion);
-		textVersion.setText("Versi terbaru: " + VERSION[0]);
-		
 		textStatus = (TextView) findViewById(R.id.textView1);
 		textProgress = (TextView) findViewById(R.id.textProgress);
 		buttonPerbarui = (Button) findViewById(R.id.btn_perbarui);
@@ -66,7 +64,17 @@ public class PerbaruiActivity extends AppCompatActivity {
 		pd = new ProgressDialog(PerbaruiActivity.this);
 		pd.setCancelable(false);
 		pd.setCanceledOnTouchOutside(false);
-
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		activityPaused = false;
+		
+		TextView textVersion = (TextView) findViewById(R.id.textVersion);
+		textVersion.setText("Versi terbaru: " + VERSION[0]);
+		
 		File dir = new File(
 			Environment.getExternalStorageDirectory() +
 			"/DaftarTugas"
@@ -96,6 +104,13 @@ public class PerbaruiActivity extends AppCompatActivity {
 		}
 	}
 	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		activityPaused = true;
+	}
+	
 	public void runDownloader(View view) {
 		buttonPerbarui.setEnabled(false);
 		textProgress.setText("Mengunduh…");
@@ -106,7 +121,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		pd.setIndeterminate(true);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setCancelable(false);
-		pd.show();
+		if (pd != null) pd.show();
 		
 		daat = new DownloadAppAPKTask();
 		daat.setContext(getApplicationContext());
@@ -207,7 +222,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		}
 		if (VERSION[1].trim().compareToIgnoreCase(
 			md5.trim()) == 0) {
-			runInstaller();
+			if (activityPaused == false) runInstaller();
 		} else {
 			rerunDownloader(
 				"Pemasangan gagal",
@@ -255,7 +270,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		public boolean onNoConnection() {
 			Toast.makeText(this.getContext(), R.string.tanpa_koneksi, Toast.LENGTH_SHORT).show();
 			progressTextView.setText(R.string.tanpa_koneksi);
-			pd.dismiss();
+			if (pd != null) pd.dismiss();
 			buttonPerbarui.setEnabled(true);
 			return true;
 		}
@@ -281,7 +296,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		public boolean onAfterExecute(String result) {
 			progressTextView.setText("Terunduh. Memasang…");
 			IOFile.write(getApplicationContext(), "updatestatus.txt", "INSTALL");
-			pd.dismiss();
+			if (pd != null) pd.dismiss();
 			runChecker(this.file);
 			return true;
 		}
