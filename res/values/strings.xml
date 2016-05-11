@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="version">0.1.2-alpha-2</string>
+    <string name="version">0.1.2</string>
     <string name="app_name">Daftar Tugas</string>
     <string name="action_logout">Keluar</string>
     <string name="ambil_data">Sedang mengambil data untuk pertama kalinya.</string>
