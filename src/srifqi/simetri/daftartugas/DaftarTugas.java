@@ -19,6 +19,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StrikethroughSpan;
+import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +55,7 @@ public class DaftarTugas extends AppCompatActivity {
 	private TextView PengumumanTextView;
 	private TextView DaftarTugasHeader;
 	private LinearLayout DaftarTugasLinearLayout;
+	private TextView DaftarTugasInfo;
 	private Button PengumumanSembunyiButton;
 	private int DONE = 4;
 	private boolean OPENUpdateActivity = true;
@@ -100,6 +103,7 @@ public class DaftarTugas extends AppCompatActivity {
 		PengumumanTextView = (TextView) findViewById(R.id.PengumumanTextView);
 		DaftarTugasHeader = (TextView) findViewById(R.id.DaftarTugasHeader);
 		DaftarTugasLinearLayout = (LinearLayout) findViewById(R.id.DaftarTugasLinearLayout);
+		DaftarTugasInfo = (TextView) findViewById(R.id.DaftarTugasInfo);
 		
 		PengumumanSembunyiButton = (Button) findViewById(R.id.btn_pengumuman_buka);
 		
@@ -390,23 +394,15 @@ public class DaftarTugas extends AppCompatActivity {
 			
 			// Information about data.
 			String[] Info = teks[0].split("\n");
-			TextView infoTextView = new TextView(getApplicationContext());
-			infoTextView.setTextColor(0xFF000000);
-			LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT
-			);
-			paramd.setMargins(0, 32, 0, 4);
-			infoTextView.setLayoutParams(paramd);
 			long time4 = Long.parseLong(Info[1]);
 			long time5 = Long.parseLong(Info[2]);
 			String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
 			String rds5 = DaftarTugas.timestampToRelativeDateString(time5);
-			infoTextView.setText(Html.fromHtml(
-				"<b><i>Pembaruan daftar terakhir:<br>&nbsp;" + rds4 +
-				"<br>Sinkronasi terakhir:<br>&nbsp;" + rds5 + "</i></b>"
-			));
-			DaftarTugasLinearLayout.addView(infoTextView);
+			String infoT =	"Pembaruan daftar terakhir:\n\t" + rds4 + "\n" +
+							"Sinkronasi terakhir:\n\t" + rds5;
+			SpannableString infoTR = new SpannableString(infoT);
+			infoTR.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, infoT.length(), 0);
+			DaftarTugasInfo.setText(infoTR);
 			
 			// Show the progress.
 			DaftarTugasHeader.setText(
