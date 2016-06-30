@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,45 +23,67 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DaftarTugas extends AppCompatActivity {
 
-	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
-	//public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
+	// public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
+	public final static String FETCHURL = "http://192.168.1.6/xi/daftar_tugas";
 	public final static int VERSION_CODE = 14;
+	
+	private Display display;
+
 	private ProgressDialog pd;
 	private TextView textAmbilData;
 	private SwipeRefreshLayout swipeContainer;
-	private TextView TemaTextView;
-	private TextView PengumumanTextView;
-	private TextView DaftarTugasHeader;
-	private LinearLayout DaftarTugasLinearLayout;
-	private TextView DaftarTugasInfo;
-	private Button PengumumanSembunyiButton;
+
+	private LinearLayout ContainerLinearLayout;
+	private TugasListAdapter ListArrayAdapter;
+	private ListView ListListView;
+	private ScrollView ContentScrollView;
+	private LinearLayout ContentLinearLayout;
+	
+	private TextView TaskTitle;
+	private TextView TaskStatus;
+	private TextView TaskDescription;
+	private TextView TaskUserDescription;
+
 	private int DONE = 4;
+
 	private boolean OPENUpdateActivity = true;
+
 	private String[] USERPASS;
 	private String TOKEN;
+
+	private String TeksMeta;
+	private String TeksTema;
+	private String TeksPengumuman;
+	private ArrayList<String[]> ObjDaftarTugas;
+	private ArrayList<String[]> SortedDaftarTugas;
 	private JSONObject reader;
 	private JSONObject L = new JSONObject();
+	private int lastOpened = -2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +111,8 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		setContentView(R.layout.daftar_tugas);
+		
+		display = getWindowManager().getDefaultDisplay();
 
 		Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
 		setSupportActionBar(toolbar1);
@@ -98,16 +121,23 @@ public class DaftarTugas extends AppCompatActivity {
 		toolbar1.setTitleTextColor(0xFFFFFFFF);
 
 		textAmbilData = (TextView) findViewById(R.id.textAmbilData);
-		swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-		TemaTextView = (TextView) findViewById(R.id.welcomeTextView);
-		PengumumanTextView = (TextView) findViewById(R.id.PengumumanTextView);
-		DaftarTugasHeader = (TextView) findViewById(R.id.DaftarTugasHeader);
-		DaftarTugasLinearLayout = (LinearLayout) findViewById(R.id.DaftarTugasLinearLayout);
-		DaftarTugasInfo = (TextView) findViewById(R.id.DaftarTugasInfo);
+		// swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
-		PengumumanSembunyiButton = (Button) findViewById(R.id.btn_pengumuman_buka);
+		ContainerLinearLayout = (LinearLayout) findViewById(R.id.ContainerLinearLayout);
+		ListListView = (ListView) findViewById(R.id.ListListView);
+		ContentScrollView = (ScrollView) findViewById(R.id.ContentScrollView);
+		ContentLinearLayout = (LinearLayout) findViewById(R.id.ContentLinearLayout);
+		
+		ObjDaftarTugas = new ArrayList<String[]>();
+		ListArrayAdapter = new TugasListAdapter();
+		ListListView.setAdapter(ListArrayAdapter);
+		
+		TaskTitle = (TextView) findViewById(R.id.TaskTitle);
+		TaskStatus = (TextView) findViewById(R.id.TaskStatus);
+		TaskDescription = (TextView) findViewById(R.id.TaskDescription);
+		TaskUserDescription = (TextView) findViewById(R.id.TaskUserDescription);
 
-		swipeContainer.setColorSchemeResources(
+		/* swipeContainer.setColorSchemeResources(
 			R.color.black,
 			R.color.purple,
 			R.color.orange
@@ -119,8 +149,7 @@ public class DaftarTugas extends AppCompatActivity {
 				refreshDaftarTugas();
 			}
 		});
-
-		swipeContainer.setRefreshing(true);
+		swipeContainer.setRefreshing(true); */
 
 		pd = new ProgressDialog(DaftarTugas.this);
 
@@ -156,8 +185,220 @@ public class DaftarTugas extends AppCompatActivity {
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 	}
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	private void renderDaftarTugas(String data) {
+	public void openContent(int id) {
+		Toast.makeText(getApplicationContext(),
+			""+id, Toast.LENGTH_SHORT).show();
+		// Shows Pengumuman.
+		if (id == -1) {
+			TaskTitle.setText(R.string.pengumuman);
+			TaskStatus.setText("INFO");
+			TaskDescription.setText(Html.fromHtml(
+				TeksTema + "<br>" +
+				TeksPengumuman
+			));
+			TaskUserDescription.setText("");
+		} else {
+			String[] tugas = ObjDaftarTugas.get(id);
+			TaskTitle.setText(Html.fromHtml(tugas[1]));
+			TaskStatus.setText(
+				tugas[6] == "1" ? "SELESAI" : "BELUM SELESAI"
+			);
+			TaskDescription.setText(Html.fromHtml(tugas[2]));
+			TaskUserDescription.setText(tugas[7]);
+		}
+		
+		lastOpened = id;
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void renderDaftarTugas() {
+		// Reflow content.
+		DisplayMetrics metrics = new DisplayMetrics();
+		display.getMetrics(metrics);
+		float width = metrics.widthPixels; 
+		if (width > 600) {
+			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
+				(int) (width * 0.4),
+				ViewGroup.LayoutParams.MATCH_PARENT
+			);
+			ListListView.setLayoutParams(lsv);
+			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
+				(int) (width * 0.6),
+				ViewGroup.LayoutParams.MATCH_PARENT
+			);
+			ContentScrollView.setLayoutParams(csv);
+		}
+		
+		// Name of days.
+		String[] hari = {"Minggu", "Senin", "Selasa", "Rabu",
+				"Kamis", "Jumat", "Sabtu"};
+
+		// Name of months.
+		String[] bulan = {"Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+				"Agu", "Sep", "Okt", "Nov", "Des"};
+
+		// Delete already-exist Views from Layout.
+		ListArrayAdapter.clear();
+
+		// Add Pengumuman at the first line.
+		LinearLayout PengumumanLinearLayout = new LinearLayout(getApplicationContext());
+		LinearLayout.LayoutParams parampll = new LinearLayout.LayoutParams(
+			ViewGroup.LayoutParams.MATCH_PARENT,
+			(int) (72 * metrics.density)
+		);
+		PengumumanLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+		PengumumanLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
+		PengumumanLinearLayout.setLayoutParams(parampll);
+		
+		TextView PengumumanTextView = new TextView(getApplicationContext());
+		PengumumanTextView.setText("Pengumuman");
+		PengumumanTextView.setTextColor(0xFF000000);
+		LinearLayout.LayoutParams paramptv = new LinearLayout.LayoutParams(
+			ViewGroup.LayoutParams.MATCH_PARENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT
+		);
+		paramptv.setMargins(80, 0, 0, 0);
+		PengumumanTextView.setLayoutParams(paramptv);
+
+		PengumumanTextView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				openContent(-1);
+			}
+		});
+
+		PengumumanLinearLayout.addView(PengumumanTextView);
+		PengumumanLinearLayout.setClickable(true);
+		
+		ListArrayAdapter.addView(PengumumanLinearLayout, true);
+
+		// Make a CheckedTextView and add into Layout.
+		// ID;TASK;DESC;LESSON;TCODE;Y,M,D
+		String last_day = "";
+		for (int i = 0; i < SortedDaftarTugas.size(); i++) {
+			String[] ti = SortedDaftarTugas.get(i);
+			String tid = ti[5].trim();
+			if (last_day.compareToIgnoreCase(tid) != 0) {
+				last_day = tid;
+				String[] ymd = ti[5].split(",");
+				Calendar cal = Calendar.getInstance();
+				cal.set(
+					Integer.parseInt(ymd[0]),
+					Integer.parseInt(ymd[1]) - 1,
+					Integer.parseInt(ymd[2])
+				);
+
+				TextView dayTextView = new TextView(getApplicationContext());
+				dayTextView.setText(Html.fromHtml(
+					"<b>" +
+					hari[cal.get(Calendar.DAY_OF_WEEK)] + ", " +
+					cal.get(Calendar.DATE) + " " +
+					bulan[cal.get(Calendar.MONTH)] + " " +
+					cal.get(Calendar.YEAR) +
+					"</b>"
+				));
+				dayTextView.setTextColor(0xFF000000); // Black color.
+				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT,
+					(int) (48 * metrics.density)
+				);
+				dayTextView.setGravity(Gravity.BOTTOM + Gravity.START);
+				dayTextView.setLayoutParams(paramd);
+				ListArrayAdapter.addView(dayTextView, false);
+			}
+
+			final int id = Integer.parseInt(ti[0]);
+
+			LinearLayout taskLL = new LinearLayout(getApplicationContext());
+			LinearLayout.LayoutParams paramll = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				(int) (72 * metrics.density)
+			);
+			taskLL.setLayoutParams(paramll);
+			taskLL.setOrientation(LinearLayout.HORIZONTAL);
+			taskLL.setGravity(Gravity.CENTER_VERTICAL);
+			taskLL.setBackground(null);
+
+			CheckBox cb = new CheckBox(getApplicationContext());
+			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT
+			);
+			cb.setLayoutParams(paramcb);
+
+			cb.setTag(id);
+			cb.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View view) {
+					CheckBox cb = (CheckBox) view;
+					updateTask((Integer) view.getTag(), cb.isChecked());
+				}
+
+			});
+
+			boolean done = ti[6].compareTo("1") == 0;
+			cb.setChecked(done);
+			taskLL.addView(cb);
+
+			TextView tv = new TextView(getApplicationContext());
+			tv.setText(Html.fromHtml(ti[1] +
+				"<br><i>" + ti[3] + " (" + ti[4] + ")</i>"
+			));
+			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT
+			);
+			paramtv.setMargins(16, 0, 0, 0);
+			tv.setLayoutParams(paramtv);
+			tv.setTextColor(0xFF000000); // Black color.
+			
+			taskLL.addView(tv);
+
+			taskLL.setTag(id);
+			taskLL.setClickable(true);
+			taskLL.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View view) {
+					openContent((Integer) view.getTag());
+				}
+
+			});
+
+			ListArrayAdapter.addView(taskLL, true);
+		}
+
+		// Information about data.
+		String[] Info = TeksMeta.split("\n");
+		long time4 = Long.parseLong(Info[1]);
+		long time5 = Long.parseLong(Info[2]);
+		String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
+		String rds5 = DaftarTugas.timestampToRelativeDateString(time5);
+		String infoT =	"Pembaruan daftar terakhir:\n\t" + rds4 + "\n" +
+						"Sinkronasi terakhir:\n\t" + rds5;
+		SpannableString infoTR = new SpannableString(infoT);
+		infoTR.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, infoT.length(), 0);
+
+		TextView SyncInfo = new TextView(getApplicationContext());
+		SyncInfo.setText(infoTR);
+		LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
+			ViewGroup.LayoutParams.MATCH_PARENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT
+		);
+		SyncInfo.setLayoutParams(paramtv);
+		SyncInfo.setTextColor(0xFF000000); // Black color.
+		ListArrayAdapter.addView(SyncInfo, false);
+		
+		ListListView.setAdapter(ListArrayAdapter);
+		
+		if (width > 600 && lastOpened == -2) {
+			openContent(-1);
+		}
+	}
+
+	private void parseDaftarTugas(String data) {
 		if (data != "") {
 			if (DONE == 2 && (data.compareTo("403") == 0 ||
 				IOFile.read(getApplicationContext(), "token.txt") == "")) {
@@ -176,34 +417,29 @@ public class DaftarTugas extends AppCompatActivity {
 			String[] teks = data.split("\n;;;;;\n");
 			if (teks.length < 3) return;
 
+			TeksMeta = teks[0];
+
 			String[] fetch = teks[1].split("\n=;;;=\n");
 			if (fetch.length < 2) return;
 
 			//////////
 			// Tema //
 			//////////
-			String teksTema =
+			TeksTema =
 				getResources().getString(R.string.welcome_text) +
-				" " + USERPASS[0] + "!\n" + fetch[0];
-
-			TemaTextView.setText(teksTema);
+				" " + USERPASS[0] + "!<br>" + fetch[0];
 
 			////////////////
 			// Pengumuman //
 			////////////////
-			String teksPengumuman = "● "+
+			TeksPengumuman = "● "+
 					fetch[1].replaceAll("\n", "<br>● ");
-
-			PengumumanTextView.setText(Html.fromHtml(teksPengumuman));
 
 			//////////////////
 			// Daftar Tugas //
 			//////////////////
 			String teksDaftarTugas = (String) fetch[2].replaceAll("</?([^>])*>", "");
 			String[] teksPerTugas = teksDaftarTugas.split("\n");
-
-			// Delete already-exist Views from Layout.
-			DaftarTugasLinearLayout.removeAllViewsInLayout();
 
 			// Parse JSON data.
 			L = null;
@@ -222,26 +458,18 @@ public class DaftarTugas extends AppCompatActivity {
 
 			// School schedule.
 			String[][] schedule = {
-            	{},
-            	{"76", "60", "70", "21"},
-            	{"63", "11", "28", "8",  "44"},
-            	{"36", "43", "32", "14", "45"},
-            	{"23", "8",  "70", "63", "28", "3"},
-            	{"16", "43", "32", "48"},
-            	{"50", "73", "23", "3",  "16"},
-            	{}
+				{},
+				{"76", "60", "70", "21"},
+				{"63", "11", "28", "8",  "44"},
+				{"36", "43", "32", "14", "45"},
+				{"23", "8",  "70", "63", "28", "3"},
+				{"16", "43", "32", "48"},
+				{"50", "73", "23", "3",  "16"},
+				{}
 			};
 
-			// Name of days.
-			String[] hari = {"Minggu", "Senin", "Selasa", "Rabu",
-					"Kamis", "Jumat", "Sabtu"};
-
-			// Name of months.
-			String[] bulan = {"Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-					"Agu", "Sep", "Okt", "Nov", "Des"};
-
 			// ID;TASK;DESC;LESSON;TCODE;Y,M,D
-			List<String[]> Tugas = new ArrayList<String[]>();
+			ArrayList<String[]> Tugas = new ArrayList<String[]>();
 			for (int i = 0; i < teksPerTugas.length; i ++) {
 				String tugas1 = teksPerTugas[i] + ";0;";
 				String[] dataPerTugas = tugas1.split(";", -1);
@@ -257,6 +485,9 @@ public class DaftarTugas extends AppCompatActivity {
 				}
 				Tugas.add(dataPerTugas);
 			}
+			
+			// Clone unsorted.
+			ObjDaftarTugas = new ArrayList<String[]>(Tugas);
 
 			// Sort all task using Insertion sort.
 			for (int i = 1; i < Tugas.size(); i ++) {
@@ -321,139 +552,15 @@ public class DaftarTugas extends AppCompatActivity {
 				}
 			}
 
-			// Make a CheckedTextView and add into Layout.
-			int d = 0;
-			String last_day = "";
-			for (int i = 0; i < Tugas.size(); i++) {
-				String[] ti = Tugas.get(i);
-				String tid = ti[5].trim();
-				if (last_day.compareToIgnoreCase(tid) != 0) {
-					last_day = tid;
-					String[] ymd = ti[5].split(",");
-					Calendar cal = Calendar.getInstance();
-					cal.set(
-						Integer.parseInt(ymd[0]),
-						Integer.parseInt(ymd[1]) - 1,
-						Integer.parseInt(ymd[2])
-					);
-
-					TextView dayTextView = new TextView(getApplicationContext());
-					dayTextView.setText(Html.fromHtml(
-						"<b>" +
-						hari[cal.get(Calendar.DAY_OF_WEEK)] + ", " +
-						cal.get(Calendar.DATE) + " " +
-						bulan[cal.get(Calendar.MONTH)] + " " +
-						cal.get(Calendar.YEAR) +
-						"</b>"
-					));
-					dayTextView.setTextColor(0xFFE040FB);
-					LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT,
-						ViewGroup.LayoutParams.WRAP_CONTENT
-					);
-					paramd.setMargins(0, 16, 0, 4);
-					dayTextView.setLayoutParams(paramd);
-					DaftarTugasLinearLayout.addView(dayTextView);
-				}
-
-				// Id starts from ten thousand to prevent Id overlap.
-				int id = Integer.parseInt(ti[0]);
-
-				LinearLayout taskLL = new LinearLayout(getApplicationContext());
-				LinearLayout.LayoutParams paramll = new LinearLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT
-				);
-				paramll.setMargins(0, 16, 0, 4);
-				taskLL.setOrientation(LinearLayout.HORIZONTAL);
-				taskLL.setLayoutParams(paramll);
-
-				CheckBox cb = new CheckBox(getApplicationContext());
-				LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT
-				);
-				cb.setLayoutParams(paramcb);
-
-				cb.setId(10000+id);
-				cb.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View view) {
-						CheckBox cb = (CheckBox) view;
-						int t = cb.getId()-10000;
-						boolean checked = cb.isChecked();
-						if (!checked) {
-							cb.setButtonDrawable(R.drawable.btn_check_off);
-						} else {
-							cb.setButtonDrawable(R.drawable.btn_check_on);
-						}
-						Log.println(Log.INFO, "DaftarTugas", t+": "+checked);
-						JSONArray nI;
-						try {
-							try {
-								nI = L.getJSONArray(""+t);
-							} catch (JSONException e) {
-								L.put(""+t, new JSONArray());
-								nI = L.getJSONArray(""+t);
-							}
-							nI.put(0, checked);
-							L.put(""+t, nI);
-							reader.put("L", L);
-							saveDaftarTugas();
-						} catch (JSONException e) {
-							// e.printStackTrace();
-						}
-					}
-
-				});
-
-				cb.setButtonDrawable(R.drawable.btn_check_off);
-				boolean done = ti[6].compareTo("1") == 0;
-				if (done == true) {
-					d ++;
-					cb.setButtonDrawable(R.drawable.btn_check_on);
-				}
-				cb.setChecked(done);
-				taskLL.addView(cb);
-
-				TextView tv = new TextView(getApplicationContext());
-				tv.setText(Html.fromHtml(ti[1] + "<br>" + ti[3]));
-				LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
-					ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT
-				);
-				paramtv.setMargins(16, 0, 16, 0);
-				tv.setLayoutParams(paramtv);
-				tv.setTextColor(0xFF000000); // Black color.
-				taskLL.addView(tv);
-
-				DaftarTugasLinearLayout.addView(taskLL);
-			}
-
-			// Information about data.
-			String[] Info = teks[0].split("\n");
-			long time4 = Long.parseLong(Info[1]);
-			long time5 = Long.parseLong(Info[2]);
-			String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
-			String rds5 = DaftarTugas.timestampToRelativeDateString(time5);
-			String infoT =	"Pembaruan daftar terakhir:\n\t" + rds4 + "\n" +
-							"Sinkronasi terakhir:\n\t" + rds5;
-			SpannableString infoTR = new SpannableString(infoT);
-			infoTR.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, infoT.length(), 0);
-			DaftarTugasInfo.setText(infoTR);
-
-			// Show the progress.
-			DaftarTugasHeader.setText(
-				getResources().getString(R.string.daftar_tugas) +
-				" - " + d + "/" + teksPerTugas.length +
-				" (" + Integer.toString(Math.round(d*100/teksPerTugas.length)) +
-				"%)"
-			);
+			// Save sorted.
+			SortedDaftarTugas = Tugas;
 
 			textAmbilData.setVisibility(View.GONE);
-			swipeContainer.setVisibility(View.VISIBLE);
+			// swipeContainer.setVisibility(View.VISIBLE);
+			ContainerLinearLayout.setVisibility(View.VISIBLE);
 			if (pd != null) pd.dismiss();
+
+			renderDaftarTugas();
 		}
 	}
 
@@ -507,6 +614,26 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 		dlt.run(FETCHURL + "/api/transaction", strUrlParam);
 	}
+	
+	private void updateTask(int id, boolean checked) {
+		JSONArray nI;
+		try {
+			try {
+				nI = L.getJSONArray(""+id);
+			} catch (JSONException e) {
+				L.put(""+id, new JSONArray());
+				nI = L.getJSONArray(""+id);
+			}
+			nI.put(0, checked);
+			L.put(""+id, nI);
+			reader.put("L", L);
+			saveDaftarTugas();
+		} catch (JSONException e) {
+			// e.printStackTrace();
+		}
+		
+		openContent(id);
+	}
 
 	private void saveDaftarTugas(){
 		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt").split("\n;;;;;\n");
@@ -514,9 +641,10 @@ public class DaftarTugas extends AppCompatActivity {
 		String newteks = android.text.TextUtils.join("\n;;;;;\n", teks);
 
 		IOFile.write(getApplicationContext(), "fetchdata.txt", newteks);
-		renderDaftarTugas(newteks);
 
-		swipeContainer.setRefreshing(true);
+		parseDaftarTugas(newteks);
+
+		// swipeContainer.setRefreshing(true);
 		refreshDaftarTugas();
 	}
 
@@ -525,9 +653,9 @@ public class DaftarTugas extends AppCompatActivity {
 		@Override
 		public boolean onAfterExecute(String result) {
 			DONE ++;
-			renderDaftarTugas(result);
+			parseDaftarTugas(result);
 			if (DONE == 2) {
-				swipeContainer.setRefreshing(false);
+				// swipeContainer.setRefreshing(false);
 			}
 			return true;
 		}
@@ -628,7 +756,7 @@ public class DaftarTugas extends AppCompatActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_refresh) {
-			swipeContainer.setRefreshing(true);
+			// swipeContainer.setRefreshing(true);
 			refreshDaftarTugas();
 			return true;
 		} else if (id == R.id.action_about) {
@@ -743,16 +871,6 @@ public class DaftarTugas extends AppCompatActivity {
 		return str;
 	}
 
-	public void hidePengumuman(View view) {
-		if(PengumumanTextView.getVisibility()==View.VISIBLE) {
-			PengumumanTextView.setVisibility(View.GONE);
-			PengumumanSembunyiButton.setText(R.string.tampilkan);
-		} else {
-			PengumumanSembunyiButton.setText(R.string.sembunyikan);
-			PengumumanTextView.setVisibility(View.VISIBLE);
-		}
-	}
-
 	public void runMasuk() {
 		Intent intent = new Intent(this, MasukActivity.class);
 		startActivity(intent);
@@ -772,5 +890,52 @@ public class DaftarTugas extends AppCompatActivity {
 	public void runTentang() {
 		Intent intent = new Intent(this, Tentang.class);
 		startActivity(intent);
+	}
+	
+	/**
+	 * TugasListAdapter
+	 * 
+	 * An adapter extended from BaseAdapter that is specialized for
+	 * DaftarTugas.
+	 */
+	public class TugasListAdapter extends BaseAdapter implements ListAdapter {
+		
+		public ArrayList<View> Views = new ArrayList<View>();
+		public ArrayList<Boolean> Enabled = new ArrayList<Boolean>();
+
+		public void addView(View view, boolean enabled) {
+			this.Views.add(view);
+			this.Enabled.add(enabled);
+		}
+
+		public void clear() {
+			this.Views.clear();
+			this.Enabled.clear();
+		}
+
+		@Override
+		public int getCount() {
+			return this.Views.size();
+		}
+
+		@Override
+		public View getItem(int position) {
+			return this.Views.get(position);
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			return this.Views.get(position);
+		}
+		
+		public boolean isEnabled(int position) {
+			return this.Enabled.get(position);
+		}
 	}
 }
