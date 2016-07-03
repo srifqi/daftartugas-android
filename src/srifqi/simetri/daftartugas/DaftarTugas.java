@@ -22,7 +22,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -48,15 +47,15 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DaftarTugas extends AppCompatActivity {
 
-	// public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
-	public final static String FETCHURL = "http://192.168.1.6/xi/daftar_tugas";
+	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
+	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
 	public final static int VERSION_CODE = 14;
 	
 	private Display display;
 
 	private ProgressDialog pd;
 	private TextView textAmbilData;
-	private SwipeRefreshLayout swipeContainer;
+	// private SwipeRefreshLayout swipeContainer;
 
 	private LinearLayout ContainerLinearLayout;
 	private TugasListAdapter ListArrayAdapter;
@@ -88,6 +87,9 @@ public class DaftarTugas extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler(_UEH);
 
 		// Check version (init).
 		CheckVersionDT cvt = new CheckVersionDT();
@@ -210,7 +212,7 @@ public class DaftarTugas extends AppCompatActivity {
 		lastOpened = id;
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void renderDaftarTugas() {
 		// Reflow content.
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -219,12 +221,12 @@ public class DaftarTugas extends AppCompatActivity {
 		if (width > 600) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
 				(int) (width * 0.4),
-				ViewGroup.LayoutParams.MATCH_PARENT
+				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ListListView.setLayoutParams(lsv);
 			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
 				(int) (width * 0.6),
-				ViewGroup.LayoutParams.MATCH_PARENT
+				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ContentScrollView.setLayoutParams(csv);
 		}
@@ -242,8 +244,8 @@ public class DaftarTugas extends AppCompatActivity {
 
 		// Add Pengumuman at the first line.
 		LinearLayout PengumumanLinearLayout = new LinearLayout(getApplicationContext());
-		LinearLayout.LayoutParams parampll = new LinearLayout.LayoutParams(
-			ViewGroup.LayoutParams.MATCH_PARENT,
+		ListView.LayoutParams parampll = new ListView.LayoutParams(
+			ListView.LayoutParams.MATCH_PARENT,
 			(int) (72 * metrics.density)
 		);
 		PengumumanLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -254,8 +256,8 @@ public class DaftarTugas extends AppCompatActivity {
 		PengumumanTextView.setText("Pengumuman");
 		PengumumanTextView.setTextColor(0xFF000000);
 		LinearLayout.LayoutParams paramptv = new LinearLayout.LayoutParams(
-			ViewGroup.LayoutParams.MATCH_PARENT,
-			ViewGroup.LayoutParams.WRAP_CONTENT
+			LinearLayout.LayoutParams.MATCH_PARENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT
 		);
 		paramptv.setMargins(80, 0, 0, 0);
 		PengumumanTextView.setLayoutParams(paramptv);
@@ -292,15 +294,16 @@ public class DaftarTugas extends AppCompatActivity {
 				TextView dayTextView = new TextView(getApplicationContext());
 				dayTextView.setText(Html.fromHtml(
 					"<b>" +
-					hari[cal.get(Calendar.DAY_OF_WEEK)] + ", " +
+					hari[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
 					cal.get(Calendar.DATE) + " " +
-					bulan[cal.get(Calendar.MONTH)] + " " +
+					// mod 12 just in case somebody is stupid enough.
+					bulan[cal.get(Calendar.MONTH) % 12] + " " +
 					cal.get(Calendar.YEAR) +
 					"</b>"
 				));
 				dayTextView.setTextColor(0xFF000000); // Black color.
-				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
+				ListView.LayoutParams paramd = new ListView.LayoutParams(
+					ListView.LayoutParams.MATCH_PARENT,
 					(int) (48 * metrics.density)
 				);
 				dayTextView.setGravity(Gravity.BOTTOM + Gravity.START);
@@ -311,19 +314,18 @@ public class DaftarTugas extends AppCompatActivity {
 			final int id = Integer.parseInt(ti[0]);
 
 			LinearLayout taskLL = new LinearLayout(getApplicationContext());
-			LinearLayout.LayoutParams paramll = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
+			ListView.LayoutParams paramll = new ListView.LayoutParams(
+				ListView.LayoutParams.MATCH_PARENT,
 				(int) (72 * metrics.density)
 			);
 			taskLL.setLayoutParams(paramll);
 			taskLL.setOrientation(LinearLayout.HORIZONTAL);
 			taskLL.setGravity(Gravity.CENTER_VERTICAL);
-			taskLL.setBackground(null);
 
 			CheckBox cb = new CheckBox(getApplicationContext());
 			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT
 			);
 			cb.setLayoutParams(paramcb);
 
@@ -347,8 +349,8 @@ public class DaftarTugas extends AppCompatActivity {
 				"<br><i>" + ti[3] + " (" + ti[4] + ")</i>"
 			));
 			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT
 			);
 			paramtv.setMargins(16, 0, 0, 0);
 			tv.setLayoutParams(paramtv);
@@ -383,9 +385,9 @@ public class DaftarTugas extends AppCompatActivity {
 
 		TextView SyncInfo = new TextView(getApplicationContext());
 		SyncInfo.setText(infoTR);
-		LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
-			ViewGroup.LayoutParams.MATCH_PARENT,
-			ViewGroup.LayoutParams.WRAP_CONTENT
+		ListView.LayoutParams paramtv = new ListView.LayoutParams(
+			ListView.LayoutParams.MATCH_PARENT,
+			ListView.LayoutParams.WRAP_CONTENT
 		);
 		SyncInfo.setLayoutParams(paramtv);
 		SyncInfo.setTextColor(0xFF000000); // Black color.
@@ -473,6 +475,12 @@ public class DaftarTugas extends AppCompatActivity {
 			for (int i = 0; i < teksPerTugas.length; i ++) {
 				String tugas1 = teksPerTugas[i] + ";0;";
 				String[] dataPerTugas = tugas1.split(";", -1);
+				
+				// Subtract 1 from month, January is 1.
+				String[] date = dataPerTugas[5].split(",");
+				date[1] = "" + (Integer.parseInt(date[1]) - 1);
+				dataPerTugas[5] = date[0] + "," + date[1] + "," + date[2];
+				
 				try {
 					boolean done = L.getJSONArray(dataPerTugas[0]).getBoolean(0);
 					dataPerTugas[6] = done ? "1" : "0";
@@ -925,7 +933,6 @@ public class DaftarTugas extends AppCompatActivity {
 
 		@Override
 		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
@@ -938,4 +945,36 @@ public class DaftarTugas extends AppCompatActivity {
 			return this.Enabled.get(position);
 		}
 	}
+	
+	// http://stackoverflow.com/a/19945692
+	// http://stackoverflow.com/a/26560727
+	// private UncaughtExceptionHandler defaultUEH;
+	private Thread.UncaughtExceptionHandler _UEH = new Thread.UncaughtExceptionHandler() {
+
+		@Override
+		public void uncaughtException(Thread thread, Throwable ex) {
+			ex.printStackTrace();
+			
+			Intent intent = new Intent(getApplicationContext(), srifqi.simetri.daftartugas.ErrorReporting.class);
+			intent.putExtra("Message", ex.getMessage());
+			
+			StackTraceElement[] stackTrace = ex.getStackTrace();
+			StringBuilder stackTraceString = new StringBuilder();
+			for (StackTraceElement el : stackTrace) {
+				stackTraceString.append(el.toString()).append("\n");
+			}
+			intent.putExtra("StackTrace", stackTraceString.toString());
+			
+			startActivity(intent);
+			
+			/* Maybe not, it disturbs the UI.
+			if (defaultUEH != null) {
+				// Delegates to Andoid's error handling.
+				defaultUEH.uncaughtException(thread, ex);
+			} */
+
+			System.exit(2); // Prevents app from freezing.
+		}
+		
+	};
 }

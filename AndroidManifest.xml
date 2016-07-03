@@ -43,6 +43,9 @@
             android:name=".Tentang"
             android:label="@string/title_activity_tentang" >
         </activity>
+        <activity
+            android:name=".ErrorReporting" >
+        </activity>
     </application>
 
 </manifest>

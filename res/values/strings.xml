@@ -7,12 +7,7 @@
 	<string name="ambil_data">Sedang mengambil data untuk pertama kalinya.</string>
 	<string name="welcome_text">Halo,</string>
 	<string name="pengumuman">Pengumuman</string>
-	<string name="pengumuman_intro">Pengumuman akan segera muncul.</string>
-	<string name="sembunyikan">Sembunyikan</string>
-	<string name="tampilkan">Tampilkan</string>
 	<string name="daftar_tugas">Daftar Tugas</string>
-	<string name="daftar_tugas_intro">Daftar Tugas akan segera muncul.</string>
-	<string name="tiada_tugas"><i>(tidak ada tugas)</i></string>
 	<string name="refresh">Perbarui</string>
 	<string name="tersimpan_di_server">Tersimpan pada server</string>
 	<string name="tanpa_koneksi">Tidak ada koneksi tersedia</string>
@@ -40,5 +35,6 @@
 	<string name="simple_desc">Dibuat dengan ketulusan hati\nuntuk Simetri Smansa.</string>
 	<string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nSimetri Smansa - Hak Cipta Terlindungi</string>
 	<string name="tos">Syarat dan Ketentuan</string>
+	<string name="crash_message">Maaf, Aplikasi Daftar Tugas mengalami kesalahan dan menutup tiba-tiba. Tolong kirimkan teks di bawah ini ke Simetri Creative Code Labs.</string>
 
 </resources>
