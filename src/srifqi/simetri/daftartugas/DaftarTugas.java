@@ -22,6 +22,9 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -30,14 +33,21 @@ import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -52,10 +62,12 @@ public class DaftarTugas extends AppCompatActivity {
 	public final static int VERSION_CODE = 14;
 	
 	private Display display;
+	private float displayWidth;
+	private float displayDensity;
 
 	private ProgressDialog pd;
 	private TextView textAmbilData;
-	// private SwipeRefreshLayout swipeContainer;
+	private SwipeRefreshLayout swipeContainer;
 
 	private LinearLayout ContainerLinearLayout;
 	private TugasListAdapter ListArrayAdapter;
@@ -67,6 +79,7 @@ public class DaftarTugas extends AppCompatActivity {
 	private TextView TaskStatus;
 	private TextView TaskDescription;
 	private TextView TaskUserDescription;
+	private Button TaskSaveUserDescription;
 
 	private int DONE = 4;
 
@@ -116,6 +129,11 @@ public class DaftarTugas extends AppCompatActivity {
 		
 		display = getWindowManager().getDefaultDisplay();
 
+		DisplayMetrics metrics = new DisplayMetrics();
+		display.getMetrics(metrics);
+		displayWidth = metrics.widthPixels;
+		displayDensity = metrics.density;
+
 		Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
 		setSupportActionBar(toolbar1);
 
@@ -123,12 +141,32 @@ public class DaftarTugas extends AppCompatActivity {
 		toolbar1.setTitleTextColor(0xFFFFFFFF);
 
 		textAmbilData = (TextView) findViewById(R.id.textAmbilData);
-		// swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+		swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
 		ContainerLinearLayout = (LinearLayout) findViewById(R.id.ContainerLinearLayout);
 		ListListView = (ListView) findViewById(R.id.ListListView);
 		ContentScrollView = (ScrollView) findViewById(R.id.ContentScrollView);
 		ContentLinearLayout = (LinearLayout) findViewById(R.id.ContentLinearLayout);
+		
+		ListListView.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				int topRowYPos =
+					(ListListView == null || ListListView.getChildCount() == 0) ?
+						0 : ListListView.getChildAt(0).getTop();
+				swipeContainer.setEnabled(
+					(firstVisibleItem == 0 && topRowYPos >= 0 && displayWidth <= 600 && lastOpened == -2) || 
+					(lastOpened != -2 && displayWidth <= 600) ||
+					(firstVisibleItem == 0 && topRowYPos >= 0 && displayWidth > 600)
+				);
+			}
+		});
 		
 		ObjDaftarTugas = new ArrayList<String[]>();
 		ListArrayAdapter = new TugasListAdapter();
@@ -138,8 +176,9 @@ public class DaftarTugas extends AppCompatActivity {
 		TaskStatus = (TextView) findViewById(R.id.TaskStatus);
 		TaskDescription = (TextView) findViewById(R.id.TaskDescription);
 		TaskUserDescription = (TextView) findViewById(R.id.TaskUserDescription);
+		TaskSaveUserDescription = (Button) findViewById(R.id.TaskSaveUserDescription);
 
-		/* swipeContainer.setColorSchemeResources(
+		swipeContainer.setColorSchemeResources(
 			R.color.black,
 			R.color.purple,
 			R.color.orange
@@ -151,7 +190,7 @@ public class DaftarTugas extends AppCompatActivity {
 				refreshDaftarTugas();
 			}
 		});
-		swipeContainer.setRefreshing(true); */
+		swipeContainer.setRefreshing(true);
 
 		pd = new ProgressDialog(DaftarTugas.this);
 
@@ -186,19 +225,33 @@ public class DaftarTugas extends AppCompatActivity {
 		// It's okay to re-initiate because at onPause, pd already dismissed.
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 	}
+	
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			if (lastOpened != -2 && displayWidth <= 600) {
+				openContent(-2);
+				return true;
+			}
+		}
+		
+		super.onKeyUp(keyCode, event);
+		return false;
+	}
 
 	public void openContent(int id) {
-		Toast.makeText(getApplicationContext(),
-			""+id, Toast.LENGTH_SHORT).show();
+		// Show lists.
+		if (id == -2) {
+			// Just do nothing.
 		// Shows Pengumuman.
-		if (id == -1) {
+		} else if (id == -1) {
 			TaskTitle.setText(R.string.pengumuman);
 			TaskStatus.setText("INFO");
 			TaskDescription.setText(Html.fromHtml(
-				TeksTema + "<br>" +
+				TeksTema + "<br><br><br>" +
 				TeksPengumuman
 			));
 			TaskUserDescription.setText("");
+			TaskSaveUserDescription.setVisibility(View.GONE);
 		} else {
 			String[] tugas = ObjDaftarTugas.get(id);
 			TaskTitle.setText(Html.fromHtml(tugas[1]));
@@ -207,6 +260,50 @@ public class DaftarTugas extends AppCompatActivity {
 			);
 			TaskDescription.setText(Html.fromHtml(tugas[2]));
 			TaskUserDescription.setText(tugas[7]);
+			TaskSaveUserDescription.setVisibility(View.VISIBLE);
+		}
+		
+		// Reflow content.
+		if (displayWidth <= 600 && lastOpened != id) {
+			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
+				(int) displayWidth,
+				LinearLayout.LayoutParams.MATCH_PARENT
+			);
+			ListListView.setLayoutParams(lsv);
+			if (id == -2) {
+				Animation ListListViewAnimation = new Animation() {
+					
+					@Override
+					protected void applyTransformation(float interpolatedTime, Transformation t) {
+						LinearLayout.LayoutParams lsv = (LayoutParams) ListListView.getLayoutParams();
+						lsv.setMargins((int) (-displayWidth + displayWidth * interpolatedTime), 0, 0, 0);
+						ListListView.setLayoutParams(lsv);
+					}
+				};
+				ListListViewAnimation.setInterpolator(new FastOutSlowInInterpolator());
+				ListListViewAnimation.setDuration(300);
+				
+				ListListView.startAnimation(ListListViewAnimation);
+			} else {
+				Animation ListListViewAnimation = new Animation() {
+					
+					@Override
+					protected void applyTransformation(float interpolatedTime, Transformation t) {
+						LinearLayout.LayoutParams lsv = (LayoutParams) ListListView.getLayoutParams();
+						lsv.setMargins((int) (-displayWidth * interpolatedTime), 0, 0, 0);
+						ListListView.setLayoutParams(lsv);
+					}
+				};
+				ListListViewAnimation.setInterpolator(new FastOutSlowInInterpolator());
+				ListListViewAnimation.setDuration(300);
+				
+				ListListView.startAnimation(ListListViewAnimation);
+			}
+			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
+				(int) displayWidth,
+				LinearLayout.LayoutParams.MATCH_PARENT
+			);
+			ContentScrollView.setLayoutParams(csv);
 		}
 		
 		lastOpened = id;
@@ -215,17 +312,14 @@ public class DaftarTugas extends AppCompatActivity {
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void renderDaftarTugas() {
 		// Reflow content.
-		DisplayMetrics metrics = new DisplayMetrics();
-		display.getMetrics(metrics);
-		float width = metrics.widthPixels; 
-		if (width > 600) {
+		if (displayWidth > 600) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
-				(int) (width * 0.4),
+				(int) (displayWidth * 0.4),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ListListView.setLayoutParams(lsv);
 			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
-				(int) (width * 0.6),
+				(int) (displayWidth * 0.6),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ContentScrollView.setLayoutParams(csv);
@@ -246,7 +340,7 @@ public class DaftarTugas extends AppCompatActivity {
 		LinearLayout PengumumanLinearLayout = new LinearLayout(getApplicationContext());
 		ListView.LayoutParams parampll = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
-			(int) (72 * metrics.density)
+			(int) (72 * displayDensity)
 		);
 		PengumumanLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 		PengumumanLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
@@ -259,7 +353,10 @@ public class DaftarTugas extends AppCompatActivity {
 			LinearLayout.LayoutParams.MATCH_PARENT,
 			LinearLayout.LayoutParams.WRAP_CONTENT
 		);
-		paramptv.setMargins(80, 0, 0, 0);
+		paramptv.setMargins(
+			(int) (80 * displayDensity), 0,
+			(int) (16 * displayDensity), 0
+		);
 		PengumumanTextView.setLayoutParams(paramptv);
 
 		PengumumanTextView.setOnClickListener(new OnClickListener() {
@@ -290,6 +387,15 @@ public class DaftarTugas extends AppCompatActivity {
 					Integer.parseInt(ymd[1]) - 1,
 					Integer.parseInt(ymd[2])
 				);
+				
+				LinearLayout dayLL = new LinearLayout(getApplicationContext());
+				ListView.LayoutParams paramll = new ListView.LayoutParams(
+					ListView.LayoutParams.MATCH_PARENT,
+					(int) (48 * displayDensity)
+				);
+				dayLL.setLayoutParams(paramll);
+				dayLL.setOrientation(LinearLayout.HORIZONTAL);
+				dayLL.setGravity(Gravity.BOTTOM + Gravity.START);
 
 				TextView dayTextView = new TextView(getApplicationContext());
 				dayTextView.setText(Html.fromHtml(
@@ -302,13 +408,18 @@ public class DaftarTugas extends AppCompatActivity {
 					"</b>"
 				));
 				dayTextView.setTextColor(0xFF000000); // Black color.
-				ListView.LayoutParams paramd = new ListView.LayoutParams(
-					ListView.LayoutParams.MATCH_PARENT,
-					(int) (48 * metrics.density)
+				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT
 				);
-				dayTextView.setGravity(Gravity.BOTTOM + Gravity.START);
+				paramd.setMargins(
+					(int) (16 * displayDensity), 0,
+					(int) (16 * displayDensity), 0
+				);
 				dayTextView.setLayoutParams(paramd);
-				ListArrayAdapter.addView(dayTextView, false);
+				
+				dayLL.addView(dayTextView);
+				ListArrayAdapter.addView(dayLL, false);
 			}
 
 			final int id = Integer.parseInt(ti[0]);
@@ -316,17 +427,19 @@ public class DaftarTugas extends AppCompatActivity {
 			LinearLayout taskLL = new LinearLayout(getApplicationContext());
 			ListView.LayoutParams paramll = new ListView.LayoutParams(
 				ListView.LayoutParams.MATCH_PARENT,
-				(int) (72 * metrics.density)
+				(int) (72 * displayDensity)
 			);
 			taskLL.setLayoutParams(paramll);
 			taskLL.setOrientation(LinearLayout.HORIZONTAL);
 			taskLL.setGravity(Gravity.CENTER_VERTICAL);
+			taskLL.setBackgroundResource(R.color.white);
 
 			CheckBox cb = new CheckBox(getApplicationContext());
 			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT
 			);
+			paramcb.setMargins((int) (16 * displayDensity), 0, 0, 0);
 			cb.setLayoutParams(paramcb);
 
 			cb.setTag(id);
@@ -352,7 +465,10 @@ public class DaftarTugas extends AppCompatActivity {
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT
 			);
-			paramtv.setMargins(16, 0, 0, 0);
+			paramtv.setMargins(
+				(int) (16 * displayDensity), 0,
+				(int) (16 * displayDensity), 0
+			);
 			tv.setLayoutParams(paramtv);
 			tv.setTextColor(0xFF000000); // Black color.
 			
@@ -395,8 +511,12 @@ public class DaftarTugas extends AppCompatActivity {
 		
 		ListListView.setAdapter(ListArrayAdapter);
 		
-		if (width > 600 && lastOpened == -2) {
-			openContent(-1);
+		if (displayWidth > 600) {
+			openContent(lastOpened == -2 ? -1 : lastOpened);
+		} else {
+			if (lastOpened != -2) {
+				openContent(lastOpened);
+			}
 		}
 	}
 
@@ -564,7 +684,7 @@ public class DaftarTugas extends AppCompatActivity {
 			SortedDaftarTugas = Tugas;
 
 			textAmbilData.setVisibility(View.GONE);
-			// swipeContainer.setVisibility(View.VISIBLE);
+			swipeContainer.setVisibility(View.VISIBLE);
 			ContainerLinearLayout.setVisibility(View.VISIBLE);
 			if (pd != null) pd.dismiss();
 
@@ -620,6 +740,8 @@ public class DaftarTugas extends AppCompatActivity {
 		} catch (UnsupportedEncodingException e) {
 			// e.printStackTrace();
 		}
+		
+		swipeContainer.setRefreshing(true);
 		dlt.run(FETCHURL + "/api/transaction", strUrlParam);
 	}
 	
@@ -639,8 +761,16 @@ public class DaftarTugas extends AppCompatActivity {
 		} catch (JSONException e) {
 			// e.printStackTrace();
 		}
-		
-		openContent(id);
+	}
+	
+	public void updateRecent(View view) {
+		if (lastOpened > -1) {
+			boolean enabled = ObjDaftarTugas.get(lastOpened)[6].compareTo("1") == 0;
+			updateTask(
+				lastOpened,
+				!(enabled ? true : false)
+			);
+		}
 	}
 
 	private void saveDaftarTugas(){
@@ -652,7 +782,6 @@ public class DaftarTugas extends AppCompatActivity {
 
 		parseDaftarTugas(newteks);
 
-		// swipeContainer.setRefreshing(true);
 		refreshDaftarTugas();
 	}
 
@@ -663,7 +792,7 @@ public class DaftarTugas extends AppCompatActivity {
 			DONE ++;
 			parseDaftarTugas(result);
 			if (DONE == 2) {
-				// swipeContainer.setRefreshing(false);
+				swipeContainer.setRefreshing(false);
 			}
 			return true;
 		}
@@ -764,7 +893,7 @@ public class DaftarTugas extends AppCompatActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_refresh) {
-			// swipeContainer.setRefreshing(true);
+			swipeContainer.setRefreshing(true);
 			refreshDaftarTugas();
 			return true;
 		} else if (id == R.id.action_about) {
