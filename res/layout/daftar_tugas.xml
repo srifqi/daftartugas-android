@@ -25,7 +25,7 @@
 		android:paddingRight="@dimen/activity_horizontal_margin"
 		android:paddingTop="@dimen/activity_vertical_margin"
 		android:paddingBottom="@dimen/activity_vertical_margin"
-		android:text="@string/ambil_data" />
+		android:text="@string/fetch_data" />
 
 	<android.support.v4.widget.SwipeRefreshLayout
 		android:id="@+id/swipeContainer"
@@ -48,7 +48,7 @@
 			android:drawSelectorOnTop="true" />
 
 		<ScrollView
-		    android:id="@+id/ContentScrollView"
+			android:id="@+id/ContentScrollView"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:background="@color/white" >
@@ -62,42 +62,42 @@
 			android:paddingRight="@dimen/activity_horizontal_margin"
 			android:paddingTop="@dimen/activity_vertical_margin"
 			android:paddingBottom="@dimen/activity_vertical_margin" >
-			
-		    	<TextView
-		    	    android:id="@+id/TaskTitle"
-		    	    android:layout_width="match_parent"
-		    	    android:layout_height="wrap_content"
-		    	    android:textAppearance="?android:attr/textAppearanceLarge"
-		    	    android:layout_marginTop="8dp" />
-		    	
-		    	<TextView
-		    	    android:id="@+id/TaskStatus"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-		    	    android:layout_marginTop="8dp"
-		    	    android:clickable="true"
-		    	    android:onClick="updateRecent" />
-		    	
-		    	<TextView
-		    	    android:id="@+id/TaskDescription"
-		    	    android:layout_width="match_parent"
-		    	    android:layout_height="wrap_content"
-		    	    android:textColor="@color/black"
-		    	    android:layout_marginTop="8dp" />
-		    	
-		    	<TextView
-		    	    android:id="@+id/TaskUserDescription"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-		    	    android:textColor="@color/black"
-		    	    android:layout_marginTop="8dp" />
-		    	
-		    	<Button
-		    	    android:id="@+id/TaskSaveUserDescription"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Simpan"
-		    	    android:layout_marginTop="8dp" />
+
+			<TextView
+				android:id="@+id/TaskTitle"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_marginTop="8dp" />
+
+			<TextView
+				android:id="@+id/TaskStatus"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:clickable="true"
+				android:onClick="updateRecent" />
+
+			<TextView
+				android:id="@+id/TaskDescription"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/black"
+				android:layout_marginTop="8dp" />
+
+			<TextView
+				android:id="@+id/TaskUserDescription"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/black"
+				android:layout_marginTop="8dp" />
+
+			<Button
+				android:id="@+id/TaskSaveUserDescription"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Simpan"
+				android:layout_marginTop="8dp" />
 		</LinearLayout>
 		</ScrollView>
 	</LinearLayout>

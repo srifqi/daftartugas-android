@@ -4,12 +4,15 @@
 	<color name="black">#000000</color>
 	<color name="white">#FFFFFF</color>
 
-	<color name="orange">#FF9800</color>
-	<color name="orangeA100">#FFD180</color>
-	<color name="orangeA200">#FFAB40</color>
+	<color name="blackPrimary">#DE000000</color>
+	<color name="blackSecondary">#8A000000</color>
+	<color name="blackDivider">#1F000000</color>
 
-	<color name="purple">#9C27B0</color>
-	<color name="purple800">#691A99</color>
-	<color name="purpleA200">#E040FB</color>
+	<color name="grey">#9E9E9E</color>
+	<color name="grey700">#616161</color>
+
+	<color name="redA200">#FF5252</color>
+	<color name="orangeA200">#FFAB40</color>
+	<color name="blueA200">#448AFF</color>
 
 </resources>

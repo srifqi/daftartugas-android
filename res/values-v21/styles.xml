@@ -8,8 +8,8 @@
 	<style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
 		<!-- API 21 theme customizations can go here. -->
 		<!-- Actually, this already existed in res/values/style.xml. -->
-		<item name="android:colorPrimary">@color/purple</item>
-		<item name="android:colorPrimaryDark">@color/purple800</item>
+		<item name="android:colorPrimary">@color/grey</item>
+		<item name="android:colorPrimaryDark">@color/grey700</item>
 		<item name="android:colorAccent">@color/orangeA200</item>
 	</style>
 

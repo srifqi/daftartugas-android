@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -28,35 +29,35 @@ public class MasukActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		// defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(_UEH);
-		
+
 		// Check version
 		String[] VERSION = IOFile.read(getApplicationContext(), "version.txt")
 				.trim().split("\n");
-		
+
 		if (VERSION.length > 2 && Integer.parseInt(VERSION[2]) > DaftarTugas.VERSION_CODE) {
 			this.finish();
 			this.finishActivity(RESULT_OK);
 		}
-		
+
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_masuk);
-		
+
 		Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
 		setSupportActionBar(toolbar1);
-		
-		toolbar1.setBackgroundColor(0xFF9C27B0);
-		toolbar1.setTitleTextColor(0xFFFFFFFF);
-		
+
+		toolbar1.setBackgroundResource(R.color.grey);
+		toolbar1.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+
 		btn_masuk = (Button) findViewById(R.id.btn_masuk);
 		editTextNamaPengguna = (EditText) findViewById(R.id.editTextNamaPengguna);
 		editTextKataSandi = (EditText) findViewById(R.id.editTextKataSandi);
-		
+
 		editTextKataSandi.setOnEditorActionListener(new OnEditorActionListener() {
-			
+
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				boolean handled = false;
@@ -68,22 +69,22 @@ public class MasukActivity extends AppCompatActivity {
 			}
 		});
 	}
-	
+
 	public void doMasuk(View view) {
 		btn_masuk.setEnabled(false);
 		editTextNamaPengguna.setEnabled(false);
 		editTextKataSandi.setEnabled(false);
 		String NamaPengguna = editTextNamaPengguna.getText().toString();
 		String KataSandi = editTextKataSandi.getText().toString();
-		
+
 		if (NamaPengguna.length() < 1 || KataSandi.length() < 1) {
-			Toast.makeText(getApplicationContext(), "Tolong isi semua bidang", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.please_fill_all, Toast.LENGTH_SHORT).show();
 			btn_masuk.setEnabled(true);
 			editTextNamaPengguna.setEnabled(true);
 			editTextKataSandi.setEnabled(true);
 			return;
 		}
-		
+
 		String strUrl = DaftarTugas.FETCHURL + "/api/validation";
 		String strUrlParam = "";
 		try {
@@ -92,41 +93,41 @@ public class MasukActivity extends AppCompatActivity {
 		} catch (UnsupportedEncodingException e) {
 			// e.printStackTrace();
 		}
-		
+
 		LoginT lT = new LoginT();
 		lT.setContext(getApplicationContext());
 		lT.dontSave();
 		lT.setMethod("POST");
-		
+
 		lT.run(strUrl, strUrlParam);
 	}
 
 	public void OK() {
 		// Inform user.
-		Toast.makeText(getApplicationContext(), R.string.berhasil_masuk, Toast.LENGTH_SHORT).show();
-		
+		Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
+
 		Intent intent = new Intent(this, DaftarTugas.class);
 		startActivity(intent);
-		
+
 		this.finish();
 		this.finishActivity(RESULT_OK);
 	}
-	
+
 	private class LoginT extends DownloadTask {
-		
+
 		@Override
 		public boolean onAfterExecute(String result) {
 			if (result == "") return false;
 			if (result.length() == 0) {
-				Toast.makeText(this.getContext(), "Gagal terhubung ke server.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this.getContext(), R.string.failed_connect, Toast.LENGTH_SHORT).show();
 				this.onNoConnection();
 				return false;
 			}
 			// Login failed.
 			// Either both or one of user and password may wrong.
 			if (result.trim().length() == 3) {
-				Toast.makeText(getApplicationContext(), R.string.gagal_masuk, Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(getApplicationContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
+
 				btn_masuk.setEnabled(true);
 				editTextNamaPengguna.setEnabled(true);
 				editTextKataSandi.setEnabled(true);
@@ -142,22 +143,22 @@ public class MasukActivity extends AppCompatActivity {
 
 				OK();
 			}
-			
+
 			return true;
 		}
-		
+
 		@Override
 		public boolean onNoConnection() {
-			Toast.makeText(getApplicationContext(), R.string.tanpa_koneksi, Toast.LENGTH_SHORT).show();
-			
+			Toast.makeText(getApplicationContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
+
 			btn_masuk.setEnabled(true);
 			editTextNamaPengguna.setEnabled(true);
 			editTextKataSandi.setEnabled(true);
-			
+
 			return true;
 		}
 	}
-	
+
 	// http://stackoverflow.com/a/19945692
 	// http://stackoverflow.com/a/26560727
 	// private UncaughtExceptionHandler defaultUEH;
@@ -167,16 +168,16 @@ public class MasukActivity extends AppCompatActivity {
 		public void uncaughtException(Thread thread, Throwable ex) {
 			Intent intent = new Intent(getApplicationContext(), srifqi.simetri.daftartugas.ErrorReporting.class);
 			intent.putExtra("Message", ex.getMessage());
-			
+
 			StackTraceElement[] stackTrace = ex.getStackTrace();
 			StringBuilder stackTraceString = new StringBuilder();
 			for (StackTraceElement el : stackTrace) {
 				stackTraceString.append(el.toString()).append("\n");
 			}
 			intent.putExtra("StackTrace", stackTraceString.toString());
-			
+
 			startActivity(intent);
-			
+
 			/* Maybe not, it disturbs the UI.
 			if (defaultUEH != null) {
 				// Delegates to Andoid's error handling.
@@ -185,6 +186,6 @@ public class MasukActivity extends AppCompatActivity {
 
 			System.exit(2); // Prevents app from freezing.
 		}
-		
+
 	};
 }
