@@ -18,6 +18,11 @@
 	<string name="sync_info">Info Sinkronasi</string>
 	<string name="refresh">Perbarui</string>
 
+	<string name="edittext_user_description">catatan pribadi</string>
+	<string name="edit_note">Sunting catatan</string>
+	<string name="save_note">Simpan catatan</string>
+	<string name="cancel">Batal</string>
+
 	<string name="last_list_update">Pembaruan daftar terakhir</string>
 	<string name="last_sync">Sinkronasi terakhir</string>
 
@@ -28,7 +33,7 @@
 	<string name="failed_connect">Gagal terhubung ke server</string>
 	<string name="saved_in_server">Tersimpan pada server</string>
 	<string name="no_connection">Tidak ada koneksi tersedia</string>
-	<string name="Server_busy">Server sibuk, coba lagi besok</string>
+	<string name="server_busy">Server sibuk, coba lagi besok</string>
 	<string name="retry">Coba lagi</string>
 	<string name="exit">Keluar</string>
 

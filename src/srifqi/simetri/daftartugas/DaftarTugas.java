@@ -49,6 +49,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListAdapter;
@@ -84,7 +85,9 @@ public class DaftarTugas extends AppCompatActivity {
 	private TextView TaskStatus;
 	private TextView TaskDescription;
 	private TextView TaskUserDescription;
+	private EditText TaskUserDescriptionE;
 	private Button TaskSaveUserDescription;
+	private Button TaskCancelEditUserDescription;
 
 	private int DONE = 4;
 
@@ -101,6 +104,7 @@ public class DaftarTugas extends AppCompatActivity {
 	private JSONObject reader;
 	private JSONObject L = new JSONObject();
 	private int lastOpened = -2;
+	private boolean noteEditing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +170,6 @@ public class DaftarTugas extends AppCompatActivity {
 						0 : ListListView.getChildAt(0).getTop();
 				swipeContainer.setEnabled(
 					(displayWidth <= 600 && lastOpened == -2 && firstVisibleItem == 0 && topRowYPos >= 0) ||
-					(displayWidth <= 600 && lastOpened != -2) ||
 					(displayWidth > 600 && firstVisibleItem == 0 && topRowYPos >= 0)
 				);
 			}
@@ -180,7 +183,9 @@ public class DaftarTugas extends AppCompatActivity {
 		TaskStatus = (TextView) findViewById(R.id.TaskStatus);
 		TaskDescription = (TextView) findViewById(R.id.TaskDescription);
 		TaskUserDescription = (TextView) findViewById(R.id.TaskUserDescription);
+		TaskUserDescriptionE = (EditText) findViewById(R.id.TaskUserDescriptionE);
 		TaskSaveUserDescription = (Button) findViewById(R.id.TaskSaveUserDescription);
+		TaskCancelEditUserDescription = (Button) findViewById(R.id.TaskCancelEditUserDescription);
 
 		swipeContainer.setColorSchemeResources(
 			R.color.black,
@@ -255,6 +260,7 @@ public class DaftarTugas extends AppCompatActivity {
 				"<br><br>" + TeksPengumuman
 			));
 			TaskUserDescription.setText("");
+			TaskUserDescriptionE.setText("");
 			TaskSaveUserDescription.setVisibility(View.GONE);
 		} else {
 			int objid = -1;
@@ -277,7 +283,13 @@ public class DaftarTugas extends AppCompatActivity {
 			);
 			TaskDescription.setText(Html.fromHtml(tugas[2]));
 			TaskUserDescription.setText(tugas[7]);
+			TaskUserDescription.setVisibility(View.VISIBLE);
+			TaskUserDescriptionE.setText(tugas[7]);
+			TaskUserDescriptionE.setVisibility(View.GONE);
+			TaskSaveUserDescription.setText(R.string.edit_note);
 			TaskSaveUserDescription.setVisibility(View.VISIBLE);
+
+			noteEditing = false;
 		}
 
 		// Reflow content.
@@ -908,6 +920,56 @@ public class DaftarTugas extends AppCompatActivity {
 		dlt.run(FETCHURL + "/api/transaction", strUrlParam);
 	}
 
+	public void cancelEditNote(View view) {
+		TaskUserDescriptionE.setText(TaskUserDescription.getText());
+		TaskUserDescription.setVisibility(View.VISIBLE);
+		TaskUserDescriptionE.setVisibility(View.GONE);
+		TaskSaveUserDescription.setText(R.string.edit_note);
+		TaskCancelEditUserDescription.setVisibility(View.GONE);
+
+		noteEditing = false;
+	}
+
+	public void editSaveNote(View view) {
+		if (noteEditing == false) {
+			TaskUserDescription.setVisibility(View.GONE);
+			TaskUserDescriptionE.setVisibility(View.VISIBLE);
+			TaskSaveUserDescription.setText(R.string.save_note);
+			TaskCancelEditUserDescription.setVisibility(View.VISIBLE);
+
+			noteEditing = true;
+		} else {
+			if (lastOpened != -2) {
+				JSONArray nI;
+				try {
+					try {
+						nI = L.getJSONArray(""+lastOpened);
+					} catch (JSONException e) {
+						L.put(""+lastOpened, new JSONArray());
+						nI = L.getJSONArray(""+lastOpened);
+					}
+					if (nI.isNull(0)) {
+						nI.put(0, false);
+					}
+					nI.put(1, TaskUserDescriptionE.getText().toString());
+					L.put(""+lastOpened, nI);
+					reader.put("L", L);
+					saveDaftarTugas();
+				} catch (JSONException e) {
+					// e.printStackTrace();
+				}
+			}
+
+			TaskUserDescription.setText(TaskUserDescriptionE.getText());
+			TaskUserDescription.setVisibility(View.VISIBLE);
+			TaskUserDescriptionE.setVisibility(View.GONE);
+			TaskSaveUserDescription.setText(R.string.edit_note);
+			TaskCancelEditUserDescription.setVisibility(View.GONE);
+
+			noteEditing = false;
+		}
+	}
+
 	private void updateTask(int id, boolean checked) {
 		JSONArray nI;
 		try {
@@ -929,6 +991,10 @@ public class DaftarTugas extends AppCompatActivity {
 	public void updateRecent(View view) {
 		if (lastOpened > -1) {
 			boolean enabled = ObjDaftarTugas.get(lastOpened)[6].compareTo("1") == 0;
+			// Give user a feedback.
+			TaskStatus.setText(
+				enabled ? R.string.DONE : R.string.HASNT_DONE
+			);
 			updateTask(
 				lastOpened,
 				!(enabled ? true : false)

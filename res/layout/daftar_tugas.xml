@@ -67,14 +67,18 @@
 				android:id="@+id/TaskTitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_marginTop="8dp" />
+				android:layout_marginTop="8dp"
+				android:textAppearance="?android:attr/textAppearanceLarge" />
 
 			<TextView
 				android:id="@+id/TaskStatus"
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
+				android:padding="4dp"
+				android:background="@color/blackPrimary"
+				android:textColor="@color/white"
+				android:textSize="@dimen/text_size"
 				android:clickable="true"
 				android:onClick="updateRecent" />
 
@@ -82,22 +86,52 @@
 				android:id="@+id/TaskDescription"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
 				android:textColor="@color/black"
-				android:layout_marginTop="8dp" />
+				android:textSize="@dimen/text_size" />
 
 			<TextView
 				android:id="@+id/TaskUserDescription"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
 				android:textColor="@color/black"
-				android:layout_marginTop="8dp" />
+				android:textSize="@dimen/text_size" />
 
-			<Button
-				android:id="@+id/TaskSaveUserDescription"
-				android:layout_width="wrap_content"
+			<EditText
+				android:id="@+id/TaskUserDescriptionE"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="Simpan"
-				android:layout_marginTop="8dp" />
+				android:layout_marginTop="8dp"
+				android:hint="@string/edittext_user_description"
+				android:textColor="@color/black"
+				android:textSize="@dimen/text_size"
+				android:visibility="gone" />
+
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" >
+
+				<Button
+					android:id="@+id/TaskSaveUserDescription"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="8dp"
+					android:elevation="2dp"
+					android:onClick="editSaveNote"
+					android:text="@string/edit_note" />
+
+				<Button
+					android:id="@+id/TaskCancelEditUserDescription"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="8dp"
+					android:elevation="2dp"
+					android:onClick="cancelEditNote"
+					android:text="@string/cancel"
+					android:visibility="gone" />
+			</LinearLayout>
 		</LinearLayout>
 		</ScrollView>
 	</LinearLayout>
