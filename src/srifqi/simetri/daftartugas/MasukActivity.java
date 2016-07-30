@@ -2,6 +2,7 @@ package srifqi.simetri.daftartugas;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Random;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -30,8 +31,7 @@ public class MasukActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-		// defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-		Thread.setDefaultUncaughtExceptionHandler(_UEH);
+		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
 		// Check version
 		String[] VERSION = IOFile.read(getApplicationContext(), "version.txt")
@@ -88,8 +88,19 @@ public class MasukActivity extends AppCompatActivity {
 		String strUrl = DaftarTugas.FETCHURL + "/api/validation";
 		String strUrlParam = "";
 		try {
-			strUrlParam = "user=" + URLEncoder.encode(NamaPengguna, "UTF-8") +
-						 "&pass=" + URLEncoder.encode(KataSandi, "UTF-8");
+			strUrlParam = "user|" + URLEncoder.encode(NamaPengguna, "UTF-8") +
+						 "|pass|" + URLEncoder.encode(KataSandi, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// e.printStackTrace();
+		}
+
+		Random rnd = new Random();
+		rnd.setSeed(System.currentTimeMillis());
+		int seedb = rnd.nextInt(1024);
+		int seeda = rnd.nextInt(1024); seeda += seedb;
+		try {
+			strUrlParam = "x=" + URLEncoder.encode(VigenereCipher.crypt(strUrlParam, seeda, seedb), "UTF-8") +
+					"&y=" + seeda + "&z=" + seedb;
 		} catch (UnsupportedEncodingException e) {
 			// e.printStackTrace();
 		}
@@ -136,7 +147,9 @@ public class MasukActivity extends AppCompatActivity {
 				IOFile.write(getApplicationContext(), "userpass.txt",
 					editTextNamaPengguna.getText().toString()
 					+ "\n" +
-					editTextKataSandi.getText().toString()
+
+					// How can I saved password in plain text?
+					"..." // editTextKataSandi.getText().toString()
 				);
 				// Save token in an internal file "token.txt".
 				IOFile.write(getApplicationContext(), "token.txt", result);
@@ -158,34 +171,4 @@ public class MasukActivity extends AppCompatActivity {
 			return true;
 		}
 	}
-
-	// http://stackoverflow.com/a/19945692
-	// http://stackoverflow.com/a/26560727
-	// private UncaughtExceptionHandler defaultUEH;
-	private Thread.UncaughtExceptionHandler _UEH = new Thread.UncaughtExceptionHandler() {
-
-		@Override
-		public void uncaughtException(Thread thread, Throwable ex) {
-			Intent intent = new Intent(getApplicationContext(), srifqi.simetri.daftartugas.ErrorReporting.class);
-			intent.putExtra("Message", ex.getMessage());
-
-			StackTraceElement[] stackTrace = ex.getStackTrace();
-			StringBuilder stackTraceString = new StringBuilder();
-			for (StackTraceElement el : stackTrace) {
-				stackTraceString.append(el.toString()).append("\n");
-			}
-			intent.putExtra("StackTrace", stackTraceString.toString());
-
-			startActivity(intent);
-
-			/* Maybe not, it disturbs the UI.
-			if (defaultUEH != null) {
-				// Delegates to Andoid's error handling.
-				defaultUEH.uncaughtException(thread, ex);
-			} */
-
-			System.exit(2); // Prevents app from freezing.
-		}
-
-	};
 }

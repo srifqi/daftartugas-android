@@ -61,7 +61,7 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DaftarTugas extends AppCompatActivity {
 
-	public final static String FETCHURL = "http://srifqi.tk/assets/xipa3/daftar_tugas";
+	public final static String FETCHURL = "http://daftartugas.tk/xiipa3";
 	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
 	public final static int VERSION_CODE = 14;
 
@@ -110,8 +110,7 @@ public class DaftarTugas extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-		Thread.setDefaultUncaughtExceptionHandler(_UEH);
+		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
 		// Read token.txt, if exists.
 		TOKEN = IOFile.read(getApplicationContext(), "token.txt");
@@ -159,18 +158,18 @@ public class DaftarTugas extends AppCompatActivity {
 		ListListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-			}
+			public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			public void onScroll(
+				AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount
+			) {
 				int topRowYPos =
 					(ListListView == null || ListListView.getChildCount() == 0) ?
 						0 : ListListView.getChildAt(0).getTop();
 				swipeContainer.setEnabled(
-					(displayWidth <= 600 && lastOpened == -2 && firstVisibleItem == 0 && topRowYPos >= 0) ||
-					(displayWidth > 600 && firstVisibleItem == 0 && topRowYPos >= 0)
+					firstVisibleItem == 0 && topRowYPos >= 0
 				);
 			}
 		});
@@ -200,9 +199,28 @@ public class DaftarTugas extends AppCompatActivity {
 		});
 		swipeContainer.setRefreshing(true);
 
+		// Check Bundle.
+		boolean syncAtStart = true;
+		int openAtStart = -2;
+		if (savedInstanceState != null) {
+			String[] arr = savedInstanceState.getStringArray("displayAttrib");
+			openAtStart = Integer.parseInt(arr[0]);
+			openAtStart = (displayWidth > 600 && openAtStart == -2) ? -1 : openAtStart;
+			ListListView.setSelectionFromTop(
+				Integer.parseInt(arr[1]),
+				Integer.parseInt(arr[2])
+			);
+			if (Integer.parseInt(arr[3]) != displayWidth) {
+				// No need to sync.
+				syncAtStart = false;
+			}
+		}
+
+		String fetchdata = IOFile.read(getApplicationContext(), "fetchdata.txt");
+
 		pd = new ProgressDialog(DaftarTugas.this);
 
-		if (IOFile.read(getApplicationContext(), "fetchdata.txt") == "") {
+		if (fetchdata == "") {
 			if (pd != null) {
 				pd.setTitle(rsc.getString(R.string.starting));
 				pd.setMessage(
@@ -215,7 +233,13 @@ public class DaftarTugas extends AppCompatActivity {
 				pd.show();
 			}
 		}
-		refreshDaftarTugas();
+
+		parseDaftarTugas(fetchdata);
+		openContent(openAtStart, false);
+
+		if (syncAtStart == true) {
+			refreshDaftarTugas();
+		}
 	}
 
 	@Override
@@ -234,6 +258,25 @@ public class DaftarTugas extends AppCompatActivity {
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		View ListViewFirstChild = ListListView.getChildAt(0);
+		String[] arr = new String[4];
+
+		// 0: lastOpened
+		// 1:
+		// 2:
+		// 3: displayWidth
+		arr[0] = "" + lastOpened;
+		arr[1] = "" + ListListView.getFirstVisiblePosition();
+		arr[2] = "" + ((ListViewFirstChild == null) ? 0 : ListViewFirstChild.getTop());
+		arr[3] = "" + (int) displayWidth;
+
+		outState.putStringArray("displayAttrib", arr);
+
+		super.onSaveInstanceState(outState);
+	}
+
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			if (lastOpened != -2 && displayWidth <= 600) {
@@ -247,6 +290,10 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	public void openContent(int id) {
+		openContent(id, true);
+	}
+
+	public void openContent(int id, boolean animate) {
 		// Show lists.
 		if (id == -2) {
 			// Just do nothing.
@@ -262,6 +309,7 @@ public class DaftarTugas extends AppCompatActivity {
 			TaskUserDescription.setText("");
 			TaskUserDescriptionE.setText("");
 			TaskSaveUserDescription.setVisibility(View.GONE);
+			TaskCancelEditUserDescription.setVisibility(View.GONE);
 		} else {
 			int objid = -1;
 			for (int i = 0; i < ObjDaftarTugas.size(); i++) {
@@ -281,13 +329,16 @@ public class DaftarTugas extends AppCompatActivity {
 			TaskStatus.setText(
 				tugas[6] == "1" ? R.string.DONE : R.string.HASNT_DONE
 			);
-			TaskDescription.setText(Html.fromHtml(tugas[2]));
+			TaskDescription.setText(Html.fromHtml(
+				"<i>" + tugas[3] + " (" + tugas[4] + ")</i><br>" + tugas[2]
+			));
 			TaskUserDescription.setText(tugas[7]);
 			TaskUserDescription.setVisibility(View.VISIBLE);
 			TaskUserDescriptionE.setText(tugas[7]);
 			TaskUserDescriptionE.setVisibility(View.GONE);
 			TaskSaveUserDescription.setText(R.string.edit_note);
 			TaskSaveUserDescription.setVisibility(View.VISIBLE);
+			TaskCancelEditUserDescription.setVisibility(View.GONE);
 
 			noteEditing = false;
 		}
@@ -298,35 +349,52 @@ public class DaftarTugas extends AppCompatActivity {
 				(int) displayWidth,
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
-			ListListView.setLayoutParams(lsv);
+			swipeContainer.setLayoutParams(lsv);
 			if (id == -2) {
-				Animation ListListViewAnimation = new Animation() {
+				if (animate == true) {
+					Animation swipeContainerAnimation = new Animation() {
 
-					@Override
-					protected void applyTransformation(float interpolatedTime, Transformation t) {
-						LinearLayout.LayoutParams lsv = (LayoutParams) ListListView.getLayoutParams();
-						lsv.setMargins((int) (-displayWidth + displayWidth * interpolatedTime), 0, 0, 0);
-						ListListView.setLayoutParams(lsv);
-					}
-				};
-				ListListViewAnimation.setInterpolator(new FastOutSlowInInterpolator());
-				ListListViewAnimation.setDuration(300);
+						@Override
+						protected void applyTransformation(float interpolatedTime, Transformation t) {
+							LinearLayout.LayoutParams lsv = (LayoutParams) swipeContainer.getLayoutParams();
 
-				ListListView.startAnimation(ListListViewAnimation);
+							float x = -displayWidth + displayWidth * interpolatedTime;
+
+							lsv.setMargins((int) x, 0, 0, 0);
+							swipeContainer.setLayoutParams(lsv);
+						}
+					};
+					swipeContainerAnimation.setInterpolator(new FastOutSlowInInterpolator());
+					swipeContainerAnimation.setRepeatCount(0);
+					swipeContainerAnimation.setDuration(300);
+
+					swipeContainer.startAnimation(swipeContainerAnimation);
+				} else {
+					LinearLayout.LayoutParams _lsv = (LayoutParams) swipeContainer.getLayoutParams();
+					_lsv.setMargins(0, 0, 0, 0);
+					swipeContainer.setLayoutParams(_lsv);
+				}
 			} else {
-				Animation ListListViewAnimation = new Animation() {
+				if (animate == true) {
+					Animation swipeContainerAnimation = new Animation() {
 
-					@Override
-					protected void applyTransformation(float interpolatedTime, Transformation t) {
-						LinearLayout.LayoutParams lsv = (LayoutParams) ListListView.getLayoutParams();
-						lsv.setMargins((int) (-displayWidth * interpolatedTime), 0, 0, 0);
-						ListListView.setLayoutParams(lsv);
-					}
-				};
-				ListListViewAnimation.setInterpolator(new FastOutSlowInInterpolator());
-				ListListViewAnimation.setDuration(300);
+						@Override
+						protected void applyTransformation(float interpolatedTime, Transformation t) {
+							LinearLayout.LayoutParams lsv = (LayoutParams) swipeContainer.getLayoutParams();
+							lsv.setMargins((int) (-displayWidth * interpolatedTime), 0, 0, 0);
+							swipeContainer.setLayoutParams(lsv);
+						}
+					};
+					swipeContainerAnimation.setInterpolator(new FastOutSlowInInterpolator());
+					swipeContainerAnimation.setRepeatCount(0);
+					swipeContainerAnimation.setDuration(300);
 
-				ListListView.startAnimation(ListListViewAnimation);
+					swipeContainer.startAnimation(swipeContainerAnimation);
+				} else {
+					LinearLayout.LayoutParams _lsv = (LayoutParams) swipeContainer.getLayoutParams();
+					_lsv.setMargins((int) -displayWidth, 0, 0, 0);
+					swipeContainer.setLayoutParams(_lsv);
+				}
 			}
 			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
 				(int) displayWidth,
@@ -386,7 +454,7 @@ public class DaftarTugas extends AppCompatActivity {
 		// Remove divider between items. Because we want to build ourself.
 		ListListView.setDivider(null);
 
-		// Add Pengumuman at the first line.
+		// Add Pengumuman at the first row.
 		LinearLayout PengumumanLinearLayout = new LinearLayout(getApplicationContext());
 		ListView.LayoutParams parampll = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
@@ -541,6 +609,11 @@ public class DaftarTugas extends AppCompatActivity {
 
 				@Override
 				public void onClick(View view) {
+					// Please, only click when we've done doing AsyncTask.
+					if (DONE < 2) {
+						return;
+					}
+
 					CheckBox cb = (CheckBox) view;
 					updateTask((Integer) view.getTag(), cb.isChecked());
 				}
@@ -549,6 +622,16 @@ public class DaftarTugas extends AppCompatActivity {
 
 			boolean done = ti[6].compareTo("1") == 0;
 			cb.setChecked(done);
+
+			// Disable all checkbox while syncing.
+			if (DONE < 2) {
+				cb.setEnabled(false);
+				cb.setClickable(false);
+				cb.setButtonDrawable(R.color.grey);
+			} else {
+				cb.setEnabled(true);
+				cb.setClickable(true);
+			}
 			taskLL.addView(cb);
 
 			LinearLayout textLL = new LinearLayout(getApplicationContext());
@@ -581,8 +664,8 @@ public class DaftarTugas extends AppCompatActivity {
 
 			TextView stv = new TextView(getApplicationContext());
 			stv.setText(Html.fromHtml(
-				"<i>" + ti[3] + " (" + ti[4] + ")</i> | " +
-				ti[2]
+				"<i>" + ti[3] + " (" + ti[4] + ")</i>" +
+				(ti[2].length() < 1 ? "" : " | " + ti[2])
 			));
 			stv.setSingleLine();
 			stv.setMaxLines(1);
@@ -718,7 +801,7 @@ public class DaftarTugas extends AppCompatActivity {
 				return;
 			}
 
-			String[] teks = data.split("\n\\|\\|\\|\\|\\|\n");
+			String[] teks = data.split("\n\\|\\|\\|\\|\\|[\r\n]+");
 			if (teks.length < 3) return;
 
 			TeksMeta = teks[0];
@@ -878,6 +961,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 		dlt.setContext(getApplicationContext());
 		dlt.setSaveFilename("fetchdata.txt");
+		dlt.saveOnSuccess();
 		dlt.setMethod("POST");
 
 		String strUrlParam = "";
@@ -940,6 +1024,11 @@ public class DaftarTugas extends AppCompatActivity {
 			noteEditing = true;
 		} else {
 			if (lastOpened != -2) {
+				// Please, only click when we've done doing AsyncTask.
+				if (DONE < 2) {
+					return;
+				}
+
 				JSONArray nI;
 				try {
 					try {
@@ -971,6 +1060,11 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	private void updateTask(int id, boolean checked) {
+		// Please, only click when we've done doing AsyncTask.
+		if (DONE < 2) {
+			return;
+		}
+
 		JSONArray nI;
 		try {
 			try {
@@ -989,12 +1083,28 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	public void updateRecent(View view) {
+		// Please, only click when we've done doing AsyncTask.
+		if (DONE < 2) {
+			return;
+		}
+
 		if (lastOpened > -1) {
-			boolean enabled = ObjDaftarTugas.get(lastOpened)[6].compareTo("1") == 0;
+			int objid = -1;
+			for (int i = 0; i < ObjDaftarTugas.size(); i++) {
+				if (Integer.parseInt(ObjDaftarTugas.get(i)[0]) == lastOpened) {
+					objid = i;
+					break;
+				}
+			}
+			if (objid == -1) {
+				throw new IndexOutOfBoundsException(
+					"Unable to find correct tugas with id: " + lastOpened + " inside ObjDaftarTugas."
+				);
+			}
+
+			boolean enabled = ObjDaftarTugas.get(objid)[6].compareTo("1") == 0;
 			// Give user a feedback.
-			TaskStatus.setText(
-				enabled ? R.string.DONE : R.string.HASNT_DONE
-			);
+			TaskStatus.setText("…");
 			updateTask(
 				lastOpened,
 				!(enabled ? true : false)
@@ -1003,15 +1113,18 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	private void saveDaftarTugas(){
-		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt").split("\n\\|\\|\\|\\|\\|\n");
-		teks[2] = reader.toString();
-		String newteks = android.text.TextUtils.join("\n\\|\\|\\|\\|\\|\n", teks);
+		String raw = IOFile.read(getApplicationContext(), "fetchdata.txt");
+		String[] teks = android.text.TextUtils.split(raw, "\n\\|\\|\\|\\|\\|\n");
+		if (teks.length == 3) {
+			teks[2] = reader.toString();
+		}
+		String newteks = android.text.TextUtils.join("\n|||||\n", teks);
 
 		IOFile.write(getApplicationContext(), "fetchdata.txt", newteks);
 
-		parseDaftarTugas(newteks);
-
 		refreshDaftarTugas();
+
+		parseDaftarTugas(newteks);
 	}
 
 	private class DownloadDT extends DownloadTask {
@@ -1019,7 +1132,15 @@ public class DaftarTugas extends AppCompatActivity {
 		@Override
 		public boolean onAfterExecute(String result) {
 			DONE ++;
+
 			parseDaftarTugas(result);
+
+			if (DONE < 2) {
+				TaskSaveUserDescription.setEnabled(false);
+			} else {
+				TaskSaveUserDescription.setEnabled(true);
+			}
+
 			if (DONE == 2) {
 				swipeContainer.setRefreshing(false);
 			}
@@ -1303,37 +1424,4 @@ public class DaftarTugas extends AppCompatActivity {
 			return this.Enabled.get(position);
 		}
 	}
-
-	// http://stackoverflow.com/a/19945692
-	// http://stackoverflow.com/a/26560727
-	// private UncaughtExceptionHandler defaultUEH;
-	/**
-	 * Custom handler that will open a new Activity that contains error message.
-	 */
-	private Thread.UncaughtExceptionHandler _UEH = new Thread.UncaughtExceptionHandler() {
-
-		@Override
-		public void uncaughtException(Thread thread, Throwable ex) {
-			Intent intent = new Intent(getApplicationContext(), srifqi.simetri.daftartugas.ErrorReporting.class);
-			intent.putExtra("Message", ex.getMessage());
-
-			StackTraceElement[] stackTrace = ex.getStackTrace();
-			StringBuilder stackTraceString = new StringBuilder();
-			for (StackTraceElement el : stackTrace) {
-				stackTraceString.append(el.toString()).append("\n");
-			}
-			intent.putExtra("StackTrace", stackTraceString.toString());
-
-			startActivity(intent);
-
-			/* Maybe not, it disturbs the UI.
-			if (defaultUEH != null) {
-				// Delegates to Andoid's error handling.
-				defaultUEH.uncaughtException(thread, ex);
-			} */
-
-			System.exit(2); // Prevents app from freezing.
-		}
-
-	};
 }

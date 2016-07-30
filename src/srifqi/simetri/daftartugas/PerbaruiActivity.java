@@ -39,8 +39,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-		Thread.setDefaultUncaughtExceptionHandler(_UEH);
+		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
 		// Check version
 		VERSION = IOFile.read(getApplicationContext(), "version.txt")
@@ -310,34 +309,4 @@ public class PerbaruiActivity extends AppCompatActivity {
 			return true;
 		}
 	}
-
-	// http://stackoverflow.com/a/19945692
-	// http://stackoverflow.com/a/26560727
-	// private UncaughtExceptionHandler defaultUEH;
-	private Thread.UncaughtExceptionHandler _UEH = new Thread.UncaughtExceptionHandler() {
-
-		@Override
-		public void uncaughtException(Thread thread, Throwable ex) {
-			Intent intent = new Intent(getApplicationContext(), srifqi.simetri.daftartugas.ErrorReporting.class);
-			intent.putExtra("Message", ex.getMessage());
-
-			StackTraceElement[] stackTrace = ex.getStackTrace();
-			StringBuilder stackTraceString = new StringBuilder();
-			for (StackTraceElement el : stackTrace) {
-				stackTraceString.append(el.toString()).append("\n");
-			}
-			intent.putExtra("StackTrace", stackTraceString.toString());
-
-			startActivity(intent);
-
-			/* Maybe not, it disturbs the UI.
-			if (defaultUEH != null) {
-				// Delegates to Andoid's error handling.
-				defaultUEH.uncaughtException(thread, ex);
-			} */
-
-			System.exit(2); // Prevents app from freezing.
-		}
-
-	};
 }
