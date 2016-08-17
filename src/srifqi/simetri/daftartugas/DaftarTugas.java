@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,13 +94,7 @@ public class DaftarTugas extends AppCompatActivity {
 	private String[] USERPASS;
 	private String TOKEN;
 
-	private String TeksMeta;
-	private String TeksTema;
-	private String TeksPengumuman;
-	private ArrayList<String[]> ObjDaftarTugas;
-	private ArrayList<String[]> SortedDaftarTugas;
-	private JSONObject reader;
-	private JSONObject L = new JSONObject();
+	private DaftarTugasObj DTO;
 	private int lastOpened = -2;
 	private boolean noteEditing = false;
 
@@ -173,8 +165,9 @@ public class DaftarTugas extends AppCompatActivity {
 				);
 			}
 		});
+		
+		DTO = new DaftarTugasObj(getApplicationContext());
 
-		ObjDaftarTugas = new ArrayList<String[]>();
 		ListArrayAdapter = new TugasListAdapter();
 		ListListView.setAdapter(ListArrayAdapter);
 
@@ -303,8 +296,8 @@ public class DaftarTugas extends AppCompatActivity {
 			TaskStatus.setText(R.string.INFO);
 			TaskDescription.setText(Html.fromHtml(
 				"<b>" + rsc.getString(R.string.welcome_text) +
-				" " + USERPASS[0] + "!<br>" + TeksTema + "</b>" +
-				"<br><br>" + TeksPengumuman
+				" " + USERPASS[0] + "!<br>" + DTO.TeksTema + "</b>" +
+				"<br><br>" + DTO.TeksPengumuman
 			));
 			TaskUserDescription.setText("");
 			TaskUserDescriptionE.setText("");
@@ -312,8 +305,8 @@ public class DaftarTugas extends AppCompatActivity {
 			TaskCancelEditUserDescription.setVisibility(View.GONE);
 		} else {
 			int objid = -1;
-			for (int i = 0; i < ObjDaftarTugas.size(); i++) {
-				if (Integer.parseInt(ObjDaftarTugas.get(i)[0]) == id) {
+			for (int i = 0; i < DTO.ObjDaftarTugas.size(); i++) {
+				if (Integer.parseInt(DTO.ObjDaftarTugas.get(i)[0]) == id) {
 					objid = i;
 					break;
 				}
@@ -324,7 +317,7 @@ public class DaftarTugas extends AppCompatActivity {
 				);
 			}
 
-			String[] tugas = ObjDaftarTugas.get(objid);
+			String[] tugas = DTO.ObjDaftarTugas.get(objid);
 			TaskTitle.setText(Html.fromHtml(tugas[1]));
 			TaskStatus.setText(
 				tugas[6] == "1" ? R.string.DONE : R.string.HASNT_DONE
@@ -358,7 +351,10 @@ public class DaftarTugas extends AppCompatActivity {
 						protected void applyTransformation(float interpolatedTime, Transformation t) {
 							LinearLayout.LayoutParams lsv = (LayoutParams) swipeContainer.getLayoutParams();
 
-							float x = -displayWidth + displayWidth * interpolatedTime;
+							float x = -displayWidth + displayWidth * interpolatedTime * 4 / 3;
+							if (x > 0) {
+								x = 0;
+							}
 
 							lsv.setMargins((int) x, 0, 0, 0);
 							swipeContainer.setLayoutParams(lsv);
@@ -455,7 +451,7 @@ public class DaftarTugas extends AppCompatActivity {
 		ListListView.setDivider(null);
 
 		// Add Pengumuman at the first row.
-		LinearLayout PengumumanLinearLayout = new LinearLayout(getApplicationContext());
+		LinearLayout PengumumanLinearLayout = new LinearLayout(this);
 		ListView.LayoutParams parampll = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
 			(int) (72 * displayDensity)
@@ -464,7 +460,7 @@ public class DaftarTugas extends AppCompatActivity {
 		PengumumanLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
 		PengumumanLinearLayout.setLayoutParams(parampll);
 
-		TextView PengumumanTextView = new TextView(getApplicationContext());
+		TextView PengumumanTextView = new TextView(this);
 		PengumumanTextView.setText(R.string.pengumuman);
 		PengumumanTextView.setSingleLine();
 		PengumumanTextView.setMaxLines(1);
@@ -483,8 +479,8 @@ public class DaftarTugas extends AppCompatActivity {
 
 		PengumumanLinearLayout.addView(PengumumanTextView);
 
-		TextView TemaTextView = new TextView(getApplicationContext());
-		TemaTextView.setText(TeksTema);
+		TextView TemaTextView = new TextView(this);
+		TemaTextView.setText(DTO.TeksTema);
 		TemaTextView.setSingleLine();
 		TemaTextView.setMaxLines(1);
 		TemaTextView.setEllipsize(TruncateAt.END);
@@ -525,8 +521,8 @@ public class DaftarTugas extends AppCompatActivity {
 		// Make a CheckedTextView and add into Layout.
 		// ID;TASK;DESC;LESSON;TCODE;Y,M,D
 		String last_day = "";
-		for (int i = 0; i < SortedDaftarTugas.size(); i++) {
-			String[] ti = SortedDaftarTugas.get(i);
+		for (int i = 0; i < DTO.SortedDaftarTugas.size(); i++) {
+			String[] ti = DTO.SortedDaftarTugas.get(i);
 			String tid = ti[5].trim();
 			if (last_day.compareToIgnoreCase(tid) != 0) {
 				last_day = tid;
@@ -538,7 +534,7 @@ public class DaftarTugas extends AppCompatActivity {
 					Integer.parseInt(ymd[2])
 				);
 
-				View separatorView = new View(getApplicationContext());
+				View separatorView = new View(this);
 				ListView.LayoutParams paramsw = new ListView.LayoutParams(
 					ListView.LayoutParams.MATCH_PARENT,
 					(int) (2 * displayDensity)
@@ -548,7 +544,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 				ListArrayAdapter.addView(separatorView, false);
 
-				LinearLayout dayLL = new LinearLayout(getApplicationContext());
+				LinearLayout dayLL = new LinearLayout(this);
 				ListView.LayoutParams paramll = new ListView.LayoutParams(
 					ListView.LayoutParams.MATCH_PARENT,
 					(int) (46 * displayDensity) // Already subtracted by 2dp for divider.
@@ -557,7 +553,7 @@ public class DaftarTugas extends AppCompatActivity {
 				dayLL.setOrientation(LinearLayout.VERTICAL);
 				dayLL.setGravity(Gravity.CENTER_VERTICAL);
 
-				TextView dayTextView = new TextView(getApplicationContext());
+				TextView dayTextView = new TextView(this);
 				dayTextView.setText(Html.fromHtml(
 					"<b>" +
 					hari[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
@@ -585,7 +581,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 			final int id = Integer.parseInt(ti[0]);
 
-			LinearLayout taskLL = new LinearLayout(getApplicationContext());
+			LinearLayout taskLL = new LinearLayout(this);
 			ListView.LayoutParams paramll = new ListView.LayoutParams(
 				ListView.LayoutParams.MATCH_PARENT,
 				(int) (70 * displayDensity)
@@ -595,7 +591,7 @@ public class DaftarTugas extends AppCompatActivity {
 			taskLL.setGravity(Gravity.CENTER_VERTICAL);
 			taskLL.setBackgroundResource(R.color.white);
 
-			CheckBox cb = new CheckBox(getApplicationContext());
+			CheckBox cb = new CheckBox(this);
 			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
 				(int) (32 * displayDensity),
 				(int) (32 * displayDensity)
@@ -634,7 +630,7 @@ public class DaftarTugas extends AppCompatActivity {
 			}
 			taskLL.addView(cb);
 
-			LinearLayout textLL = new LinearLayout(getApplicationContext());
+			LinearLayout textLL = new LinearLayout(this);
 			LinearLayout.LayoutParams paramtll = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT
@@ -647,7 +643,7 @@ public class DaftarTugas extends AppCompatActivity {
 			textLL.setOrientation(LinearLayout.VERTICAL);
 			textLL.setGravity(Gravity.START);
 
-			TextView tv = new TextView(getApplicationContext());
+			TextView tv = new TextView(this);
 			tv.setText(Html.fromHtml(ti[1]));
 			tv.setSingleLine();
 			tv.setMaxLines(1);
@@ -662,7 +658,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 			textLL.addView(tv);
 
-			TextView stv = new TextView(getApplicationContext());
+			TextView stv = new TextView(this);
 			stv.setText(Html.fromHtml(
 				"<i>" + ti[3] + " (" + ti[4] + ")</i>" +
 				(ti[2].length() < 1 ? "" : " | " + ti[2])
@@ -705,7 +701,7 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		// Information about data.
-		String[] Info = TeksMeta.split("\n");
+		String[] Info = DTO.TeksMeta.split("\n");
 		long time4 = Long.parseLong(Info[1]);
 		long time5 = Long.parseLong(Info[2]);
 		String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
@@ -715,7 +711,7 @@ public class DaftarTugas extends AppCompatActivity {
 			rsc.getString(R.string.last_sync) +
 			": " + rds5;
 
-		View infoSeparatorView = new View(getApplicationContext());
+		View infoSeparatorView = new View(this);
 		ListView.LayoutParams paramsw = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
 			(int) (2 * displayDensity)
@@ -725,7 +721,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 		ListArrayAdapter.addView(infoSeparatorView, false);
 
-		LinearLayout SyncInfoLL = new LinearLayout(getApplicationContext());
+		LinearLayout SyncInfoLL = new LinearLayout(this);
 		ListView.LayoutParams paramsill = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
 			(int) (86 * displayDensity) // Already subtracted by 2dp for divider.
@@ -734,7 +730,7 @@ public class DaftarTugas extends AppCompatActivity {
 		SyncInfoLL.setOrientation(LinearLayout.VERTICAL);
 		SyncInfoLL.setGravity(Gravity.CENTER_VERTICAL);
 
-		TextView InfoTV = new TextView(getApplicationContext());
+		TextView InfoTV = new TextView(this);
 		InfoTV.setText(R.string.sync_info);
 		InfoTV.setSingleLine();
 		InfoTV.setMaxLines(1);
@@ -753,7 +749,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 		SyncInfoLL.addView(InfoTV);
 
-		TextView SyncInfoTV = new TextView(getApplicationContext());
+		TextView SyncInfoTV = new TextView(this);
 		SyncInfoTV.setText(infoT);
 		SyncInfoTV.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
 		LinearLayout.LayoutParams paramsitv = new LinearLayout.LayoutParams(
@@ -790,7 +786,7 @@ public class DaftarTugas extends AppCompatActivity {
 			if (DONE == 2 && (data.compareTo("403") == 0 ||
 				IOFile.read(getApplicationContext(), "token.txt") == "")) {
 				// Invalid token.
-				Toast.makeText(getApplicationContext(), R.string.please_login, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, R.string.please_login, Toast.LENGTH_SHORT).show();
 
 				// Empty all personal files.
 				IOFile.write(getApplicationContext(), "userpass.txt", "");
@@ -801,145 +797,7 @@ public class DaftarTugas extends AppCompatActivity {
 				return;
 			}
 
-			String[] teks = data.split("\n\\|\\|\\|\\|\\|[\r\n]+");
-			if (teks.length < 3) return;
-
-			TeksMeta = teks[0];
-
-			String[] fetch = teks[1].split("\n`\\|\\|\\|`\n");
-			if (fetch.length < 2) return;
-
-			//////////
-			// Tema //
-			//////////
-			TeksTema = fetch[0];
-
-			////////////////
-			// Pengumuman //
-			////////////////
-			TeksPengumuman = "● "+
-					fetch[1].replaceAll("\n", "<br>● ");
-
-			//////////////////
-			// Daftar Tugas //
-			//////////////////
-			String teksDaftarTugas = fetch[2];
-			String[] teksPerTugas = teksDaftarTugas.split("\n");
-
-			// Parse JSON data.
-			L = null;
-			try {
-				reader = new JSONObject(teks[2]);
-				try {
-					L = reader.getJSONObject("L");
-				} catch (JSONException e) {
-					// Bad value.
-					// e.printStackTrace();
-				}
-			} catch (JSONException e) {
-				// Bad value.
-				// e.printStackTrace();
-			}
-
-			// School schedule.
-			String[][] schedule = {
-				{},
-				{"76", "60", "70", "21"},
-				{"63", "11", "28", "8",  "44"},
-				{"36", "43", "32", "14", "45"},
-				{"23", "8",  "70", "63", "28", "3"},
-				{"16", "43", "32", "48"},
-				{"50", "73", "23", "3",  "16"},
-				{}
-			};
-
-			// ID;TASK;DESC;LESSON;TCODE;Y,M,D
-			ArrayList<String[]> Tugas = new ArrayList<String[]>();
-			for (int i = 0; i < teksPerTugas.length; i ++) {
-				String tugas1 = teksPerTugas[i] + "|0|";
-				String[] dataPerTugas = tugas1.split("\\|", -1);
-
-				try {
-					boolean done = L.getJSONArray(dataPerTugas[0]).getBoolean(0);
-					dataPerTugas[6] = done ? "1" : "0";
-					// Extra text for each task.
-					String extraText = L.getJSONArray(dataPerTugas[0]).getString(1);
-					dataPerTugas[7] = extraText;
-				} catch (JSONException e) {
-					// Bad value.
-					// e.printStackTrace();
-				}
-				Tugas.add(dataPerTugas);
-			}
-
-			// Clone unsorted.
-			ObjDaftarTugas = new ArrayList<String[]>(Tugas);
-
-			// Sort all task using Insertion sort.
-			for (int i = 1; i < Tugas.size(); i ++) {
-				String[] temp;
-				for (int j = i; j > 0; j --) {
-					String[] date1 = Tugas.get(j  )[5].split(",");
-					String[] date2 = Tugas.get(j-1)[5].split(",");
-					Calendar cal1 = Calendar.getInstance();
-					Calendar cal2 = Calendar.getInstance();
-					cal1.set(
-							Integer.parseInt(date1[0]),
-							Integer.parseInt(date1[1]),
-							Integer.parseInt(date1[2])
-					);
-					cal2.set(
-							Integer.parseInt(date2[0]),
-							Integer.parseInt(date2[1]),
-							Integer.parseInt(date2[2])
-					);
-					if (
-						cal1.getTimeInMillis() < cal2.getTimeInMillis()
-					) {
-						temp = Tugas.get(j);
-						Tugas.set(j, Tugas.get(j-1));
-						Tugas.set(j-1, temp);
-					} else if (
-						cal1.getTimeInMillis() == cal2.getTimeInMillis()
-					) {
-						if (
-							Integer.parseInt(Tugas.get(j  )[6]) <
-							Integer.parseInt(Tugas.get(j-1)[6])
-						) {
-							temp = Tugas.get(j);
-							Tugas.set(j, Tugas.get(j-1));
-							Tugas.set(j-1, temp);
-						} else if (
-								Tugas.get(j)[5].compareTo(Tugas.get(j-1)[5]) == 0
-						) {
-							int da1 = cal1.get(Calendar.DAY_OF_WEEK);
-							int da2 = cal2.get(Calendar.DAY_OF_WEEK);
-							if (
-								Arrays.asList(schedule[da1]).indexOf(Tugas.get(j  )[3]) <
-								Arrays.asList(schedule[da2]).indexOf(Tugas.get(j-1)[3])
-							) {
-								temp = Tugas.get(j);
-								Tugas.set(j, Tugas.get(j-1));
-								Tugas.set(j-1, temp);
-							} else if (
-									Tugas.get(j)[3].compareTo(Tugas.get(j-1)[3]) == 0
-							) {
-								if (
-									Integer.parseInt(Tugas.get(j  )[0]) <
-									Integer.parseInt(Tugas.get(j-1)[0])
-								) {
-									temp = Tugas.get(j);
-									Tugas.set(j, Tugas.get(j-1));
-									Tugas.set(j-1, temp);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// Save sorted.
-			SortedDaftarTugas = Tugas;
+			DTO.read(data);
 
 			textAmbilData.setVisibility(View.GONE);
 			swipeContainer.setVisibility(View.VISIBLE);
@@ -971,11 +829,11 @@ public class DaftarTugas extends AppCompatActivity {
 						.split("\n\\|\\|\\|\\|\\|\n");
 		if (teks.length == 3) {
 			// Parse JSON data
-			L = null;
+			DTO.L = null;
 			try {
-				reader = new JSONObject(teks[2]);
+				DTO.reader = new JSONObject(teks[2]);
 				try {
-					L = reader.getJSONObject("L");
+					DTO.L = DTO.reader.getJSONObject("L");
 				} catch (JSONException e) {
 					// Bad value.
 					// e.printStackTrace();
@@ -989,7 +847,7 @@ public class DaftarTugas extends AppCompatActivity {
 		try {
 			strUrlParam = "token=" + TOKEN +
 				"&lastsaved=" + lastSaved +
-				"&dataL=" + URLEncoder.encode(L.toString(), "UTF-8");
+				"&dataL=" + URLEncoder.encode(DTO.L.toString(), "UTF-8");
 			if (IOFile.read(getApplicationContext(), "fetchdata.txt").length() > 0) {
 				strUrlParam += "&save=1";
 			} else {
@@ -1029,24 +887,8 @@ public class DaftarTugas extends AppCompatActivity {
 					return;
 				}
 
-				JSONArray nI;
-				try {
-					try {
-						nI = L.getJSONArray(""+lastOpened);
-					} catch (JSONException e) {
-						L.put(""+lastOpened, new JSONArray());
-						nI = L.getJSONArray(""+lastOpened);
-					}
-					if (nI.isNull(0)) {
-						nI.put(0, false);
-					}
-					nI.put(1, TaskUserDescriptionE.getText().toString());
-					L.put(""+lastOpened, nI);
-					reader.put("L", L);
-					saveDaftarTugas();
-				} catch (JSONException e) {
-					// e.printStackTrace();
-				}
+				DTO.updateTask(lastOpened, TaskUserDescriptionE.getText().toString());
+				saveDaftarTugas();
 			}
 
 			TaskUserDescription.setText(TaskUserDescriptionE.getText());
@@ -1065,21 +907,8 @@ public class DaftarTugas extends AppCompatActivity {
 			return;
 		}
 
-		JSONArray nI;
-		try {
-			try {
-				nI = L.getJSONArray(""+id);
-			} catch (JSONException e) {
-				L.put(""+id, new JSONArray());
-				nI = L.getJSONArray(""+id);
-			}
-			nI.put(0, checked);
-			L.put(""+id, nI);
-			reader.put("L", L);
-			saveDaftarTugas();
-		} catch (JSONException e) {
-			// e.printStackTrace();
-		}
+		DTO.updateTask(id, checked);
+		saveDaftarTugas();
 	}
 
 	public void updateRecent(View view) {
@@ -1090,8 +919,8 @@ public class DaftarTugas extends AppCompatActivity {
 
 		if (lastOpened > -1) {
 			int objid = -1;
-			for (int i = 0; i < ObjDaftarTugas.size(); i++) {
-				if (Integer.parseInt(ObjDaftarTugas.get(i)[0]) == lastOpened) {
+			for (int i = 0; i < DTO.ObjDaftarTugas.size(); i++) {
+				if (Integer.parseInt(DTO.ObjDaftarTugas.get(i)[0]) == lastOpened) {
 					objid = i;
 					break;
 				}
@@ -1102,7 +931,7 @@ public class DaftarTugas extends AppCompatActivity {
 				);
 			}
 
-			boolean enabled = ObjDaftarTugas.get(objid)[6].compareTo("1") == 0;
+			boolean enabled = DTO.ObjDaftarTugas.get(objid)[6].compareTo("1") == 0;
 			// Give user a feedback.
 			TaskStatus.setText("…");
 			updateTask(
@@ -1113,18 +942,13 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	private void saveDaftarTugas(){
-		String raw = IOFile.read(getApplicationContext(), "fetchdata.txt");
-		String[] teks = android.text.TextUtils.split(raw, "\n\\|\\|\\|\\|\\|\n");
-		if (teks.length == 3) {
-			teks[2] = reader.toString();
+		if (!DTO.save()) {
+			// Failed to save.
 		}
-		String newteks = android.text.TextUtils.join("\n|||||\n", teks);
-
-		IOFile.write(getApplicationContext(), "fetchdata.txt", newteks);
 
 		refreshDaftarTugas();
 
-		parseDaftarTugas(newteks);
+		parseDaftarTugas(DTO.Teks);
 	}
 
 	private class DownloadDT extends DownloadTask {
@@ -1149,7 +973,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 		@Override
 		public boolean onNoConnection() {
-			if(IOFile.read(getApplicationContext(), "fetchdata.txt") == "") {
+			if (IOFile.read(getApplicationContext(), "fetchdata.txt") == "") {
 				AlertDialog.Builder dlgb = new AlertDialog.Builder(DaftarTugas.this);
 				dlgb.setMessage(R.string.no_connection);
 

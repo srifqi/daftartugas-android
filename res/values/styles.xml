@@ -12,8 +12,8 @@
 			backward-compatibility can go here.
 		-->
 		<!-- customize the color palette -->
-		<item name="android:colorPrimary">@color/purple</item>
-		<item name="android:colorPrimaryDark">@color/purple800</item>
+		<item name="android:colorPrimary">@color/grey</item>
+		<item name="android:colorPrimaryDark">@color/grey700</item>
 		<item name="android:colorAccent">@color/orangeA200</item>
 	</style>
 
