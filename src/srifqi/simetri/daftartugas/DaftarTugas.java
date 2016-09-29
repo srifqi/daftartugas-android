@@ -59,7 +59,7 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DaftarTugas extends AppCompatActivity {
 
-	public final static String FETCHURL = "http://daftartugas.tk/xiipa3";
+	public final static String FETCHURL = "http://daftartugas.owun.ga/xiipa3";
 	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
 	public final static int VERSION_CODE = 14;
 
@@ -165,7 +165,7 @@ public class DaftarTugas extends AppCompatActivity {
 				);
 			}
 		});
-		
+
 		DTO = new DaftarTugasObj(getApplicationContext());
 
 		ListArrayAdapter = new TugasListAdapter();
