@@ -18,9 +18,9 @@
         android:icon="@drawable/ic_launcher"
         android:isGame="false"
         android:label="@string/app_name"
+        android:requiredForAllUsers="false"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme"
-        android:requiredForAllUsers="false">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".DaftarTugas"
             android:label="@string/app_name" >
@@ -38,6 +38,14 @@
             android:name=".PerbaruiActivity"
             android:label="@string/title_activity_perbarui"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".PengaturanActivity"
+            android:label="@string/title_activity_pengaturan"
+            android:parentActivityName=".DaftarTugas" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="srifqi.simetri.daftartugas.DaftarTugas" />
         </activity>
         <activity
             android:name=".Tentang"
