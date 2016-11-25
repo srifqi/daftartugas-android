@@ -12,11 +12,13 @@ import android.content.Context;
 
 /**
  * Object container for Daftar Tugas.
- * 
- * This helps DaftarTugas to be programmed easily. 
+ *
+ * This helps DaftarTugas to be programmed easily.
+ *
+ * Make sure you run {@link read()} first before doing anything!
  */
 public class DaftarTugasObj {
-	
+
 	private Context ctx;
 	public String Teks;
 	public String TeksMeta;
@@ -27,7 +29,7 @@ public class DaftarTugasObj {
 	public JSONObject reader;
 	public JSONObject L = new JSONObject();
 
-	// School schedule.	
+	// School schedule.
 	public String[][] schedule = {
 		{},
 		{"76", "60", "70", "21"},
@@ -38,33 +40,33 @@ public class DaftarTugasObj {
 		{"50", "73", "23", "3",  "16"},
 		{}
 	};
-	
+
 	DaftarTugasObj(Context ctx) {
 		this.ctx = ctx;
 	}
-	
+
 	/**
 	 * Read fetchdata.txt and parse as {@link DaftarTugasObj} (this).
-	 * 
+	 *
 	 * @return true on success, false on failure.
 	 */
 	public boolean read() {
 		this.Teks = IOFile.read(this.ctx, "fetchdata.txt");
 		return read(this.Teks);
 	}
-	
+
 	/**
 	 * Read a text and parse as {@link DaftarTugasObj} (this).
-	 * 
+	 *
 	 * @param data
 	 *			The text to be parsed.
-	 * 
+	 *
 	 * @return true on success, false on failure.
 	 */
 	public boolean read(String data) {
 		if (data.length() > 0) {
 			this.Teks = data;
-			
+
 			String[] teks = data.split("\n\\|\\|\\|\\|\\|[\r\n]+");
 			if (teks.length < 3) return false;
 
@@ -110,6 +112,11 @@ public class DaftarTugasObj {
 			for (int i = 0; i < teksPerTugas.length; i ++) {
 				String tugas1 = teksPerTugas[i] + "|0|";
 				String[] dataPerTugas = tugas1.split("\\|", -1);
+
+				// Tolerate error.
+				if (dataPerTugas.length < 8) {
+					continue;
+				}
 
 				try {
 					boolean done = this.L.getJSONArray(dataPerTugas[0]).getBoolean(0);
@@ -197,10 +204,10 @@ public class DaftarTugasObj {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Save into fetchdata.txt.
-	 * 
+	 *
 	 * @return true on success, false on failure.
 	 */
 	public boolean save() {
@@ -215,12 +222,12 @@ public class DaftarTugasObj {
 
 	/**
 	 * Update task for it's done.
-	 * 
+	 *
 	 * @param id
 	 *			ID number for task to be updated.
 	 * @param checked
 	 *			Status of the task.
-	 * 
+	 *
 	 * @return true on success, false on failure.
 	 */
 	public boolean updateTask(int id, boolean checked) {
@@ -244,15 +251,15 @@ public class DaftarTugasObj {
 
 	/**
 	 * Update task for it's personal note.
-	 * 
+	 *
 	 * @param id
 	 *			ID number for task to be updated.
 	 * @param text
 	 *			Text of the task's personal note.
-	 * 
+	 *
 	 * @return true on success, false on failure.
 	 */
-	public boolean updateTask(int id, String text) {		
+	public boolean updateTask(int id, String text) {
 		JSONArray nI;
 		try {
 			try {

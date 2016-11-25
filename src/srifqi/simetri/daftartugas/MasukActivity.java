@@ -27,6 +27,7 @@ public class MasukActivity extends AppCompatActivity {
 
 	private EditText editTextNamaPengguna;
 	private EditText editTextKataSandi;
+	private EditText editTextProjectID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,9 @@ public class MasukActivity extends AppCompatActivity {
 		btn_masuk = (Button) findViewById(R.id.btn_masuk);
 		editTextNamaPengguna = (EditText) findViewById(R.id.editTextNamaPengguna);
 		editTextKataSandi = (EditText) findViewById(R.id.editTextKataSandi);
+		editTextProjectID = (EditText) findViewById(R.id.editTextProjectID);
 
-		editTextKataSandi.setOnEditorActionListener(new OnEditorActionListener() {
+		editTextProjectID.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -74,8 +76,11 @@ public class MasukActivity extends AppCompatActivity {
 		btn_masuk.setEnabled(false);
 		editTextNamaPengguna.setEnabled(false);
 		editTextKataSandi.setEnabled(false);
+		editTextProjectID.setEnabled(false);
 		String NamaPengguna = editTextNamaPengguna.getText().toString();
 		String KataSandi = editTextKataSandi.getText().toString();
+		String ProjectID = editTextProjectID.getText().toString();
+		Setting.set(getApplicationContext(), Setting.PROJECT_ID, ProjectID);
 
 		if (NamaPengguna.length() < 1 || KataSandi.length() < 1) {
 			Toast.makeText(getApplicationContext(), R.string.please_fill_all, Toast.LENGTH_SHORT).show();
@@ -85,7 +90,9 @@ public class MasukActivity extends AppCompatActivity {
 			return;
 		}
 
-		String strUrl = DaftarTugas.FETCHURL + "/api/validation";
+		String strUrl = DaftarTugas.FETCHURL +
+			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
+			"/api/validation";
 		String strUrlParam = "";
 		try {
 			strUrlParam = "user|" + URLEncoder.encode(NamaPengguna, "UTF-8") +
@@ -153,6 +160,9 @@ public class MasukActivity extends AppCompatActivity {
 				);
 				// Save token in an internal file "token.txt".
 				IOFile.write(getApplicationContext(), "token.txt", result);
+
+				// Save the state: has already logged in.
+				Setting.set(getApplicationContext(), Setting.HAS_LOGGED_IN, 1);
 
 				OK();
 			}

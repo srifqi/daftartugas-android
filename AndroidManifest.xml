@@ -8,22 +8,26 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="24" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:isGame="false"
         android:label="@string/app_name"
+        android:requiredForAllUsers="false"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme"
-        android:requiredForAllUsers="false">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".DaftarTugas"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,12 +44,61 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".PengaturanActivity"
+            android:label="@string/title_activity_pengaturan"
+            android:parentActivityName=".DaftarTugas" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DaftarTugas" />
+        </activity>
+        <activity
+            android:name=".PengaturanAlarmActivity"
+            android:label="@string/title_activity_pengaturan_alarm"
+            android:parentActivityName=".PengaturanActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PengaturanActivity" />
+        </activity>
+        <activity
+            android:name=".PengaturanSinkronasiActivity"
+            android:label="@string/title_activity_pengaturan_sinkronasi"
+            android:parentActivityName=".PengaturanActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PengaturanActivity" />
+        </activity>
+        <activity
             android:name=".Tentang"
             android:label="@string/title_activity_tentang" >
         </activity>
         <activity
-            android:name=".ErrorReporting" >
+            android:name=".AlarmTugasActivity"
+            android:label="@string/title_activity_alarm_tugas"
+            android:showOnLockScreen="true"
+            android:screenOrientation="portrait" >
         </activity>
+        <activity android:name=".ErrorReporting" >
+        </activity>
+
+        <receiver
+            android:name=".AlarmTugasReceiver"
+            android:exported="false" >
+        </receiver>
+        <receiver
+            android:name=".AlarmSyncReceiver"
+            android:exported="false" >
+        </receiver>
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETE" />D
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".AutoSyncService"
+            android:exported="false" />
     </application>
 
 </manifest>

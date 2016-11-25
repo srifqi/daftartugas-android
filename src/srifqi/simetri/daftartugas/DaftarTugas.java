@@ -59,7 +59,7 @@ import android.widget.Toast;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DaftarTugas extends AppCompatActivity {
 
-	public final static String FETCHURL = "http://daftartugas.owun.ga/xiipa3";
+	public final static String FETCHURL = "http://daftartugas.owun.ga/";
 	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
 	public final static int VERSION_CODE = 14;
 
@@ -72,6 +72,8 @@ public class DaftarTugas extends AppCompatActivity {
 	private ProgressDialog pd;
 	private TextView textAmbilData;
 	private SwipeRefreshLayout swipeContainer;
+
+	private Toolbar toolbar1;
 
 	private LinearLayout ContainerLinearLayout;
 	private TugasListAdapter ListArrayAdapter;
@@ -112,8 +114,11 @@ public class DaftarTugas extends AppCompatActivity {
 		cvt.setContext(getApplicationContext());
 		cvt.setSaveFilename("version.txt");
 		cvt.setMethod("POST");
-		cvt.run(FETCHURL + "/api/androidversion",
-			TOKEN != "" ? "token=" + TOKEN : "");
+		cvt.run(
+			FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
+			"/api/androidversion",
+			TOKEN != "" ? "token=" + TOKEN : ""
+		);
 
 		// Read session.txt.
 		USERPASS = IOFile.read(getApplicationContext(), "userpass.txt").split("\n");
@@ -134,10 +139,24 @@ public class DaftarTugas extends AppCompatActivity {
 		displayWidth = metrics.widthPixels;
 		displayDensity = metrics.density;
 
-		Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
+		toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
 		setSupportActionBar(toolbar1);
 		toolbar1.setBackgroundResource(R.color.grey);
 		toolbar1.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+
+		// Add back button.
+		// toolbar1.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		toolbar1.setNavigationContentDescription(R.string.back);
+		toolbar1.setNavigationOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				openContent(-2);
+			}
+		});
+
+		// Hide back button.
+		toolbar1.setNavigationIcon(null);
 
 		textAmbilData = (TextView) findViewById(R.id.textAmbilData);
 		swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -249,6 +268,11 @@ public class DaftarTugas extends AppCompatActivity {
 		// Re-initiate variable.
 		// It's okay to re-initiate because at onPause, pd already dismissed.
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
+
+		// Check for DT.conf, has it empty because of log out.
+		if (IOFile.read(getApplicationContext(), "DT.conf") == "") {
+			runMasuk();
+		}
 	}
 
 	@Override
@@ -344,6 +368,12 @@ public class DaftarTugas extends AppCompatActivity {
 			);
 			swipeContainer.setLayoutParams(lsv);
 			if (id == -2) {
+				// Hide back button.
+				toolbar1.setNavigationIcon(null);
+
+				// Reset the title.
+				toolbar1.setTitle(R.string.daftar_tugas);
+
 				if (animate == true) {
 					Animation swipeContainerAnimation = new Animation() {
 
@@ -371,6 +401,16 @@ public class DaftarTugas extends AppCompatActivity {
 					swipeContainer.setLayoutParams(_lsv);
 				}
 			} else {
+				// Show back button.
+				toolbar1.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
+				// Set the title.
+				if (id == -1) {
+					toolbar1.setTitle(R.string.pengumuman);
+				} else {
+					toolbar1.setTitle(rsc.getString(R.string.task_num) + id);
+				}
+
 				if (animate == true) {
 					Animation swipeContainerAnimation = new Animation() {
 
@@ -402,7 +442,7 @@ public class DaftarTugas extends AppCompatActivity {
 		lastOpened = id;
 	}
 
-	public boolean onListItemTouch(View v, MotionEvent event) {
+	public static boolean onListItemTouch(View v, MotionEvent event) {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			case MotionEvent.ACTION_DOWN:
 				v.setBackgroundResource(R.color.orangeA200);
@@ -425,24 +465,16 @@ public class DaftarTugas extends AppCompatActivity {
 		// Reflow content.
 		if (displayWidth > 600) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.4),
+				(int) (displayWidth * 0.4 * displayDensity),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ListListView.setLayoutParams(lsv);
 			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.6),
+				(int) (displayWidth * 0.6 * displayDensity),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ContentScrollView.setLayoutParams(csv);
 		}
-
-		// Name of days.
-		String[] hari = {"Minggu", "Senin", "Selasa", "Rabu",
-				"Kamis", "Jumat", "Sabtu"};
-
-		// Name of months.
-		String[] bulan = {"Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul",
-				"Agu", "Sep", "Okt", "Nov", "Des"};
 
 		// Delete already-exist Views from Layout.
 		ListArrayAdapter.clear();
@@ -556,10 +588,10 @@ public class DaftarTugas extends AppCompatActivity {
 				TextView dayTextView = new TextView(this);
 				dayTextView.setText(Html.fromHtml(
 					"<b>" +
-					hari[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
+					DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
 					cal.get(Calendar.DATE) + " " +
 					// mod 12 just in case somebody is stupid enough.
-					bulan[cal.get(Calendar.MONTH) % 12] + " " +
+					DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " +
 					cal.get(Calendar.YEAR) +
 					"</b>"
 				));
@@ -700,73 +732,6 @@ public class DaftarTugas extends AppCompatActivity {
 			ListArrayAdapter.addView(taskLL, true);
 		}
 
-		// Information about data.
-		String[] Info = DTO.TeksMeta.split("\n");
-		long time4 = Long.parseLong(Info[1]);
-		long time5 = Long.parseLong(Info[2]);
-		String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
-		String rds5 = DaftarTugas.timestampToRelativeDateString(time5);
-		String infoT = rsc.getString(R.string.last_list_update) +
-			": " + rds4 + "\n" +
-			rsc.getString(R.string.last_sync) +
-			": " + rds5;
-
-		View infoSeparatorView = new View(this);
-		ListView.LayoutParams paramsw = new ListView.LayoutParams(
-			ListView.LayoutParams.MATCH_PARENT,
-			(int) (2 * displayDensity)
-		);
-		infoSeparatorView.setLayoutParams(paramsw);
-		infoSeparatorView.setBackgroundColor(ContextCompat.getColor(this, R.color.blackDivider));
-
-		ListArrayAdapter.addView(infoSeparatorView, false);
-
-		LinearLayout SyncInfoLL = new LinearLayout(this);
-		ListView.LayoutParams paramsill = new ListView.LayoutParams(
-			ListView.LayoutParams.MATCH_PARENT,
-			(int) (86 * displayDensity) // Already subtracted by 2dp for divider.
-		);
-		SyncInfoLL.setLayoutParams(paramsill);
-		SyncInfoLL.setOrientation(LinearLayout.VERTICAL);
-		SyncInfoLL.setGravity(Gravity.CENTER_VERTICAL);
-
-		TextView InfoTV = new TextView(this);
-		InfoTV.setText(R.string.sync_info);
-		InfoTV.setSingleLine();
-		InfoTV.setMaxLines(1);
-		InfoTV.setEllipsize(TruncateAt.END);
-		InfoTV.setTextColor(ContextCompat.getColor(this, R.color.blackPrimary));
-		LinearLayout.LayoutParams paramitv = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.MATCH_PARENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT
-		);
-		paramitv.setMargins(
-			(int) (16 * displayDensity), 0,
-			(int) (16 * displayDensity), 0
-		);
-		InfoTV.setLayoutParams(paramitv);
-		InfoTV.setTextSize(16); // In sp.
-
-		SyncInfoLL.addView(InfoTV);
-
-		TextView SyncInfoTV = new TextView(this);
-		SyncInfoTV.setText(infoT);
-		SyncInfoTV.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
-		LinearLayout.LayoutParams paramsitv = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.MATCH_PARENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT
-		);
-		paramsitv.setMargins(
-			(int) (16 * displayDensity), 0,
-			(int) (16 * displayDensity), 0
-		);
-		SyncInfoTV.setLayoutParams(paramsitv);
-		SyncInfoTV.setTextSize(14); // In sp.
-
-		SyncInfoLL.addView(SyncInfoTV);
-
-		ListArrayAdapter.addView(SyncInfoLL, false);
-
 		ListListView.setAdapter(ListArrayAdapter);
 
 		ListListView.setSelectionFromTop(ListLastView, ListOffsetY);
@@ -859,7 +824,11 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		swipeContainer.setRefreshing(true);
-		dlt.run(FETCHURL + "/api/transaction", strUrlParam);
+		dlt.run(
+			FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
+			"/api/transaction",
+			strUrlParam
+		);
 	}
 
 	public void cancelEditNote(View view) {
@@ -1070,49 +1039,32 @@ public class DaftarTugas extends AppCompatActivity {
 			swipeContainer.setRefreshing(true);
 			refreshDaftarTugas();
 			return true;
-		} else if (id == R.id.action_about) {
-			runTentang();
-			return true;
-		} else if (id == R.id.action_logout) {
-			AlertDialog.Builder dlgb = new AlertDialog.Builder(this);
-			dlgb.setMessage(R.string.ask_logout);
-
-			dlgb.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Toast.makeText(getApplicationContext(), R.string.see_you, Toast.LENGTH_SHORT).show();
-
-					// Empty all personal files.
-					IOFile.write(getApplicationContext(), "userpass.txt", "");
-					IOFile.write(getApplicationContext(), "token.txt", "");
-					IOFile.write(getApplicationContext(), "fetchdata.txt", "");
-
-					DelTokenT dlt = new DelTokenT();
-					dlt.setContext(getApplicationContext());
-					dlt.setMethod("POST");
-					dlt.dontSave();
-					dlt.run(FETCHURL + "/api/deletetoken", "token=" + TOKEN);
-
-					runMasuk();
-				}
-			});
-
-			dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// Nothing to do.
-				}
-			});
-
-			AlertDialog dlg = dlgb.create();
-			dlg.show();
-
+		} else if (id == R.id.action_setting) {
+			runPengaturan();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	/**
+	 * Name of days in Indonesian.
+	 */
+	public static final String[] days = {
+		"Minggu",	"Senin",
+		"Selasa",	"Rabu",
+		"Kamis",	"Jumat",
+		"Sabtu"
+	};
+
+	/**
+	 * Name of months in Indonesian.
+	 */
+	public static final String[] months = {
+		"Januari",	"Februari",	"Maret",
+		"April",	"Mei",		"Juni",
+		"Juli",		"Agustus",	"September",
+		"Oktober",	"November",	"Desember"
+	};
 
 	/**
 	 * <p>Convert from timestamp into relative date string (Indonesian).</p>
@@ -1124,9 +1076,9 @@ public class DaftarTugas extends AppCompatActivity {
 	 * </p>
 	 *
 	 * @param timestamp
-	 *			Timestamp to be converted (in seconds)
+	 *			Timestamp to be converted (in seconds).
 	 *
-	 * @return Converted timestamp
+	 * @return Converted timestamp.
 	 */
 	public static String timestampToRelativeDateString(long timestamp) {
 		String str = "";
@@ -1150,14 +1102,6 @@ public class DaftarTugas extends AppCompatActivity {
 		int tM = gc.get(Calendar.MONTH);
 		int tY = gc.get(Calendar.YEAR);
 
-		// Months in Indonesian.
-		String[] months = {
-			"Januari",	"Februari",	"Maret",
-			"April",	"Mei",		"Juni",
-			"Juli",		"Agustus",	"September",
-			"Oktober",	"November",	"Desember"
-		};
-
 		if (
 			nowD == tD &&
 			nowM == tM &&
@@ -1171,7 +1115,7 @@ public class DaftarTugas extends AppCompatActivity {
 		) {
 			str += "Kemarin, ";
 		} else {
-			str += tD + " " + months[tM] + " " + tY + ", ";
+			str += tD + " " + DaftarTugas.months[tM] + " " + tY + ", ";
 		}
 		String hour = "" + gc.get(Calendar.HOUR_OF_DAY);
 		String minute = "" + gc.get(Calendar.MINUTE);
@@ -1180,6 +1124,34 @@ public class DaftarTugas extends AppCompatActivity {
 		str += hour + ":" + minute;
 
 		return str;
+	}
+
+	/**
+	 * <p>Convert from int into formatted String.</p>
+	 * <p>
+	 * For example:<br>
+	 * - n = 1,  length = 3: returns "001".
+	 * - n = 11, length = 4: returns "0011".
+	 * But,<br>
+	 * - n = 1111, length = 3: returns "1111".
+	 * </p>
+	 *
+	 * @param n
+	 *			Number to be converted.
+	 * @param length
+	 *			Length of the formatted text.
+	 *
+	 * @return Converted number.
+	 */
+	public static String formatNumber(int n, int length) {
+		if (Math.log10(n) > length) return "" + n;
+
+		String str = "";
+		for (int i = 1; i < length - Math.floor(Math.log10(n)); i++) {
+			str += "0";
+		}
+
+		return str + n;
 	}
 
 	public void runMasuk() {
@@ -1198,6 +1170,11 @@ public class DaftarTugas extends AppCompatActivity {
 		this.finishActivity(RESULT_OK);
 	}
 
+	public void runPengaturan() {
+		Intent intent = new Intent(this, PengaturanActivity.class);
+		startActivity(intent);
+	}
+
 	public void runTentang() {
 		Intent intent = new Intent(this, Tentang.class);
 		startActivity(intent);
@@ -1209,7 +1186,7 @@ public class DaftarTugas extends AppCompatActivity {
 	 * An adapter extended from BaseAdapter that is specialized for
 	 * DaftarTugas.
 	 */
-	public class TugasListAdapter extends BaseAdapter implements ListAdapter {
+	public static class TugasListAdapter extends BaseAdapter implements ListAdapter {
 
 		public ArrayList<View> Views = new ArrayList<View>();
 		public ArrayList<Boolean> Enabled = new ArrayList<Boolean>();

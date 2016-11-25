@@ -44,7 +44,11 @@ public class Tentang extends Activity {
 		dtost.setContext(getApplicationContext());
 		dtost.setMethod("GET");
 		dtost.setSaveFilename("TOS.txt");
-		dtost.run(DaftarTugas.FETCHURL + "/tos.txt");
+		dtost.run(
+			DaftarTugas.FETCHURL +
+			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
+			"/tos.txt"
+		);
 	}
 
 	public void openTOS(View view) {

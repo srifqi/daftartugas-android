@@ -1,82 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="version">0.2-dev</string>
-	<string name="app_name">Daftar Tugas</string>
+	<!-- App metadata -->
+    <string name="version">0.2-dev</string>
+    <string name="app_name">Daftar Tugas</string>
 
-	<string name="yes">Ya</string>
-	<string name="no">Tidak</string>
+	<!-- Main task -->
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="close">Tutup</string>
+    <string name="cancel">Batal</string>
+    <string name="back">Kembali</string>
+    <string name="retry">Coba lagi</string>
+    <string name="exit">Keluar</string>
 
-	<string name="action_logout">Keluar</string>
+	<!-- After login -->
+    <string name="starting">Memulai</string>
+    <string name="fetch_data">Sedang mengambil data untuk pertama kalinya.</string>
 
-	<string name="starting">Memulai</string>
-	<string name="fetch_data">Sedang mengambil data untuk pertama kalinya.</string>
-
+	<!-- Main app -->
 	<string name="welcome_text">Halo,</string>
-	<string name="pengumuman">Pengumuman</string>
-	<string name="daftar_tugas">Daftar Tugas</string>
-	<string name="sync_info">Info Sinkronasi</string>
-	<string name="refresh">Perbarui</string>
+    <string name="pengumuman">Pengumuman</string>
+    <string name="daftar_tugas">Daftar Tugas</string>
+    <string name="refresh">Segarkan</string>
+    <string name="task_num">Tugas ke-</string>
 
+	<!-- Notes -->
 	<string name="edittext_user_description">catatan pribadi</string>
-	<string name="edit_note">Sunting catatan</string>
-	<string name="save_note">Simpan catatan</string>
-	<string name="cancel">Batal</string>
+    <string name="edit_note">Sunting catatan</string>
+    <string name="save_note">Simpan catatan</string>
 
-	<string name="last_list_update">Pembaruan daftar terakhir</string>
-	<string name="last_sync">Sinkronasi terakhir</string>
-
+	<!-- Task's info -->
 	<string name="INFO">INFO</string>
-	<string name="DONE">SELESAI</string>
-	<string name="HASNT_DONE">BELUM SELESAI</string>
+    <string name="DONE">SELESAI</string>
+    <string name="HASNT_DONE">BELUM SELESAI</string>
 
+	<!-- Sync status -->
 	<string name="failed_connect">Gagal terhubung ke server</string>
-	<string name="saved_in_server">Tersimpan pada server</string>
-	<string name="no_connection">Tidak ada koneksi tersedia</string>
-	<string name="server_busy">Server sibuk, coba lagi besok</string>
-	<string name="retry">Coba lagi</string>
-	<string name="exit">Keluar</string>
+    <string name="saved_in_server">Tersimpan pada server</string>
+    <string name="no_connection">Tidak ada koneksi tersedia</string>
+    <string name="server_busy">Server sibuk, coba lagi besok</string>
 
-	<string name="title_activity_masuk">Masuk</string>
-	<string name="masuk_welcome_text">Silakan masuk untuk melanjutkan.</string>
-	<string name="please_login">Silahkan masuk terlebih dahulu</string>
+	<!-- Login -->
+    <string name="title_activity_masuk">Masuk</string>
+    <string name="masuk_welcome_text">Silakan masuk untuk melanjutkan.</string>
+    <string name="please_login">Silahkan masuk terlebih dahulu</string>
+    <string name="edittext_nama_pengguna">nama pengguna</string>
+    <string name="edittext_kata_sandi">kata sandi</string>
+	<string name="edittext_project_id">project ID</string>
+    <string name="btn_masuk">Masuk</string>
+    <string name="please_fill_all">Tolong isi semua bidang</string>
+    <string name="login_failed">Nama pengguna dengan kata sandi tidak cocok.</string>
+    <string name="login_success">Berhasil masuk</string>
 
-	<string name="edittext_nama_pengguna">nama pengguna</string>
-	<string name="edittext_kata_sandi">kata sandi</string>
-	<string name="btn_masuk">Masuk</string>
+	<!-- Settings -->
+    <string name="title_activity_pengaturan">Pengaturan</string>
 
-	<string name="please_fill_all">Tolong isi semua bidang</string>
-	<string name="login_failed">Nama pengguna dengan kata sandi tidak cocok.</string>
-	<string name="login_success">Berhasil masuk</string>
+	<!-- Alarm settings -->
+    <string name="title_activity_pengaturan_alarm">Alarm</string>
+    <string name="use_alarm">Nyalakan alarm</string>
+    <string name="alarm_only_if_hasnt_done">Jika ada tugas yang belum dikerjakan</string>
+    <string name="alarm_only_tomorrow">Hanya tugas untuk besok</string>
+    <string name="all_task_done">Semua tugas sudah selesai!</string>
+    <string name="task_hasnt_done_count">Tugas belum selesai:</string>
+    <string name="task_hasnt_done_tomorrow_count">Tugas besok belum selesai:</string>
 
-	<string name="title_activity_perbarui">Perbarui Daftar Tugas</string>
-	<string name="update_info">Versi Aplikasi Daftar Tugas sudah usang.\n\nKetuk Perbarui untuk memulai pembaruan. Pastikan koneksi internet Anda stabil.</string>
-	<string name="newest_version">Versi terbaru</string>
-	<string name="update">Perbarui</string>
+	<!-- Alarm -->
+	<string name="title_activity_alarm_tugas">Alarm Tugas</string>
+	<string name="turnoff_alarm">Matikan alarm</string>
 
-	<string name="update2">Pembaruan</string>
-	<string name="starting_update">Memulai pengunduhan</string>
-	<string name="downloading">Mengunduh</string>
-	<string name="download_completed">Unduhan selesai.</string>
-	<string name="ask_download_retry">Coba ulang unduhan?</string>
+	<!-- Auto-sync settings -->
+    <string name="title_activity_pengaturan_sinkronasi">Sinkronasi</string>
+    <string name="sync_info">Info sinkronasi</string>
+    <string name="last_list_update">Pembaruan daftar terakhir</string>
+    <string name="last_sync">Sinkronasi terakhir</string>
+    <string name="auto_sync">Sinkronasi otomatis</string>
+	<string name="auto_syncing">Sinkronasi otomatis sedang berlangsung.</string>
 
-	<string name="download_done_now_installing">Terunduh. Memasang sekarang.</string>
-	<string name="install_info">Versi Aplikasi Daftar Tugas sudah usang.\n\nVersi baru telah diunduh. Ketuk Pasang untuk memulai pemasangan pembaruan.\n\nJika pemasangan gagal ketuk Unduh ulang.</string>
-	<string name="install">Pasang</string>
-	<string name="retry_download">Unduh ulang</string>
+	<!-- Update -->
+    <string name="title_activity_perbarui">Perbarui Daftar Tugas</string>
+    <string name="update_info">Versi Aplikasi Daftar Tugas sudah usang.\n\nKetuk Perbarui untuk memulai pembaruan. Pastikan koneksi internet Anda stabil.</string>
+    <string name="newest_version">Versi terbaru</string>
+    <string name="update">Perbarui</string>
 
-	<string name="install_failed">Pemasangan gagal</string>
-	<string name="install_failed_download_failure">Mungkin dikarenakan unduhan gagal, coba ulang unduhan?</string>
-	<string name="install_failed_packet_mismatch">Paket tidak cocok dengan server, coba ulang unduhan?</string>
+	<!-- Downloading update -->
+    <string name="update2">Pembaruan</string>
+    <string name="starting_update">Memulai pengunduhan</string>
+    <string name="downloading">Mengunduh</string>
+    <string name="download_completed">Unduhan selesai.</string>
+    <string name="ask_download_retry">Coba ulang unduhan?</string>
 
-	<string name="ask_logout">Apakah Anda ingin keluar?</string>
-	<string name="see_you">Sampai jumpa</string>
+	<!-- Installing update -->
+    <string name="download_done_now_installing">Terunduh. Memasang sekarang.</string>
+    <string name="install_info">Versi Aplikasi Daftar Tugas sudah usang.\n\nVersi baru telah diunduh. Ketuk Pasang untuk memulai pemasangan pembaruan.\n\nJika pemasangan gagal ketuk Unduh ulang.</string>
+    <string name="install">Pasang</string>
+    <string name="retry_download">Unduh ulang</string>
 
-	<string name="title_activity_tentang">Tentang</string>
-	<string name="simple_desc">Dibuat dengan ketulusan hati\nuntuk Simetri Smansa.</string>
-	<string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nSimetri Smansa - Hak Cipta Terlindungi</string>
-	<string name="tos">Syarat dan Ketentuan</string>
+	<!-- Install failure -->
+    <string name="install_failed">Pemasangan gagal</string>
+    <string name="install_failed_download_failure">Mungkin dikarenakan unduhan gagal, coba ulang unduhan?</string>
+    <string name="install_failed_packet_mismatch">Paket tidak cocok dengan server, coba ulang unduhan?</string>
 
-	<string name="crash_message">Maaf, Aplikasi Daftar Tugas mengalami kesalahan dan menutup tiba-tiba. Tolong kirimkan teks di bawah ini ke Simetri Creative Code Labs.</string>
+	<!-- Logout -->
+    <string name="action_logout">Keluar</string>
+    <string name="ask_logout">Apakah Anda ingin keluar akun?</string>
+    <string name="see_you">Sampai jumpa</string>
+
+	<!-- About -->
+    <string name="title_activity_tentang">Tentang</string>
+    <string name="simple_desc">Dibuat dengan ketulusan hati\nuntuk Simetri Smansa.</string>
+    <string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nSimetri Smansa - Hak Cipta Terlindungi</string>
+    <string name="tos">Syarat dan Ketentuan</string>
+
+	<!-- Crash -->
+    <string name="crash_message">Maaf, Aplikasi Daftar Tugas mengalami kesalahan dan menutup tiba-tiba. Tolong kirimkan teks di bawah ini ke Simetri Creative Code Labs.</string>
 
 </resources>

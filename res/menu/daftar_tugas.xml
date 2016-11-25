@@ -7,22 +7,16 @@
 		android:id="@+id/action_refresh"
 		android:orderInCategory="100"
 		android:title="@string/refresh"
-		android:icon="@drawable/ic_action_refresh"
+		android:icon="@drawable/ic_sync"
 		android:showAsAction="ifRoom"
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/action_logout"
+		android:id="@+id/action_setting"
 		android:orderInCategory="200"
-		android:title="@string/action_logout"
+		android:title="@string/title_activity_pengaturan"
+		android:icon="@drawable/ic_settings"
 		android:showAsAction="ifRoom"
 		app:showAsAction="ifRoom"/>
 
-	<item
-		android:id="@+id/action_about"
-		android:orderInCategory="300"
-		android:title="@string/title_activity_tentang"
-		android:showAsAction="never"
-		app:showAsAction="never"/>
-	
 </menu>

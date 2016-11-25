@@ -1,0 +1,48 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res/srifqi.simetri.daftartugas"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	tools:context="srifqi.simetri.daftartugas.PengaturanSinkronasiActivity" >
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar1"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="?attr/colorPrimary"
+		android:elevation="4dp"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="8dp"
+		android:orientation="vertical" >
+
+		<TextView
+		    android:id="@+id/SyncInfoTextView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="@string/sync_info" />
+
+		<CheckBox
+		    android:id="@+id/AutoSyncCheckBox"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:onClick="toogleAutoSync"
+		    android:text="@string/auto_sync" />
+
+		<TimePicker
+		    android:id="@+id/AutoSyncTimePicker"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:visibility="gone" />
+
+	</LinearLayout>
+</LinearLayout>

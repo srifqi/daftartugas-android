@@ -136,6 +136,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		daat.progressTextView = textProgress;
 		daat.run(
 			DaftarTugas.FETCHURL +
+			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
 			"/tester/d?f=DaftarTugas-" + VERSION[0] + ".apk"
 		);
 	}
