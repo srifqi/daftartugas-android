@@ -108,9 +108,10 @@
 
 	<!-- About -->
     <string name="title_activity_tentang">Tentang</string>
-    <string name="simple_desc">Dibuat dengan ketulusan hati\nuntuk Simetri Smansa.</string>
-    <string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nSimetri Smansa - Hak Cipta Terlindungi</string>
+    <string name="simple_desc">Dibuat dengan ketulusan hati.</string>
+    <string name="about_text">Muhammad Rifqi Priyo Susanto, dkk.\nSimetri Creative Code Labs\nHak Cipta Terlindungi</string>
     <string name="tos">Syarat dan Ketentuan</string>
+    <string name="tos_cache">Syarat dan Ketentuan Aplikasi Daftar Tugas\n\nSedang mengambil.\nCoba tutup lalu sentuh Syarat dan Ketentuan lagi.\nInfo lebih lanjut buka Daftar Tugas versi web.\n\nHak Cipta Muhammad Rifqi Priyo Susanto dkk. Simetri Creative Code Labs</string>
 
 	<!-- Crash -->
     <string name="crash_message">Maaf, Aplikasi Daftar Tugas mengalami kesalahan dan menutup tiba-tiba. Tolong kirimkan teks di bawah ini ke Simetri Creative Code Labs.</string>

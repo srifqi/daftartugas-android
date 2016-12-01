@@ -162,7 +162,7 @@ public class PengaturanActivity extends AppCompatActivity {
 
 		// Check for DT.conf, has it empty because of log out.
 		if (IOFile.read(getApplicationContext(), "DT.conf") == "") {
-			runMasuk();
+			runDaftarTugas();
 		}
 	}
 
@@ -225,7 +225,7 @@ public class PengaturanActivity extends AppCompatActivity {
 				IOFile.write(getApplicationContext(), "fetchdata.txt", "");
 				IOFile.write(getApplicationContext(), "DT.conf", "");
 
-				runMasuk();
+				runDaftarTugas();
 			}
 		});
 
@@ -291,8 +291,8 @@ public class PengaturanActivity extends AppCompatActivity {
 
 	}
 
-	public void runMasuk() {
-		Intent intent = new Intent(this, MasukActivity.class);
+	public void runDaftarTugas() {
+		Intent intent = new Intent(this, DaftarTugas.class);
 		startActivity(intent);
 
 		this.finish();

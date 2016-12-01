@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,20 +12,21 @@ public class Tentang extends Activity {
 
 	public AlertDialog.Builder TOSdlgb;
 	public AlertDialog TOSdlg;
+
+	private Resources rsc;
 	// Cache
-	public String TOS = "Syarat dan Ketentuan Aplikasi Daftar Tugas\n"+
-"\n\n"+
-"Sedang mengambil…\n"+
-"Coba tutup lalu sentuh Syarat dan Ketentuan lagi.\n"+
-"Info lebih lanjut buka Daftar Tugas versi web."+
-"\n\n"+
-"Hak Cipta Muhammad Rifqi Priyo Susanto dkk. Simetri Creative Code Labs";
+	public String TOS;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
+
+		// Get resources.
+		rsc = getResources();
+
+		TOS = rsc.getString(R.string.tos_cache);
 
 		setContentView(R.layout.activity_tentang);
 
