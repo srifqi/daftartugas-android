@@ -8,8 +8,12 @@
 	<color name="blackSecondary">#8A000000</color>
 	<color name="blackDivider">#1F000000</color>
 
+	<color name="whitePrimary">#FFFFFFFF</color>
+	<color name="whiteSecondary">#B2FFFFFF</color>
+
 	<color name="grey">#9E9E9E</color>
 	<color name="grey700">#616161</color>
+	<color name="grey900">#212121</color>
 
 	<color name="redA200">#FF5252</color>
 	<color name="orangeA200">#FFAB40</color>

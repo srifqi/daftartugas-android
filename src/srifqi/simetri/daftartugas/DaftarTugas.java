@@ -14,10 +14,13 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -269,6 +272,9 @@ public class DaftarTugas extends AppCompatActivity {
 		// It's okay to re-initiate because at onPause, pd already dismissed.
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 
+		// Render Daftar Tugas.
+		renderDaftarTugas();
+
 		// Check for DT.conf, has it empty because of log out.
 		if (IOFile.read(getApplicationContext(), "DT.conf") == "") {
 			runMasuk();
@@ -482,7 +488,80 @@ public class DaftarTugas extends AppCompatActivity {
 		// Remove divider between items. Because we want to build ourself.
 		ListListView.setDivider(null);
 
-		// Add Pengumuman at the first row.
+		// Add Offline mode to first row. Only if there is no Internet connection.
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (! (networkInfo != null && networkInfo.isConnected())) {
+			LinearLayout OfflineModeLinearLayout = new LinearLayout(this);
+			ListView.LayoutParams paramomll = new ListView.LayoutParams(
+				ListView.LayoutParams.MATCH_PARENT,
+				(int) (70 * displayDensity)
+			);
+			OfflineModeLinearLayout.setLayoutParams(paramomll);
+			OfflineModeLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+			OfflineModeLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
+			OfflineModeLinearLayout.setBackgroundResource(R.color.grey900);
+
+			View OfflineModeIcon = new View(this);
+			LinearLayout.LayoutParams paramomic = new LinearLayout.LayoutParams(
+				(int) (32 * displayDensity),
+				(int) (32 * displayDensity)
+			);
+			paramomic.setMargins((int) (16 * displayDensity), 0, 0, 0);
+			OfflineModeIcon.setLayoutParams(paramomic);
+			OfflineModeIcon.setBackgroundResource(R.drawable.ic_cloud_off);
+			OfflineModeLinearLayout.addView(OfflineModeIcon);
+
+			LinearLayout OfflineModeChildLinearLayout = new LinearLayout(this);
+			LinearLayout.LayoutParams paramomcll = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT
+			);
+			paramomcll.setMargins(
+				(int) (24 * displayDensity), 0,
+				(int) (16 * displayDensity), 0
+			);
+			OfflineModeChildLinearLayout.setLayoutParams(paramomcll);
+			OfflineModeChildLinearLayout.setOrientation(LinearLayout.VERTICAL);
+			OfflineModeChildLinearLayout.setGravity(Gravity.START);
+
+			TextView OfflineModeTextView = new TextView(this);
+			OfflineModeTextView.setText(rsc.getString(R.string.offline_mode));
+			OfflineModeTextView.setSingleLine();
+			OfflineModeTextView.setMaxLines(1);
+			OfflineModeTextView.setEllipsize(TruncateAt.END);
+			LinearLayout.LayoutParams paramomtv = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT
+			);
+			OfflineModeTextView.setLayoutParams(paramomtv);
+			OfflineModeTextView.setTextColor(ContextCompat.getColor(this, R.color.whitePrimary));
+			OfflineModeTextView.setTextSize(16); // In sp.
+
+			OfflineModeChildLinearLayout.addView(OfflineModeTextView);
+
+			TextView OfflineModeChildTextView = new TextView(this);
+			OfflineModeChildTextView.setText(rsc.getString(R.string.no_connection));
+			OfflineModeChildTextView.setSingleLine();
+			OfflineModeChildTextView.setMaxLines(1);
+			OfflineModeChildTextView.setEllipsize(TruncateAt.END);
+			LinearLayout.LayoutParams paramomctv = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT
+			);
+			OfflineModeChildTextView.setLayoutParams(paramomctv);
+			OfflineModeChildTextView.setTextColor(ContextCompat.getColor(this, R.color.whiteSecondary));
+			OfflineModeChildTextView.setTextSize(14); // In sp.
+
+			OfflineModeChildLinearLayout.addView(OfflineModeChildTextView);
+
+			OfflineModeLinearLayout.addView(OfflineModeChildLinearLayout);
+
+			ListArrayAdapter.addView(OfflineModeLinearLayout, false);
+		}
+
+		// Add Pengumuman at the second row.
+		// (If there is Internet connection, first row.)
 		LinearLayout PengumumanLinearLayout = new LinearLayout(this);
 		ListView.LayoutParams parampll = new ListView.LayoutParams(
 			ListView.LayoutParams.MATCH_PARENT,
