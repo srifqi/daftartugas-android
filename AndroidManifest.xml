@@ -30,7 +30,6 @@
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -92,7 +91,7 @@
             android:name=".BootReceiver"
             android:enabled="true" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETE" />D
+                <action android:name="android.intent.action.BOOT_COMPLETE" />
             </intent-filter>
         </receiver>
 
