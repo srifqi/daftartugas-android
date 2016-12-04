@@ -64,7 +64,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://daftartugas.owun.ga/";
 	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
-	public final static int VERSION_CODE = 14;
+	public final static int VERSION_CODE = 15;
 
 	private Resources rsc;
 
@@ -463,6 +463,11 @@ public class DaftarTugas extends AppCompatActivity {
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private void renderDaftarTugas() {
+		// If DTO doesn't have any data, don't render.
+		if (DTO.Teks == null) {
+			return;
+		}
+
 		// Get last ListListView's scroll position.
 		int ListLastView = ListListView.getFirstVisiblePosition();
 		View ListViewFirstChild = ListListView.getChildAt(0);

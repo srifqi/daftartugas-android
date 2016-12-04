@@ -87,6 +87,7 @@ public class MasukActivity extends AppCompatActivity {
 			btn_masuk.setEnabled(true);
 			editTextNamaPengguna.setEnabled(true);
 			editTextKataSandi.setEnabled(true);
+			editTextProjectID.setEnabled(true);
 			return;
 		}
 
@@ -149,6 +150,7 @@ public class MasukActivity extends AppCompatActivity {
 				btn_masuk.setEnabled(true);
 				editTextNamaPengguna.setEnabled(true);
 				editTextKataSandi.setEnabled(true);
+				editTextProjectID.setEnabled(true);
 			} else {
 				// Save data in an internal file "userpass.txt".
 				IOFile.write(getApplicationContext(), "userpass.txt",
@@ -177,6 +179,7 @@ public class MasukActivity extends AppCompatActivity {
 			btn_masuk.setEnabled(true);
 			editTextNamaPengguna.setEnabled(true);
 			editTextKataSandi.setEnabled(true);
+			editTextProjectID.setEnabled(true);
 
 			return true;
 		}
