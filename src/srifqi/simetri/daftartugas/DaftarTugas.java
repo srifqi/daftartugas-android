@@ -64,7 +64,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://daftartugas.owun.ga/";
 	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
-	public final static int VERSION_CODE = 15;
+	public final static int VERSION_CODE = 16;
 
 	private Resources rsc;
 

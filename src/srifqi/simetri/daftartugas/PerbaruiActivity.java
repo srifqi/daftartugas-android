@@ -137,7 +137,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		daat.run(
 			DaftarTugas.FETCHURL +
 			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/tester/d?f=DaftarTugas-" + VERSION[0] + ".apk"
+			"/d/DaftarTugas-" + VERSION[0] + ".apk"
 		);
 	}
 
@@ -220,6 +220,12 @@ public class PerbaruiActivity extends AppCompatActivity {
 	}
 
 	public void runChecker(File file) {
+		if (null == file) {
+			rerunDownloader(
+				rsc.getString(R.string.install_failed),
+				rsc.getString(R.string.install_failed_download_failure)
+			);
+		}
 		String md5 = "";
 		try {
 			md5 = MD5Checksum.fileToMD5(file);
@@ -229,8 +235,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 				rsc.getString(R.string.install_failed_download_failure)
 			);
 		}
-		if (VERSION[1].trim().compareToIgnoreCase(
-			md5.trim()) == 0) {
+		if (VERSION[1].trim().compareToIgnoreCase(md5.trim()) == 0) {
 			if (activityPaused == false) runInstaller();
 		} else {
 			rerunDownloader(

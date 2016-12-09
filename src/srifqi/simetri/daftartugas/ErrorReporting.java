@@ -39,7 +39,9 @@ public class ErrorReporting extends Activity {
 		String errStack2 = getIntent().getStringExtra("StackTrace2");
 		errMsg = (
 			errMessage + "\n---------------\n" +
-			errStackStr + "\n---------------\n" + errStack2
+			errStackStr + "\n---------------\n" +
+			errStack2 + "\n---------------\n" +
+			DaftarTugas.VERSION_CODE
 		);
 
 		EditText errmsg = (EditText) findViewById(R.id.ErrorLog);
