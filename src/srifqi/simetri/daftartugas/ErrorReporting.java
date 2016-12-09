@@ -12,9 +12,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ErrorReporting extends Activity {
+
+	private String errMsg = "";
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -33,15 +37,31 @@ public class ErrorReporting extends Activity {
 			errStackStr += (String) iter.next();
 		}
 		String errStack2 = getIntent().getStringExtra("StackTrace2");
+		errMsg = (
+			errMessage + "\n---------------\n" +
+			errStackStr + "\n---------------\n" + errStack2
+		);
 
 		EditText errmsg = (EditText) findViewById(R.id.ErrorLog);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			errmsg.setTextIsSelectable(true);
 		errmsg.setKeyListener(null);
-		errmsg.setText(
-			errMessage + "\n---------------\n" +
-			errStackStr + "\n---------------\n" + errStack2
-		);
+		errmsg.setText(errMsg);
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void copyToClipboard(View v) {
+		int sdk = android.os.Build.VERSION.SDK_INT;
+		if (sdk < 11) {
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			clipboard.setText(errMsg);
+		} else {
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			android.content.ClipData clip = android.content.ClipData.newPlainText("text label", errMsg);
+			clipboard.setPrimaryClip(clip);
+		}
+
+		Toast.makeText(getApplicationContext(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
 	}
 
 	// http://stackoverflow.com/a/19945692

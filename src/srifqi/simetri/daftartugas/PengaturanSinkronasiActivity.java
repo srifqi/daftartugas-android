@@ -1,20 +1,27 @@
 package srifqi.simetri.daftartugas;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PengaturanSinkronasiActivity extends AppCompatActivity {
+
+	private Context ctx;
 
 	private Resources rsc;
 
@@ -29,6 +36,8 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
+		ctx = this;
+
 		// Get resources.
 		rsc = getResources();
 
@@ -38,21 +47,42 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar1);
 		toolbar1.setBackgroundResource(R.color.grey);
 		toolbar1.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+		toolbar1.setNavigationIcon(R.drawable.ic_close);
+		toolbar1.setNavigationContentDescription(R.string.close);
+		toolbar1.setNavigationOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder dlgb = new AlertDialog.Builder(ctx);
+				dlgb.setMessage(R.string.ask_apply);
+
+				dlgb.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						setAutoSync();
+					}
+				});
+
+				dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						close();
+					}
+				});
+
+				AlertDialog dlg = dlgb.create();
+				dlg.show();
+			}
+		});
 
 		SyncInfoTextView = (TextView) findViewById(R.id.SyncInfoTextView);
 		AutoSyncCheckBox = (CheckBox) findViewById(R.id.AutoSyncCheckBox);
 		AutoSyncTimePicker = (TimePicker) findViewById(R.id.AutoSyncTimePicker);
 
 		AutoSyncTimePicker.setIs24HourView(true);
-		AutoSyncTimePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
-
-			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				setAutoSyncTime(hourOfDay, minute);
-			}
-		});
 
 		int autoSyncEnabled = Setting.getAsInt(getApplicationContext(), Setting.AUTO_SYNC);
 		if (autoSyncEnabled == 1) {
@@ -86,15 +116,10 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 	}
 
 	public void setAutoSync() {
-		AlarmSyncReceiver.setAutoSync(getApplicationContext());
-	}
-
-	public void toogleAutoSync(View v) {
-		CheckBox cb = (CheckBox) v;
-		int visibility = cb.isChecked() ? View.VISIBLE : View.GONE;
-		AutoSyncTimePicker.setVisibility(visibility);
-
-		Setting.set(getApplicationContext(), Setting.AUTO_SYNC, cb.isChecked() ? 1 : 0);
+		Setting.set(
+			getApplicationContext(), Setting.AUTO_SYNC,
+			AutoSyncCheckBox.isChecked() ? 1 : 0
+		);
 
 		Setting.set(
 			getApplicationContext(), Setting.AUTO_SYNC_TIME_HOUR,
@@ -105,13 +130,40 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 			AutoSyncTimePicker.getCurrentMinute()
 		);
 
-		setAutoSync();
+		AlarmSyncReceiver.setAutoSync(getApplicationContext());
+
+		this.finish();
+		this.finishActivity(RESULT_OK);
 	}
 
-	public void setAutoSyncTime(int hour, int minute) {
-		Setting.set(getApplicationContext(), Setting.AUTO_SYNC_TIME_HOUR, hour);
-		Setting.set(getApplicationContext(), Setting.AUTO_SYNC_TIME_MINUTE, minute);
+	public void toogleAutoSync(View v) {
+		CheckBox cb = (CheckBox) v;
+		int visibility = cb.isChecked() ? View.VISIBLE : View.GONE;
+		AutoSyncTimePicker.setVisibility(visibility);
+	}
 
-		setAutoSync();
+	public void close() {
+		this.finish();
+		this.finishActivity(RESULT_OK);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_pengaturan_sinkronasi, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_syncapply) {
+			setAutoSync();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

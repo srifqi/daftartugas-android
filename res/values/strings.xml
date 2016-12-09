@@ -8,11 +8,12 @@
 	<!-- Main task -->
 	<string name="yes">Ya</string>
 	<string name="no">Tidak</string>
-	<string name="close">Tutup</string>
+	<string name="apply">Terapkan</string>
 	<string name="cancel">Batal</string>
 	<string name="back">Kembali</string>
-	<string name="retry">Coba lagi</string>
+	<string name="close">Tutup</string>
 	<string name="exit">Keluar</string>
+	<string name="retry">Coba lagi</string>
 
 	<!-- After login -->
 	<string name="starting">Memulai</string>
@@ -56,6 +57,7 @@
 
 	<!-- Settings -->
 	<string name="title_activity_pengaturan">Pengaturan</string>
+	<string name="ask_apply">Terapkan perubahan?</string>
 
 	<!-- Alarm settings -->
 	<string name="title_activity_pengaturan_alarm">Alarm</string>
@@ -116,5 +118,9 @@
 
 	<!-- Crash -->
 	<string name="crash_message">Maaf, Aplikasi Daftar Tugas mengalami kesalahan dan menutup tiba-tiba. Tolong kirimkan teks di bawah ini ke Simetri Creative Code Labs.</string>
+
+	<!-- Clipboard -->
+	<string name="copy_to_clipboard">Salin ke papan klip</string>
+	<string name="copied_to_clipboard">Disalin ke papan klip.</string>
 
 </resources>

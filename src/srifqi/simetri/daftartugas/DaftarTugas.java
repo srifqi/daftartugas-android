@@ -70,6 +70,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	private Display display;
 	private float displayWidth;
+	private float displayHeight;
 	private float displayDensity;
 
 	private ProgressDialog pd;
@@ -140,6 +141,7 @@ public class DaftarTugas extends AppCompatActivity {
 		DisplayMetrics metrics = new DisplayMetrics();
 		display.getMetrics(metrics);
 		displayWidth = metrics.widthPixels;
+		displayHeight = metrics.heightPixels;
 		displayDensity = metrics.density;
 
 		toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
@@ -474,14 +476,14 @@ public class DaftarTugas extends AppCompatActivity {
 		int ListOffsetY = (ListViewFirstChild == null) ? 0 : ListViewFirstChild.getTop();
 
 		// Reflow content.
-		if (displayWidth > 600) {
+		if (displayWidth > 600 && displayWidth > displayHeight) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.4 * displayDensity),
+				(int) (displayWidth * 0.4),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
-			ListListView.setLayoutParams(lsv);
+			swipeContainer.setLayoutParams(lsv);
 			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.6 * displayDensity),
+				(int) (displayWidth * 0.6),
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			ContentScrollView.setLayoutParams(csv);

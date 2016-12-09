@@ -15,6 +15,14 @@
 		android:layout_height="wrap_content"
 		android:text="@string/crash_message" />
 
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:onClick="copyToClipboard"
+		android:text="@string/copy_to_clipboard" >
+	</Button>
+
 	<EditText
 		android:id="@+id/ErrorLog"
 		android:layout_width="match_parent"

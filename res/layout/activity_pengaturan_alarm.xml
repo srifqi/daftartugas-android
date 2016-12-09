@@ -23,38 +23,37 @@
 		android:orientation="vertical" >
 
 		<CheckBox
-		    android:id="@+id/AlarmEnabledCheckBox"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:onClick="toogleAlarm"
-		    android:text="@string/use_alarm" />
+			android:id="@+id/AlarmEnabledCheckBox"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:onClick="toogleAlarm"
+			android:text="@string/use_alarm" />
 
 		<TimePicker
-		    android:id="@+id/AlarmTimeTimePicker"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center_horizontal"
-		    android:layout_marginTop="8dp"
+			android:id="@+id/AlarmTimeTimePicker"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
 			android:visibility="gone" />
 
 		<CheckBox
-		    android:id="@+id/AlarmOnlyIfHasntDoneCheckBox"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
+			android:id="@+id/AlarmOnlyIfHasntDoneCheckBox"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-		    android:onClick="toogleAlarmOnlyIfHasntDone"
+			android:onClick="toogleAlarmOnlyIfHasntDone"
 			android:visibility="gone"
-		    android:text="@string/alarm_only_if_hasnt_done" />
+			android:text="@string/alarm_only_if_hasnt_done" />
 
 		<CheckBox
-		    android:id="@+id/AlarmOnlyTomorrowCheckBox"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
+			android:id="@+id/AlarmOnlyTomorrowCheckBox"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:layout_marginLeft="32dp"
-		    android:onClick="toogleAlarmOnlyTomorrow"
 			android:visibility="gone"
-		    android:text="@string/alarm_only_tomorrow" />
+			android:text="@string/alarm_only_tomorrow" />
 
 	</LinearLayout>
 </LinearLayout>
