@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- Main task -->
+	<string name="yes">Oui</string>
+	<string name="no">Non</string>
+	<string name="apply">Appliquer</string>
+	<string name="cancel">Annuler</string>
+	<string name="back">Retour</string>
+	<string name="close">Fermer</string>
+	<string name="exit">Sortir</string>
+	<string name="retry">Refaire</string>
+
+	<!-- After login -->
+	<string name="starting">Commencer</string>
+	<string name="fetch_data">Récupère des données pour la première fois.</string>
+
+	<!-- Main app -->
+	<string name="welcome_text">Allo,</string>
+	<string name="refresh">Rafraîchir</string>
+	<string name="task_num">Tache numéro\u0020</string>
+
+	<!-- Notes -->
+	<string name="edittext_user_description">note personnelle</string>
+	<string name="edit_note">Modifier la note</string>
+	<string name="save_note">Enregistrer la note</string>
+
+	<!-- Task\'s info -->
+	<string name="INFO">INFO</string>
+	<string name="DONE">TERMINÉ</string>
+	<string name="HASNT_DONE">PAS TERMINÉ</string>
+
+	<!-- Sync status -->
+	<string name="offline_mode">Mode hors-ligne</string>
+	<string name="failed_connect">Échec de la connexion au serveur</string>
+	<string name="no_connection">Aucune connexion disponible</string>
+	<string name="saved_in_server">Enregistré dans le serveur</string>
+	<string name="server_busy">Serveur occupé, réessayez demain</string>
+
+	<!-- Login -->
+	<string name="title_activity_masuk">Entrer</string>
+	<string name="masuk_welcome_text">Merci de vous connecter pour continuer.</string>
+	<string name="please_login">S\'il vous plait connectez-vous d\'abord</string>
+	<string name="edittext_nama_pengguna">nom d\'utilisateur</string>
+	<string name="edittext_kata_sandi">mot de passe</string>
+	<string name="edittext_project_id">project ID</string>
+	<string name="btn_masuk">Entrer</string>
+	<string name="please_fill_all">Merci de compléter tous les champs</string>
+	<string name="login_failed">Échec d\'entrer, vérifiez l\'identité que vous avez fournie.</string>
+	<string name="login_success">Entrer succès</string>
+
+	<!-- Settings -->
+	<string name="title_activity_pengaturan">Paramètres</string>
+	<string name="ask_apply">Appliquer les modifications?</string>
+
+	<!-- Alarm settings -->
+	<string name="title_activity_pengaturan_alarm">Alarme</string>
+	<string name="use_alarm">Activer l\'alarme</string>
+	<string name="alarm_only_if_hasnt_done">Seulement si la tâche est non terminée</string>
+	<string name="alarm_only_tomorrow">Seule tâche pour demain</string>
+	<string name="all_task_done">Toutes les tâches sont terminés!</string>
+	<string name="task_hasnt_done_count">Tâche non terminée:</string>
+	<string name="task_hasnt_done_tomorrow_count">Tâche qui n\'est pas faite pour demain:</string>
+
+	<!-- Alarm -->
+	<string name="title_activity_alarm_tugas">Alarme Tugas</string>
+	<string name="turnoff_alarm">Désactiver l\'alarme</string>
+
+	<!-- Auto-sync settings -->
+	<string name="title_activity_pengaturan_sinkronasi">Synchronisation</string>
+	<string name="sync_info">Synchronisation info</string>
+	<string name="last_list_update">Dernière mise à jour de la liste</string>
+	<string name="last_sync">Dernière synchronisation</string>
+	<string name="auto_sync">Synchronisation automatique</string>
+	<string name="auto_syncing">La synchronisation automatique est en cours.</string>
+
+	<!-- Update -->
+	<string name="title_activity_perbarui">Mettre à jour Daftar Tugas</string>
+	<string name="update_info">La version de Aplikasi Daftar Tugas déjà obsolète.\n\nAppuyez sur Mise à jour pour commencer la mise à jour. Assurez-vous que votre connexion Internet est stable.</string>
+	<string name="newest_version">Version la plus récente</string>
+	<string name="update">Mise à jour</string>
+
+	<!-- Downloading update -->
+	<string name="update2">Mettre à jour</string>
+	<string name="starting_update">Démarrage du téléchargement</string>
+	<string name="downloading">Téléchargement en cours</string>
+	<string name="download_completed">Télécharger terminé.</string>
+	<string name="ask_download_retry">Recommencer le téléchargement?</string>
+
+	<!-- Installing update -->
+	<string name="download_done_now_installing">Téléchargements. Installation en cours.</string>
+	<string name="install_info">La version de Aplikasi Daftar Tugas déjà obsolète.\n\nNouvelle version téléchargée. Appuyez sur Installer pour lancer l\'installation de la mise à jour.\n\nSi l\'installation a échoué, appuyez sur Retélécharger.</string>
+	<string name="install">Installer</string>
+	<string name="retry_download">Retélécharger</string>
+
+	<!-- Install failure -->
+	<string name="install_failed">Échec de l\'installation</string>
+	<string name="install_failed_download_failure">Peut-être à cause d\'un échec de téléchargement, réessayer le téléchargement?</string>
+	<string name="install_failed_packet_mismatch">Le paquet ne correspond pas au serveur, réessayer le téléchargement?</string>
+
+	<!-- Logout -->
+	<string name="action_logout">Logout</string>
+	<string name="ask_logout">Voulez-vous vous logout?</string>
+	<string name="see_you">À plus</string>
+
+	<!-- About -->
+	<string name="title_activity_tentang">À propos</string>
+	<string name="simple_desc">Fait avec sincérité.</string>
+	<string name="about_text">Muhammad Rifqi Priyo Susanto, et al.\nSimetri Creative Code Labs\nProtection des Droits d\'Auteur</string>
+	<string name="tos">Termes et Conditions (ID)</string>
+	<string name="tos_cache">Syarat dan Ketentuan Aplikasi Daftar Tugas\n\nSedang mengambil.\nCoba tutup lalu sentuh Syarat dan Ketentuan lagi.\nInfo lebih lanjut buka Daftar Tugas versi web.\n\nHak Cipta Muhammad Rifqi Priyo Susanto dkk. Simetri Creative Code Labs</string>
+
+	<!-- Crash -->
+	<string name="crash_message">Pardon, Aplikasi Daftar Tugas a rencontré une erreur et s\'est fermé de façon inattendue. Veuillez envoyer le texte ci-dessous à Simetri Creative Code Labs.</string>
+
+	<!-- Clipboard -->
+	<string name="copy_to_clipboard">Copier dans le presse-papier</string>
+	<string name="copied_to_clipboard">Copié dans le presse-papier.</string>
+
+</resources>

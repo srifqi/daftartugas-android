@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- Main task -->
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="apply">Apply</string>
+	<string name="cancel">Cancel</string>
+	<string name="back">Back</string>
+	<string name="close">Close</string>
+	<string name="exit">Exit</string>
+	<string name="retry">Retry</string>
+
+	<!-- After login -->
+	<string name="starting">Starting</string>
+	<string name="fetch_data">Fetching data for the first time.</string>
+
+	<!-- Main app -->
+	<string name="welcome_text">Hello,</string>
+	<string name="refresh">Refresh</string>
+	<string name="task_num">Task number\u0020</string>
+
+	<!-- Notes -->
+	<string name="edittext_user_description">personal note</string>
+	<string name="edit_note">Edit note</string>
+	<string name="save_note">Save note</string>
+
+	<!-- Task's info -->
+	<string name="INFO">INFO</string>
+	<string name="DONE">DONE</string>
+	<string name="HASNT_DONE">NOT DONE</string>
+
+	<!-- Sync status -->
+	<string name="offline_mode">Offline mode</string>
+	<string name="failed_connect">Failed to connect to server</string>
+	<string name="no_connection">No connection available</string>
+	<string name="saved_in_server">Saved in server</string>
+	<string name="server_busy">Server busy, try again tomorrow</string>
+
+	<!-- Login -->
+	<string name="title_activity_masuk">Login</string>
+	<string name="masuk_welcome_text">Please login to continue.</string>
+	<string name="please_login">Please login first</string>
+	<string name="edittext_nama_pengguna">username</string>
+	<string name="edittext_kata_sandi">password</string>
+	<string name="edittext_project_id">project ID</string>
+	<string name="btn_masuk">Login</string>
+	<string name="please_fill_all">Please fill all fields</string>
+	<string name="login_failed">Login failed, double check the identity you provided.</string>
+	<string name="login_success">Login success</string>
+
+	<!-- Settings -->
+	<string name="title_activity_pengaturan">Settings</string>
+	<string name="ask_apply">Apply changes?</string>
+
+	<!-- Alarm settings -->
+	<string name="title_activity_pengaturan_alarm">Alarm</string>
+	<string name="use_alarm">Turn on alarm</string>
+	<string name="alarm_only_if_hasnt_done">Only if there is undone task</string>
+	<string name="alarm_only_tomorrow">Only task for tomorrow</string>
+	<string name="all_task_done">All tasks are done!</string>
+	<string name="task_hasnt_done_count">Undone task:</string>
+	<string name="task_hasnt_done_tomorrow_count">Undone task for tomorrow:</string>
+
+	<!-- Alarm -->
+	<string name="title_activity_alarm_tugas">Alarm Tugas</string>
+	<string name="turnoff_alarm">Turn off alarm</string>
+
+	<!-- Auto-sync settings -->
+	<string name="title_activity_pengaturan_sinkronasi">Synchronization</string>
+	<string name="sync_info">Synchronization info</string>
+	<string name="last_list_update">Last list update</string>
+	<string name="last_sync">Last synchronization</string>
+	<string name="auto_sync">Automatic synchronization</string>
+	<string name="auto_syncing">Automatic synchronization is in progress.</string>
+
+	<!-- Update -->
+	<string name="title_activity_perbarui">Update Daftar Tugas</string>
+	<string name="update_info">Aplikasi Daftar Tugas\'s version already deprecated.\n\nTap Update to start updating. Make sure your internet connection is stable.</string>
+	<string name="newest_version">Newest version</string>
+	<string name="update">Update</string>
+
+	<!-- Downloading update -->
+	<string name="update2">Update</string>
+	<string name="starting_update">Starting download</string>
+	<string name="downloading">Downloading</string>
+	<string name="download_completed">Download completed.</string>
+	<string name="ask_download_retry">Retry download?</string>
+
+	<!-- Installing update -->
+	<string name="download_done_now_installing">Downloaded. Now installing.</string>
+	<string name="install_info">Aplikasi Daftar Tugas\'s version already deprecated.\n\nNew version has downloaded. Tap Install to start installing update.\n\nIf install failures tap Redownload.</string>
+	<string name="install">Install</string>
+	<string name="retry_download">Redownload</string>
+
+	<!-- Install failure -->
+	<string name="install_failed">Install failed</string>
+	<string name="install_failed_download_failure">Maybe because of download failure, retry download?</string>
+	<string name="install_failed_packet_mismatch">Package does not match with server, retry download?</string>
+
+	<!-- Logout -->
+	<string name="action_logout">Logout</string>
+	<string name="ask_logout">Do you want to logout?</string>
+	<string name="see_you">See you</string>
+
+	<!-- About -->
+	<string name="title_activity_tentang">About</string>
+	<string name="simple_desc">Made with sincerity.</string>
+	<string name="about_text">Muhammad Rifqi Priyo Susanto, et al.\nSimetri Creative Code Labs\nCopyright Protected</string>
+	<string name="tos">Terms and Conditional (ID)</string>
+	<string name="tos_cache">Syarat dan Ketentuan Aplikasi Daftar Tugas\n\nSedang mengambil.\nCoba tutup lalu sentuh Syarat dan Ketentuan lagi.\nInfo lebih lanjut buka Daftar Tugas versi web.\n\nHak Cipta Muhammad Rifqi Priyo Susanto dkk. Simetri Creative Code Labs</string>
+
+	<!-- Crash -->
+	<string name="crash_message">Sorry, Aplikasi Daftar Tugas encountered error and close unexpectedly. Please send text below to Simetri Creative Code Labs.</string>
+
+	<!-- Clipboard -->
+	<string name="copy_to_clipboard">Copy to clipboard</string>
+	<string name="copied_to_clipboard">Copied to clipboard.</string>
+
+</resources>

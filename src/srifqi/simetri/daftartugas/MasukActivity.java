@@ -83,7 +83,7 @@ public class MasukActivity extends AppCompatActivity {
 		Setting.set(getApplicationContext(), Setting.PROJECT_ID, ProjectID);
 
 		if (NamaPengguna.length() < 1 || KataSandi.length() < 1) {
-			Toast.makeText(getApplicationContext(), R.string.please_fill_all, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.please_fill_all, Toast.LENGTH_LONG).show();
 			btn_masuk.setEnabled(true);
 			editTextNamaPengguna.setEnabled(true);
 			editTextKataSandi.setEnabled(true);
@@ -145,7 +145,7 @@ public class MasukActivity extends AppCompatActivity {
 			// Login failed.
 			// Either both or one of user and password may wrong.
 			if (result.trim().length() == 3) {
-				Toast.makeText(getApplicationContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.login_failed, Toast.LENGTH_LONG).show();
 
 				btn_masuk.setEnabled(true);
 				editTextNamaPengguna.setEnabled(true);

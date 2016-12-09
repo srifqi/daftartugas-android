@@ -52,7 +52,7 @@
 	<string name="edittext_project_id">project ID</string>
 	<string name="btn_masuk">Masuk</string>
 	<string name="please_fill_all">Tolong isi semua bidang</string>
-	<string name="login_failed">Nama pengguna dengan kata sandi tidak cocok.</string>
+	<string name="login_failed">Gagal masuk, periksa ulang identitas yang Anda berikan.</string>
 	<string name="login_success">Berhasil masuk</string>
 
 	<!-- Settings -->
