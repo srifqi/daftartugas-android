@@ -29,87 +29,87 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 	public int downloaded = 0;
 	public String path;
 	public File file;
-	
+
 	/**
 	 * Function that will be called after done executing.
 	 * 
 	 * @param result
-	 *			The status of download.
+	 *            The status of download.
 	 */
 	public boolean onAfterExecute(String result) {
 		return true;
 	}
-	
+
 	/**
 	 * Function that will be called when there is progress.
 	 * 
 	 * @param downloaded
-	 *			Size of downloaded file (in bytes).
+	 *            Size of downloaded file (in bytes).
 	 */
 	public boolean onDownloadProgressUpdate(int downloaded) {
 		return true;
 	}
-	
+
 	/**
 	 * Function that will be called when no connection is avaiable.
 	 */
 	public boolean onNoConnection() {
 		return true;
 	}
-	
+
 	/**
 	 * Set the context of the task.
 	 * 
 	 * @param context
-	 *			Context of the task.
+	 *            Context of the task.
 	 */
-	public void setContext(Context context){
+	public void setContext(Context context) {
 		this.ctx = context;
 	}
-	
+
 	/**
 	 * Returns the context of the task.
 	 */
-	public Context getContext(){
+	public Context getContext() {
 		return this.ctx;
 	}
-	
+
 	/**
 	 * Set the timeout for request to be read by server.
 	 * 
 	 * @param timeout
-	 *			Timeout for request to be read.
+	 *            Timeout for request to be read.
 	 */
 	public void setReadTimeout(int timeout) {
 		this.readTimeout = timeout;
 	}
-	
+
 	/**
 	 * Set the timeout for request to be connected to server.
 	 * 
 	 * @param timeout
-	 *			Timeout for request to be connected.
+	 *            Timeout for request to be connected.
 	 */
 	public void setConnectTimeout(int timeout) {
 		this.connectTimeout = timeout;
 	}
-	
+
 	/**
 	 * Returns the response code of the request.
 	 */
 	public int getResponseCode() {
 		return this.responseCode;
 	}
-	
+
 	/**
 	 * Run the task.
 	 * 
 	 * @param url
-	 *			URL of the file.
+	 *            URL of the file.
 	 */
 	public void run(String url) {
 		this.downloaded = 0;
-		
+
 		ConnectivityManager connMgr = (ConnectivityManager) this.ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
@@ -118,16 +118,13 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 			this.onNoConnection();
 		}
 	}
-	
+
 	@Override
 	protected String doInBackground(String... urls) {
 		// params comes from the execute() call: params[0] is the url.
 		try {
 			String res = this.downloadUrl(urls[0]);
-			if (
-				res.contains("cpu") || res.contains("hostinger") ||
-				res.contains("CPU") || res.contains("Hostinger")
-			) {
+			if (res.contains("cpu") || res.contains("hostinger") || res.contains("CPU") || res.contains("Hostinger")) {
 				// Server is busy.
 				// Use R.string.server_sibuk to tell.
 				return "BUSY";
@@ -148,70 +145,67 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 			this.onAfterExecute(result);
 		}
 	}
-	
+
 	protected void onProgressUpdate(Integer... progress) {
 		this.onDownloadProgressUpdate(progress[0]);
 	}
-	
+
 	// Given a URL, establishes an HttpUrlConnection and retrieves
 	// the web page content as a InputStream, which it returns as
 	// a string.
 	private String downloadUrl(String myurl) throws IOException {
 		InputStream is = null;
-		
+
 		try {
 			URL url = new URL(myurl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setReadTimeout(this.readTimeout); // milliseconds
 			conn.setConnectTimeout(this.connectTimeout); // milliseconds
-			
+
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
 			// Starts the query
 			conn.connect();
-			
+
 			is = conn.getInputStream();
 			this.responseCode = conn.getResponseCode();
-			
-			File dir = new File(
-				Environment.getExternalStorageDirectory() +
-				"/DaftarTugas"
-			);
+
+			File dir = new File(Environment.getExternalStorageDirectory() + "/DaftarTugas");
 			dir.mkdirs();
 			File file = new File(dir, "DaftarTugas.apk");
-			
-			if (file.exists()) file.delete();
-			
+
+			if (file.exists())
+				file.delete();
+
 			FileOutputStream f = new FileOutputStream(file);
-			
+
 			byte[] buffer = new byte[1024];
 			int len1 = 0;
 			while ((len1 = is.read(buffer)) != -1) {
 				f.write(buffer, 0, len1);
-				this.publishProgress(
-					this.downloaded = this.downloaded + len1
-				);
+				this.publishProgress(this.downloaded = this.downloaded + len1);
 			}
 			f.close();
-			
+
 			ConnectivityManager connMgr = (ConnectivityManager) this.ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			
+
 			if (networkInfo != null && networkInfo.isConnected()) {
 				// Done.
 			} else {
 				// Something bad happened.
-				if (file.exists()) file.delete();
+				if (file.exists())
+					file.delete();
 				this.onNoConnection();
 				this.path = "";
 				return "ERROR";
 			}
-			
+
 			this.path = file.getAbsolutePath();
 			this.file = file;
-			
+
 			return "DONE";
-	
+
 			// Makes sure that the InputStream is closed after the app is
 			// finished using it.
 		} finally {

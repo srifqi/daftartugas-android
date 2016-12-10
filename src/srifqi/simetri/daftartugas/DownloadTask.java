@@ -22,14 +22,11 @@ import android.os.AsyncTask;
 /**
  * A class to create an {@link AsyncTask} to download a page as {@link String}.
  *
- * <b>Cache handling</b>
- * There are three possible options to save the downloaded page to storage:
- * - {@link DownloadTask.dontSave()}
- *   This option will never save the downloaded page.
- * - {@link DownloadTask.alwaysSave()}
- *   This option will always save the downloaded page.
- * - {@link DownloadTask.saveOnSuccess()}
- *   This option will only save the downloaded page when the server responds 200.
+ * <b>Cache handling</b> There are three possible options to save the downloaded
+ * page to storage: - {@link DownloadTask.dontSave()} This option will never
+ * save the downloaded page. - {@link DownloadTask.alwaysSave()} This option
+ * will always save the downloaded page. - {@link DownloadTask.saveOnSuccess()}
+ * This option will only save the downloaded page when the server responds 200.
  */
 public class DownloadTask extends AsyncTask<String, Void, String> {
 	private Context ctx;
@@ -44,9 +41,9 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Function that will be called after done executing.
 	 *
 	 * @param result
-	 *			The downloaded page as String.
+	 *            The downloaded page as String.
 	 */
-	public boolean onAfterExecute(String result){
+	public boolean onAfterExecute(String result) {
 		return true;
 	}
 
@@ -61,16 +58,16 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Set the context of the task.
 	 *
 	 * @param context
-	 *			Context of the task.
+	 *            Context of the task.
 	 */
-	public void setContext(Context context){
+	public void setContext(Context context) {
 		this.ctx = context;
 	}
 
 	/**
 	 * Returns the context of the task.
 	 */
-	public Context getContext(){
+	public Context getContext() {
 		return this.ctx;
 	}
 
@@ -78,9 +75,9 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Set the name of file to save the result.
 	 *
 	 * @param filename
-	 *			Name of the file.
+	 *            Name of the file.
 	 */
-	public void setSaveFilename(String filename){
+	public void setSaveFilename(String filename) {
 		this.saveFilename = filename;
 	}
 
@@ -88,7 +85,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Set the method to send request to the server (GET or POST).
 	 *
 	 * @param method
-	 *			Method to send request.
+	 *            Method to send request.
 	 */
 	public void setMethod(String method) {
 		this.method = method;
@@ -98,7 +95,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Set the timeout for request to be read by server.
 	 *
 	 * @param timeout
-	 *			Timeout for request to be read.
+	 *            Timeout for request to be read.
 	 */
 	public void setReadTimeout(int timeout) {
 		this.readTimeout = timeout;
@@ -108,7 +105,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Set the timeout for request to be connected to server.
 	 *
 	 * @param timeout
-	 *			Timeout for request to be connected.
+	 *            Timeout for request to be connected.
 	 */
 	public void setConnectTimeout(int timeout) {
 		this.connectTimeout = timeout;
@@ -146,11 +143,11 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Run the task.
 	 *
 	 * @param url
-	 *			URL of the page.
+	 *            URL of the page.
 	 * @param param
-	 *			Parameter for POST request.
+	 *            Parameter for POST request.
 	 */
-	public void run(String url, String param){
+	public void run(String url, String param) {
 		this.onAfterExecute(readCache());
 
 		ConnectivityManager connMgr = (ConnectivityManager) this.ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -170,16 +167,16 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	 * Run the task.
 	 *
 	 * @param url
-	 *			URL of the page.
+	 *            URL of the page.
 	 */
-	public void run(String url){
+	public void run(String url) {
 		run(url, "");
 	}
 
 	/**
 	 * Returns the cache of the page (saved page as file) if avaiable.
 	 */
-	public String readCache(){
+	public String readCache() {
 		// Read data in an internal file.
 		return IOFile.read(this.ctx, this.saveFilename);
 	}
@@ -189,10 +186,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 		// params comes from the execute() call: params[0] is the url.
 		try {
 			String res = this.downloadUrl(urls[0], urls[1]);
-			if (
-				res.contains("cpu") || res.contains("hostinger") ||
-				res.contains("CPU") || res.contains("Hostinger")
-			) {
+			if (res.contains("cpu") || res.contains("hostinger") || res.contains("CPU") || res.contains("Hostinger")) {
 				// Server is busy.
 				// Use R.string.server_busy to tell.
 				return this.readCache();
@@ -209,12 +203,11 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	protected void onPostExecute(String result) {
 		this.onAfterExecute(result);
 
-		// Save the downloaded page after calling the onAfterExecute, so when there
+		// Save the downloaded page after calling the onAfterExecute, so when
+		// there
 		// is an error, the page would not be saved.
-		if (
-			this.saveData.compareToIgnoreCase("true") == 0 ||
-			(this.saveData.compareToIgnoreCase("onSuccess") == 0 && this.responseCode == 200)
-		) {
+		if (this.saveData.compareToIgnoreCase("true") == 0
+				|| (this.saveData.compareToIgnoreCase("onSuccess") == 0 && this.responseCode == 200)) {
 			IOFile.write(this.ctx, this.saveFilename, result);
 		}
 	}
@@ -232,12 +225,12 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 			conn.setReadTimeout(this.readTimeout); // milliseconds
 			conn.setConnectTimeout(this.connectTimeout); // milliseconds
 
-			if (this.method=="GET") {
+			if (this.method == "GET") {
 				conn.setRequestMethod("GET");
 				conn.setDoInput(true);
 				// Starts the query
 				conn.connect();
-			} else if (this.method=="POST") {
+			} else if (this.method == "POST") {
 				conn.setRequestMethod("POST");
 
 				conn.setDoOutput(true);
@@ -269,8 +262,8 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
 			return contentAsString;
 
-		// Makes sure that the InputStream is closed after the app is
-		// finished using it.
+			// Makes sure that the InputStream is closed after the app is
+			// finished using it.
 		} finally {
 			if (is != null) {
 				is.close();
@@ -286,16 +279,15 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 		if (stream == null) {
 			return this.readCache();
 		}
-		BufferedReader brd = new BufferedReader(
-			new InputStreamReader(stream, "UTF-8")
-		);
+		BufferedReader brd = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		String line;
 		int i = 0;
 
 		while ((line = brd.readLine()) != null) {
-			if (i > 0) sb.append("\n");
+			if (i > 0)
+				sb.append("\n");
 			sb.append(line);
-			i ++;
+			i++;
 		}
 
 		return sb.toString();

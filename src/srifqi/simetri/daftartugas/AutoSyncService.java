@@ -33,10 +33,9 @@ public class AutoSyncService extends IntentService {
 		dlt.setMethod("POST");
 
 		String strUrlParam = "";
-		long lastSaved = (long) (IOFile.mtime(getApplicationContext(), "fetchdata.txt")/1e3);
+		long lastSaved = (long) (IOFile.mtime(getApplicationContext(), "fetchdata.txt") / 1e3);
 
-		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt")
-						.split("\n\\|\\|\\|\\|\\|\n");
+		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt").split("\n\\|\\|\\|\\|\\|\n");
 		if (teks.length == 3) {
 			// Parse JSON data
 			DTO.L = null;
@@ -55,9 +54,8 @@ public class AutoSyncService extends IntentService {
 		}
 
 		try {
-			strUrlParam = "token=" + IOFile.read(getApplicationContext(), "token.txt") +
-				"&lastsaved=" + lastSaved +
-				"&dataL=" + URLEncoder.encode(DTO.L.toString(), "UTF-8");
+			strUrlParam = "token=" + IOFile.read(getApplicationContext(), "token.txt") + "&lastsaved=" + lastSaved
+					+ "&dataL=" + URLEncoder.encode(DTO.L.toString(), "UTF-8");
 			if (IOFile.read(getApplicationContext(), "fetchdata.txt").length() > 0) {
 				strUrlParam += "&save=1";
 			} else {
@@ -68,21 +66,17 @@ public class AutoSyncService extends IntentService {
 			// e.printStackTrace();
 		}
 
-		dlt.run(
-			DaftarTugas.FETCHURL +
-			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/api/transaction",
-			strUrlParam
-		);
+		dlt.run(DaftarTugas.FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) + "/api/transaction",
+				strUrlParam);
 	}
 
 	private class DownloadDT extends DownloadTask {
 		@Override
 		public boolean onAfterExecute(String result) {
-			DONE ++;
+			DONE++;
 			if (DONE >= 2) {
-				NotificationManager mNotificationManager =
-					(NotificationManager) this.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+				NotificationManager mNotificationManager = (NotificationManager) this.getContext()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
 
 				mNotificationManager.cancel(Setting.NOTIF_AUTO_SYNC);
 			}

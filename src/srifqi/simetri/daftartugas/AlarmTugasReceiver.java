@@ -30,10 +30,7 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 		 *
 		 * http://stackoverflow.com/a/21314662
 		 */
-		if (
-			intent.getStringExtra("ID") ==
-			Setting.get(ctx, Setting.ALARM_NOTIF_LAST_ID)
-		) {
+		if (intent.getStringExtra("ID") == Setting.get(ctx, Setting.ALARM_NOTIF_LAST_ID)) {
 			return;
 		}
 		Setting.set(ctx, Setting.ALARM_NOTIF_LAST_ID, intent.getStringExtra("ID"));
@@ -45,40 +42,27 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 
 		int hasntdone = 0;
 		int hasntdonetomorrow = 0;
-		for (int i = 0; i < DTO.SortedDaftarTugas.size(); i ++) {
+		for (int i = 0; i < DTO.SortedDaftarTugas.size(); i++) {
 			String[] tugas = DTO.SortedDaftarTugas.get(i);
 			if (tugas[6].compareTo("0") == 0) {
-				hasntdone ++;
+				hasntdone++;
 				String[] date = tugas[5].split(",");
-				int[] date2 = {
-					Integer.parseInt(date[0]),
-					Integer.parseInt(date[1]) - 1,
-					Integer.parseInt(date[2])
-				};
+				int[] date2 = { Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]) };
 				Calendar calendar = new GregorianCalendar();
 				calendar.add(Calendar.HOUR_OF_DAY, 24);
-				if (
-					date2[0] == calendar.get(Calendar.YEAR) &&
-					date2[1] == calendar.get(Calendar.MONTH) &&
-					date2[2] == calendar.get(Calendar.DAY_OF_MONTH)
-				) {
-					hasntdonetomorrow ++;
+				if (date2[0] == calendar.get(Calendar.YEAR) && date2[1] == calendar.get(Calendar.MONTH)
+						&& date2[2] == calendar.get(Calendar.DAY_OF_MONTH)) {
+					hasntdonetomorrow++;
 				}
 			}
 		}
 
-		if (
-			Setting.getAsInt(ctx, Setting.ALARM_ONLY_IF_HASNT_DONE) == 1 &&
-			Setting.getAsInt(ctx, Setting.ALARM_ONLY_TOMORROW) == 1 &&
-			hasntdonetomorrow == 0
-		) {
+		if (Setting.getAsInt(ctx, Setting.ALARM_ONLY_IF_HASNT_DONE) == 1
+				&& Setting.getAsInt(ctx, Setting.ALARM_ONLY_TOMORROW) == 1 && hasntdonetomorrow == 0) {
 			return;
 		}
 
-		if (
-			Setting.getAsInt(ctx, Setting.ALARM_ONLY_IF_HASNT_DONE) == 1 &&
-			hasntdone == 0
-		) {
+		if (Setting.getAsInt(ctx, Setting.ALARM_ONLY_IF_HASNT_DONE) == 1 && hasntdone == 0) {
 			return;
 		}
 
@@ -91,17 +75,13 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 			msg = rsc.getString(R.string.task_hasnt_done_count) + " " + hasntdone;
 		}
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx)
-			.setSmallIcon(R.drawable.ic_alarm)
-			.setContentTitle(rsc.getString(R.string.app_name))
-			.setContentText(msg);
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx).setSmallIcon(R.drawable.ic_alarm)
+				.setContentTitle(rsc.getString(R.string.app_name)).setContentText(msg);
 
 		Intent resultIntent = new Intent(ctx, DaftarTugas.class);
 
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(
-			ctx, Setting.PI_ID_NOTIF_ALARM,
-			resultIntent, PendingIntent.FLAG_CANCEL_CURRENT
-		);
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(ctx, Setting.PI_ID_NOTIF_ALARM, resultIntent,
+				PendingIntent.FLAG_CANCEL_CURRENT);
 
 		mBuilder.setContentIntent(resultPendingIntent);
 
@@ -109,8 +89,8 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 		mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
 		mBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
 
-		NotificationManager mNotificationManager =
-			(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager mNotificationManager = (NotificationManager) ctx
+				.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		mNotificationManager.notify(Setting.NOTIF_ALARM, mBuilder.build());
 
@@ -122,20 +102,16 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 	/**
 	 * Helper to set alarm.
 	 *
-	 *  @param ctx
-	 *  		The application context.
+	 * @param ctx
+	 *            The application context.
 	 */
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public static void setAlarm(Context ctx) {
 		AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, Setting.getAsInt(
-			ctx, Setting.ALARM_TIME_HOUR
-		));
-		calendar.set(Calendar.MINUTE, Setting.getAsInt(
-			ctx, Setting.ALARM_TIME_MINUTE
-		));
+		calendar.set(Calendar.HOUR_OF_DAY, Setting.getAsInt(ctx, Setting.ALARM_TIME_HOUR));
+		calendar.set(Calendar.MINUTE, Setting.getAsInt(ctx, Setting.ALARM_TIME_MINUTE));
 		calendar.set(Calendar.SECOND, 0);
 
 		if (calendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
@@ -144,14 +120,9 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 
 		Intent intent = new Intent(ctx, AlarmTugasReceiver.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.putExtra("ID",
-			"." + calendar.get(Calendar.DAY_OF_YEAR) +
-			"." + calendar.get(Calendar.HOUR_OF_DAY) +
-			"." + calendar.get(Calendar.MINUTE)
-		);
-		PendingIntent alarmIntent = PendingIntent.getBroadcast(
-			ctx, Setting.PI_ID_ALARM, intent, 0
-		);
+		intent.putExtra("ID", "." + calendar.get(Calendar.DAY_OF_YEAR) + "." + calendar.get(Calendar.HOUR_OF_DAY) + "."
+				+ calendar.get(Calendar.MINUTE));
+		PendingIntent alarmIntent = PendingIntent.getBroadcast(ctx, Setting.PI_ID_ALARM, intent, 0);
 
 		if (Setting.getAsInt(ctx, Setting.ALARM_ENABLED) == 0) {
 			alarmMgr.cancel(alarmIntent);

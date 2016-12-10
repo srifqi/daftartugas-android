@@ -68,16 +68,13 @@ public class AlarmTugasActivity extends Activity {
 			// Display correct time in TimeTextView.
 			@Override
 			public void run() {
-				runOnUiThread(new Runnable(){
+				runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
 						Calendar c = new GregorianCalendar();
-						TimeTextView.setText(
-							DaftarTugas.formatNumber(c.get(Calendar.HOUR_OF_DAY), 2) +
-							":" +
-							DaftarTugas.formatNumber(c.get(Calendar.MINUTE), 2)
-						);
+						TimeTextView.setText(DaftarTugas.formatNumber(c.get(Calendar.HOUR_OF_DAY), 2) + ":"
+								+ DaftarTugas.formatNumber(c.get(Calendar.MINUTE), 2));
 					}
 				});
 			}
@@ -116,51 +113,35 @@ public class AlarmTugasActivity extends Activity {
 				last_day = tid;
 				String[] ymd = ti[5].split(",");
 				Calendar cal = Calendar.getInstance();
-				cal.set(
-					Integer.parseInt(ymd[0]),
-					Integer.parseInt(ymd[1]) - 1,
-					Integer.parseInt(ymd[2])
-				);
+				cal.set(Integer.parseInt(ymd[0]), Integer.parseInt(ymd[1]) - 1, Integer.parseInt(ymd[2]));
 
 				View separatorView = new View(this);
-				ListView.LayoutParams paramsw = new ListView.LayoutParams(
-					ListView.LayoutParams.MATCH_PARENT,
-					(int) (2 * displayDensity)
-				);
+				ListView.LayoutParams paramsw = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+						(int) (2 * displayDensity));
 				separatorView.setLayoutParams(paramsw);
 				separatorView.setBackgroundColor(ContextCompat.getColor(this, R.color.blackDivider));
 
 				ListArrayAdapter.addView(separatorView, false);
 
 				LinearLayout dayLL = new LinearLayout(this);
-				ListView.LayoutParams paramll = new ListView.LayoutParams(
-					ListView.LayoutParams.MATCH_PARENT,
-					(int) (46 * displayDensity) // Already subtracted by 2dp for divider.
+				ListView.LayoutParams paramll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+						(int) (46 * displayDensity) // Already subtracted by 2dp
+													// for divider.
 				);
 				dayLL.setLayoutParams(paramll);
 				dayLL.setOrientation(LinearLayout.VERTICAL);
 				dayLL.setGravity(Gravity.CENTER_VERTICAL);
 
 				TextView dayTextView = new TextView(this);
-				dayTextView.setText(Html.fromHtml(
-					"<b>" +
-					DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
-					cal.get(Calendar.DATE) + " " +
-					// mod 12 just in case somebody is stupid enough.
-					DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " +
-					cal.get(Calendar.YEAR) +
-					"</b>"
-				));
+				dayTextView.setText(Html.fromHtml("<b>" + DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", "
+						+ cal.get(Calendar.DATE) + " " +
+						// mod 12 just in case somebody is stupid enough.
+						DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " + cal.get(Calendar.YEAR) + "</b>"));
 				dayTextView.setTextSize(14);
 				dayTextView.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
-				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.WRAP_CONTENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT
-				);
-				paramd.setMargins(
-					(int) (16 * displayDensity), 0,
-					(int) (16 * displayDensity), 0
-				);
+				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+				paramd.setMargins((int) (16 * displayDensity), 0, (int) (16 * displayDensity), 0);
 				dayTextView.setLayoutParams(paramd);
 
 				dayLL.addView(dayTextView);
@@ -168,24 +149,17 @@ public class AlarmTugasActivity extends Activity {
 			}
 
 			LinearLayout taskLL = new LinearLayout(this);
-			ListView.LayoutParams paramll = new ListView.LayoutParams(
-				ListView.LayoutParams.MATCH_PARENT,
-				(int) (70 * displayDensity)
-			);
+			ListView.LayoutParams paramll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+					(int) (70 * displayDensity));
 			taskLL.setLayoutParams(paramll);
 			taskLL.setOrientation(LinearLayout.HORIZONTAL);
 			taskLL.setGravity(Gravity.CENTER_VERTICAL);
 			taskLL.setBackgroundResource(R.color.white);
 
 			LinearLayout textLL = new LinearLayout(this);
-			LinearLayout.LayoutParams paramtll = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
-			paramtll.setMargins(
-				(int) (16 * displayDensity), 0,
-				(int) (16 * displayDensity), 0
-			);
+			LinearLayout.LayoutParams paramtll = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			paramtll.setMargins((int) (16 * displayDensity), 0, (int) (16 * displayDensity), 0);
 			textLL.setLayoutParams(paramtll);
 			textLL.setOrientation(LinearLayout.VERTICAL);
 			textLL.setGravity(Gravity.START);
@@ -195,10 +169,8 @@ public class AlarmTugasActivity extends Activity {
 			tv.setSingleLine();
 			tv.setMaxLines(1);
 			tv.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			tv.setLayoutParams(paramtv);
 			tv.setTextColor(ContextCompat.getColor(this, R.color.blackPrimary));
 			tv.setTextSize(16); // In sp.
@@ -206,17 +178,13 @@ public class AlarmTugasActivity extends Activity {
 			textLL.addView(tv);
 
 			TextView stv = new TextView(this);
-			stv.setText(Html.fromHtml(
-				"<i>" + ti[3] + " (" + ti[4] + ")</i>" +
-				(ti[2].length() < 1 ? "" : " | " + ti[2])
-			));
+			stv.setText(
+					Html.fromHtml("<i>" + ti[3] + " (" + ti[4] + ")</i>" + (ti[2].length() < 1 ? "" : " | " + ti[2])));
 			stv.setSingleLine();
 			stv.setMaxLines(1);
 			stv.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramstv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramstv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			stv.setLayoutParams(paramstv);
 			stv.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
 			stv.setTextSize(14); // In sp.
@@ -245,10 +213,8 @@ public class AlarmTugasActivity extends Activity {
 		mp.setScreenOnWhilePlaying(true);
 
 		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		int result = am.requestAudioFocus(
-			audioFocusChangeListener, AudioManager.STREAM_MUSIC,
-			AudioManager.AUDIOFOCUS_GAIN
-		);
+		int result = am.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC,
+				AudioManager.AUDIOFOCUS_GAIN);
 
 		// http://stackoverflow.com/a/16252044
 		audioFocusChangeListener = new OnAudioFocusChangeListener() {
@@ -256,25 +222,25 @@ public class AlarmTugasActivity extends Activity {
 			@Override
 			public void onAudioFocusChange(int focusChange) {
 				switch (focusChange) {
-					case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-						mp.setVolume(0.1f, 0.1f);
-						break;
+				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+					mp.setVolume(0.1f, 0.1f);
+					break;
 
-					case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-						mp.pause();
-						break;
+				case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+					mp.pause();
+					break;
 
-					case AudioManager.AUDIOFOCUS_LOSS:
-						mp.stop();
-						break;
+				case AudioManager.AUDIOFOCUS_LOSS:
+					mp.stop();
+					break;
 
-					case AudioManager.AUDIOFOCUS_GAIN:
-						mp.setVolume(1f, 1f);
-						mp.start();
-						break;
+				case AudioManager.AUDIOFOCUS_GAIN:
+					mp.setVolume(1f, 1f);
+					mp.start();
+					break;
 
-					default:
-						break;
+				default:
+					break;
 				}
 			}
 		};
@@ -285,12 +251,9 @@ public class AlarmTugasActivity extends Activity {
 			mp.release();
 		}
 
-		getWindow().addFlags(
-			WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-			WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-			WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-			WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-		);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+				| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 	}
 
 	public void onPause() {
@@ -302,10 +265,7 @@ public class AlarmTugasActivity extends Activity {
 	// Disable any key up event except Escape button.
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if (
-			event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE ||
-			event.getKeyCode() == KeyEvent.KEYCODE_BACK
-		) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE || event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			stopAlarm();
 
 			this.finish();
@@ -331,7 +291,8 @@ public class AlarmTugasActivity extends Activity {
 	}
 
 	public void stopAlarm() {
-		if (mpReleased == true) return;
+		if (mpReleased == true)
+			return;
 		mp.stop();
 		mp.release();
 		mpReleased = true;

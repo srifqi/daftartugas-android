@@ -37,12 +37,8 @@ public class ErrorReporting extends Activity {
 			errStackStr += (String) iter.next();
 		}
 		String errStack2 = getIntent().getStringExtra("StackTrace2");
-		errMsg = (
-			errMessage + "\n---------------\n" +
-			errStackStr + "\n---------------\n" +
-			errStack2 + "\n---------------\n" +
-			DaftarTugas.VERSION_CODE
-		);
+		errMsg = (errMessage + "\n---------------\n" + errStackStr + "\n---------------\n" + errStack2
+				+ "\n---------------\n" + DaftarTugas.VERSION_CODE);
 
 		EditText errmsg = (EditText) findViewById(R.id.ErrorLog);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -55,10 +51,12 @@ public class ErrorReporting extends Activity {
 	public void copyToClipboard(View v) {
 		int sdk = android.os.Build.VERSION.SDK_INT;
 		if (sdk < 11) {
-			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(
+					Context.CLIPBOARD_SERVICE);
 			clipboard.setText(errMsg);
 		} else {
-			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(
+					Context.CLIPBOARD_SERVICE);
 			android.content.ClipData clip = android.content.ClipData.newPlainText("text label", errMsg);
 			clipboard.setPrimaryClip(clip);
 		}
@@ -96,10 +94,12 @@ public class ErrorReporting extends Activity {
 				}
 
 				@Override
-				public void flush() throws IOException {}
+				public void flush() throws IOException {
+				}
 
 				@Override
-				public void close() throws IOException {}
+				public void close() throws IOException {
+				}
 			};
 			PrintWriter pwriter = new PrintWriter(writer);
 			ex.printStackTrace(pwriter);
@@ -114,11 +114,11 @@ public class ErrorReporting extends Activity {
 
 			this.context.startActivity(intent);
 
-			/* Maybe not, it disturbs the UI.
-			if (defaultUEH != null) {
-				// Delegates to Andoid's error handling.
-				defaultUEH.uncaughtException(thread, ex);
-			} */
+			/*
+			 * Maybe not, it disturbs the UI. if (defaultUEH != null) { //
+			 * Delegates to Andoid's error handling.
+			 * defaultUEH.uncaughtException(thread, ex); }
+			 */
 
 			System.exit(2); // Prevents app from freezing.
 		}

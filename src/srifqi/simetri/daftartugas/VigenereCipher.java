@@ -12,9 +12,7 @@ public class VigenereCipher {
 
 		for (int i = 0; i < text.length(); i++) {
 			int u = (int) ((65536 + Character.codePointAt(text, i) + seed.next()) % 65536);
-			res.appendCodePoint(
-				u
-			);
+			res.appendCodePoint(u);
 		}
 
 		return res.toString();

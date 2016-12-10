@@ -106,29 +106,18 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 		long time4 = Long.parseLong(Info[1]);
 		// long time5 = Long.parseLong(Info[2]);
 		String rds4 = DaftarTugas.timestampToRelativeDateString(time4);
-		String rds5 = DaftarTugas.timestampToRelativeDateString(IOFile.mtime(getApplicationContext(), "fetchdata.txt")/1000);
-		String infoT = rsc.getString(R.string.sync_info) + "\n\n" +
-			rsc.getString(R.string.last_list_update) +
-			":\n" + rds4 + "\n\n" +
-			rsc.getString(R.string.last_sync) +
-			":\n" + rds5;
+		String rds5 = DaftarTugas
+				.timestampToRelativeDateString(IOFile.mtime(getApplicationContext(), "fetchdata.txt") / 1000);
+		String infoT = rsc.getString(R.string.sync_info) + "\n\n" + rsc.getString(R.string.last_list_update) + ":\n"
+				+ rds4 + "\n\n" + rsc.getString(R.string.last_sync) + ":\n" + rds5;
 		SyncInfoTextView.setText(infoT);
 	}
 
 	public void setAutoSync() {
-		Setting.set(
-			getApplicationContext(), Setting.AUTO_SYNC,
-			AutoSyncCheckBox.isChecked() ? 1 : 0
-		);
+		Setting.set(getApplicationContext(), Setting.AUTO_SYNC, AutoSyncCheckBox.isChecked() ? 1 : 0);
 
-		Setting.set(
-			getApplicationContext(), Setting.AUTO_SYNC_TIME_HOUR,
-			AutoSyncTimePicker.getCurrentHour()
-		);
-		Setting.set(
-			getApplicationContext(), Setting.AUTO_SYNC_TIME_MINUTE,
-			AutoSyncTimePicker.getCurrentMinute()
-		);
+		Setting.set(getApplicationContext(), Setting.AUTO_SYNC_TIME_HOUR, AutoSyncTimePicker.getCurrentHour());
+		Setting.set(getApplicationContext(), Setting.AUTO_SYNC_TIME_MINUTE, AutoSyncTimePicker.getCurrentMinute());
 
 		AlarmSyncReceiver.setAutoSync(getApplicationContext());
 

@@ -78,48 +78,38 @@ public class PengaturanActivity extends AppCompatActivity {
 		PengaturanListView.setAdapter(ListArrayAdapter);
 
 		// Manually add item to the list.
-		String[] itemName = {
-			rsc.getString(R.string.title_activity_pengaturan_alarm),
-			rsc.getString(R.string.title_activity_pengaturan_sinkronasi),
-			rsc.getString(R.string.title_activity_tentang),
-			rsc.getString(R.string.action_logout)
-		};
-		OnClickListener[] itemCallback = {
-			new OnClickListener() {
+		String[] itemName = { rsc.getString(R.string.title_activity_pengaturan_alarm),
+				rsc.getString(R.string.title_activity_pengaturan_sinkronasi),
+				rsc.getString(R.string.title_activity_tentang), rsc.getString(R.string.action_logout) };
+		OnClickListener[] itemCallback = { new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					optionAlarm();
-				}
-			},
-			new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				optionAlarm();
+			}
+		}, new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					optionSinkronasi();
-				}
-			},
-			new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				optionSinkronasi();
+			}
+		}, new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					optionTentang();
-				}
-			},
-			new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				optionTentang();
+			}
+		}, new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					optionKeluar();
-				}
-			},
-		};
-		for (int i = 0; i < itemName.length; i ++) {
+			@Override
+			public void onClick(View v) {
+				optionKeluar();
+			}
+		}, };
+		for (int i = 0; i < itemName.length; i++) {
 			LinearLayout itemLL = new LinearLayout(this);
-			ListView.LayoutParams paramill = new ListView.LayoutParams(
-				ListView.LayoutParams.MATCH_PARENT,
-				(int) (68 * displayDensity)
-			);
+			ListView.LayoutParams paramill = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+					(int) (68 * displayDensity));
 			itemLL.setOrientation(LinearLayout.VERTICAL);
 			itemLL.setGravity(Gravity.CENTER_VERTICAL);
 			itemLL.setLayoutParams(paramill);
@@ -140,14 +130,9 @@ public class PengaturanActivity extends AppCompatActivity {
 			itemTV.setMaxLines(1);
 			itemTV.setEllipsize(TruncateAt.END);
 			itemTV.setTextColor(ContextCompat.getColor(this, R.color.blackPrimary));
-			LinearLayout.LayoutParams paramitv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
-			paramitv.setMargins(
-				(int) (16 * displayDensity), 0,
-				(int) (16 * displayDensity), 0
-			);
+			LinearLayout.LayoutParams paramitv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			paramitv.setMargins((int) (16 * displayDensity), 0, (int) (16 * displayDensity), 0);
 			itemTV.setLayoutParams(paramitv);
 			itemTV.setTextSize(16); // In sp.
 
@@ -193,13 +178,11 @@ public class PengaturanActivity extends AppCompatActivity {
 
 				// Cancel all alarms.
 				Intent alarmIntent = new Intent(getApplicationContext(), AlarmSyncReceiver.class);
-				PendingIntent alarmPIntent = PendingIntent.getBroadcast(
-					getApplicationContext(), 0, alarmIntent, PendingIntent.FLAG_NO_CREATE
-				);
+				PendingIntent alarmPIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent,
+						PendingIntent.FLAG_NO_CREATE);
 				Intent syncIntent = new Intent(getApplicationContext(), AlarmSyncReceiver.class);
-				PendingIntent syncPIntent = PendingIntent.getBroadcast(
-					getApplicationContext(), 0, syncIntent, PendingIntent.FLAG_NO_CREATE
-				);
+				PendingIntent syncPIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, syncIntent,
+						PendingIntent.FLAG_NO_CREATE);
 				AlarmManager alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
 				if (alarmPIntent != null) {
 					alarmMgr.cancel(alarmPIntent);
@@ -212,12 +195,8 @@ public class PengaturanActivity extends AppCompatActivity {
 				dlt.setContext(getApplicationContext());
 				dlt.setMethod("POST");
 				dlt.dontSave();
-				dlt.run(
-					DaftarTugas.FETCHURL +
-					Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-					"/api/deletetoken",
-					"token=" + TOKEN
-				);
+				dlt.run(DaftarTugas.FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID)
+						+ "/api/deletetoken", "token=" + TOKEN);
 
 				// Empty all personal files.
 				IOFile.write(getApplicationContext(), "userpass.txt", "");
@@ -244,8 +223,7 @@ public class PengaturanActivity extends AppCompatActivity {
 	/**
 	 * ItemListAdapter
 	 *
-	 * An adapter extended from BaseAdapter that is specialized for
-	 * item list.
+	 * An adapter extended from BaseAdapter that is specialized for item list.
 	 */
 	public class ItemListAdapter extends BaseAdapter implements ListAdapter {
 

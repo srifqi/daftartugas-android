@@ -34,7 +34,7 @@ public class Tentang extends Activity {
 		TOSdlgb.setTitle(R.string.tos);
 		TOSdlgb.setMessage(TOS);
 		TOSdlgb.setCancelable(true);
-		TOSdlgb.setNeutralButton("Tutup", new OnClickListener(){
+		TOSdlgb.setNeutralButton("Tutup", new OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -46,11 +46,7 @@ public class Tentang extends Activity {
 		dtost.setContext(getApplicationContext());
 		dtost.setMethod("GET");
 		dtost.setSaveFilename("TOS.txt");
-		dtost.run(
-			DaftarTugas.FETCHURL +
-			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/tos.txt"
-		);
+		dtost.run(DaftarTugas.FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) + "/tos.txt");
 	}
 
 	public void openTOS(View view) {

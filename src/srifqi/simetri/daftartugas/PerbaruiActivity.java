@@ -42,8 +42,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
 		// Check version
-		VERSION = IOFile.read(getApplicationContext(), "version.txt")
-				.trim().split("\n");
+		VERSION = IOFile.read(getApplicationContext(), "version.txt").trim().split("\n");
 
 		if (VERSION.length > 2 && Integer.parseInt(VERSION[2]) < DaftarTugas.VERSION_CODE) {
 			Intent intent = new Intent(this, DaftarTugas.class);
@@ -83,18 +82,13 @@ public class PerbaruiActivity extends AppCompatActivity {
 		TextView textVersion = (TextView) findViewById(R.id.textVersion);
 		textVersion.setText(rsc.getString(R.string.newest_version) + ": " + VERSION[0]);
 
-		File dir = new File(
-			Environment.getExternalStorageDirectory() +
-			"/DaftarTugas"
-		);
+		File dir = new File(Environment.getExternalStorageDirectory() + "/DaftarTugas");
 		dir.mkdirs();
 		File file = new File(dir, "DaftarTugas.apk");
 
 		String STATUS = IOFile.read(getApplicationContext(), "updatestatus.txt");
-		if (STATUS.compareToIgnoreCase("INSTALL") == 0 &&
-			file.exists()) {
-			if(MD5Checksum.fileToMD5(file)
-				.compareToIgnoreCase(VERSION[1]) == 0) {
+		if (STATUS.compareToIgnoreCase("INSTALL") == 0 && file.exists()) {
+			if (MD5Checksum.fileToMD5(file).compareToIgnoreCase(VERSION[1]) == 0) {
 				textStatus.setText(R.string.install_info);
 				textProgress.setText(R.string.download_completed);
 				buttonPerbarui.setVisibility(View.GONE);
@@ -129,16 +123,14 @@ public class PerbaruiActivity extends AppCompatActivity {
 		pd.setIndeterminate(true);
 		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		pd.setCancelable(false);
-		if (pd != null) pd.show();
+		if (pd != null)
+			pd.show();
 
 		daat = new DownloadAppAPKTask();
 		daat.setContext(getApplicationContext());
 		daat.progressTextView = textProgress;
-		daat.run(
-			DaftarTugas.FETCHURL +
-			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/d/DaftarTugas-" + VERSION[0] + ".apk"
-		);
+		daat.run(DaftarTugas.FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) + "/d/DaftarTugas-"
+				+ VERSION[0] + ".apk");
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -146,10 +138,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		// Corrupted packet?
 
 		// Delete it first.
-		File dir = new File(
-			Environment.getExternalStorageDirectory() +
-			"/DaftarTugas"
-		);
+		File dir = new File(Environment.getExternalStorageDirectory() + "/DaftarTugas");
 		dir.mkdirs();
 		File file = new File(dir, "DaftarTugas.apk");
 		file.delete();
@@ -221,27 +210,22 @@ public class PerbaruiActivity extends AppCompatActivity {
 
 	public void runChecker(File file) {
 		if (null == file) {
-			rerunDownloader(
-				rsc.getString(R.string.install_failed),
-				rsc.getString(R.string.install_failed_download_failure)
-			);
+			rerunDownloader(rsc.getString(R.string.install_failed),
+					rsc.getString(R.string.install_failed_download_failure));
 		}
 		String md5 = "";
 		try {
 			md5 = MD5Checksum.fileToMD5(file);
 		} catch (Exception e) {
-			rerunDownloader(
-				rsc.getString(R.string.install_failed),
-				rsc.getString(R.string.install_failed_download_failure)
-			);
+			rerunDownloader(rsc.getString(R.string.install_failed),
+					rsc.getString(R.string.install_failed_download_failure));
 		}
 		if (VERSION[1].trim().compareToIgnoreCase(md5.trim()) == 0) {
-			if (activityPaused == false) runInstaller();
+			if (activityPaused == false)
+				runInstaller();
 		} else {
-			rerunDownloader(
-				rsc.getString(R.string.install_failed),
-				rsc.getString(R.string.install_failed_packet_mismatch)
-			);
+			rerunDownloader(rsc.getString(R.string.install_failed),
+					rsc.getString(R.string.install_failed_packet_mismatch));
 		}
 	}
 
@@ -254,19 +238,14 @@ public class PerbaruiActivity extends AppCompatActivity {
 
 			this.finish();
 			this.finishActivity(RESULT_OK);
-		} catch(Exception e) {
-			rerunDownloader(
-				rsc.getString(R.string.install_failed),
-				rsc.getString(R.string.install_failed_download_failure)
-			);
+		} catch (Exception e) {
+			rerunDownloader(rsc.getString(R.string.install_failed),
+					rsc.getString(R.string.install_failed_download_failure));
 		}
 	}
 
 	public void runInstaller() {
-		File dir = new File(
-			Environment.getExternalStorageDirectory() +
-			"/DaftarTugas"
-		);
+		File dir = new File(Environment.getExternalStorageDirectory() + "/DaftarTugas");
 		dir.mkdirs();
 		File file = new File(dir, "DaftarTugas.apk");
 		runInstaller(file.getPath());
@@ -276,7 +255,7 @@ public class PerbaruiActivity extends AppCompatActivity {
 		runInstaller();
 	}
 
-	public class DownloadAppAPKTask extends DownloadAppTask  {
+	public class DownloadAppAPKTask extends DownloadAppTask {
 
 		public TextView progressTextView;
 
@@ -284,25 +263,25 @@ public class PerbaruiActivity extends AppCompatActivity {
 		public boolean onNoConnection() {
 			Toast.makeText(this.getContext(), R.string.no_connection, Toast.LENGTH_SHORT).show();
 			progressTextView.setText(R.string.no_connection);
-			if (pd != null) pd.dismiss();
+			if (pd != null)
+				pd.dismiss();
 			buttonPerbarui.setEnabled(true);
 			return true;
 		}
 
 		// http://stackoverflow.com/a/18650828/5338238
 		private String formatBytes(int bytes) {
-			if(bytes == 0) return "0 Byte";
+			if (bytes == 0)
+				return "0 Byte";
 			int k = 1024;
-			String[] sizes = {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+			String[] sizes = { "Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 			int i = (int) Math.floor(Math.log(bytes) / Math.log(k));
 			return (Math.floor(bytes / Math.pow(k, i) * 100) / 100) + " " + sizes[i];
 		}
 
 		@Override
 		public boolean onDownloadProgressUpdate(int downloaded) {
-			pd.setMessage(rsc.getString(R.string.downloading) + "\n(" +
-				formatBytes(downloaded) +
-			")");
+			pd.setMessage(rsc.getString(R.string.downloading) + "\n(" + formatBytes(downloaded) + ")");
 			return true;
 		}
 
@@ -310,7 +289,8 @@ public class PerbaruiActivity extends AppCompatActivity {
 		public boolean onAfterExecute(String result) {
 			progressTextView.setText(R.string.download_done_now_installing);
 			IOFile.write(getApplicationContext(), "updatestatus.txt", "INSTALL");
-			if (pd != null) pd.dismiss();
+			if (pd != null)
+				pd.dismiss();
 			runChecker(this.file);
 			return true;
 		}

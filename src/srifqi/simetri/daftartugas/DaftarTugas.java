@@ -63,7 +63,8 @@ import android.widget.Toast;
 public class DaftarTugas extends AppCompatActivity {
 
 	public final static String FETCHURL = "http://daftartugas.owun.ga/";
-	// public final static String FETCHURL = "http://192.168.x.y/xi/daftar_tugas";
+	// public final static String FETCHURL =
+	// "http://192.168.x.y/xi/daftar_tugas";
 	public final static int VERSION_CODE = 16;
 
 	private Resources rsc;
@@ -118,11 +119,8 @@ public class DaftarTugas extends AppCompatActivity {
 		cvt.setContext(getApplicationContext());
 		cvt.setSaveFilename("version.txt");
 		cvt.setMethod("POST");
-		cvt.run(
-			FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/api/androidversion",
-			TOKEN != "" ? "token=" + TOKEN : ""
-		);
+		cvt.run(FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) + "/api/androidversion",
+				TOKEN != "" ? "token=" + TOKEN : "");
 
 		// Read session.txt.
 		USERPASS = IOFile.read(getApplicationContext(), "userpass.txt").split("\n");
@@ -169,24 +167,20 @@ public class DaftarTugas extends AppCompatActivity {
 		ContainerLinearLayout = (LinearLayout) findViewById(R.id.ContainerLinearLayout);
 		ListListView = (ListView) findViewById(R.id.ListListView);
 		ContentScrollView = (ScrollView) findViewById(R.id.ContentScrollView);
-		// ContentLinearLayout = (LinearLayout) findViewById(R.id.ContentLinearLayout);
+		// ContentLinearLayout = (LinearLayout)
+		// findViewById(R.id.ContentLinearLayout);
 
 		ListListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {}
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			}
 
 			@Override
-			public void onScroll(
-				AbsListView view, int firstVisibleItem,
-				int visibleItemCount, int totalItemCount
-			) {
-				int topRowYPos =
-					(ListListView == null || ListListView.getChildCount() == 0) ?
-						0 : ListListView.getChildAt(0).getTop();
-				swipeContainer.setEnabled(
-					firstVisibleItem == 0 && topRowYPos >= 0
-				);
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				int topRowYPos = (ListListView == null || ListListView.getChildCount() == 0) ? 0
+						: ListListView.getChildAt(0).getTop();
+				swipeContainer.setEnabled(firstVisibleItem == 0 && topRowYPos >= 0);
 			}
 		});
 
@@ -203,10 +197,7 @@ public class DaftarTugas extends AppCompatActivity {
 		TaskSaveUserDescription = (Button) findViewById(R.id.TaskSaveUserDescription);
 		TaskCancelEditUserDescription = (Button) findViewById(R.id.TaskCancelEditUserDescription);
 
-		swipeContainer.setColorSchemeResources(
-			R.color.black,
-			R.color.grey
-		);
+		swipeContainer.setColorSchemeResources(R.color.black, R.color.grey);
 		swipeContainer.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
@@ -223,10 +214,7 @@ public class DaftarTugas extends AppCompatActivity {
 			String[] arr = savedInstanceState.getStringArray("displayAttrib");
 			openAtStart = Integer.parseInt(arr[0]);
 			openAtStart = (displayWidth > 600 && openAtStart == -2) ? -1 : openAtStart;
-			ListListView.setSelectionFromTop(
-				Integer.parseInt(arr[1]),
-				Integer.parseInt(arr[2])
-			);
+			ListListView.setSelectionFromTop(Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
 			if (Integer.parseInt(arr[3]) != displayWidth) {
 				// No need to sync.
 				syncAtStart = false;
@@ -240,9 +228,7 @@ public class DaftarTugas extends AppCompatActivity {
 		if (fetchdata == "") {
 			if (pd != null) {
 				pd.setTitle(rsc.getString(R.string.starting));
-				pd.setMessage(
-					rsc.getString(R.string.fetch_data)
-				);
+				pd.setMessage(rsc.getString(R.string.fetch_data));
 				pd.setIndeterminate(true);
 				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				pd.setCancelable(false);
@@ -263,7 +249,8 @@ public class DaftarTugas extends AppCompatActivity {
 	protected void onPause() {
 		super.onPause();
 		// Bugfix: Crash when dismiss dialog after activity destroyed.
-		if (pd != null) pd.dismiss();
+		if (pd != null)
+			pd.dismiss();
 		pd = null;
 	}
 
@@ -272,7 +259,8 @@ public class DaftarTugas extends AppCompatActivity {
 		super.onResume();
 		// Re-initiate variable.
 		// It's okay to re-initiate because at onPause, pd already dismissed.
-		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
+		if (pd == null)
+			pd = new ProgressDialog(DaftarTugas.this);
 
 		// Render Daftar Tugas.
 		renderDaftarTugas();
@@ -322,15 +310,12 @@ public class DaftarTugas extends AppCompatActivity {
 		// Show lists.
 		if (id == -2) {
 			// Just do nothing.
-		// Shows Pengumuman.
+			// Shows Pengumuman.
 		} else if (id == -1) {
 			TaskTitle.setText(R.string.pengumuman);
 			TaskStatus.setText(R.string.INFO);
-			TaskDescription.setText(Html.fromHtml(
-				"<b>" + rsc.getString(R.string.welcome_text) +
-				" " + USERPASS[0] + "!<br>" + DTO.TeksTema + "</b>" +
-				"<br><br>" + DTO.TeksPengumuman
-			));
+			TaskDescription.setText(Html.fromHtml("<b>" + rsc.getString(R.string.welcome_text) + " " + USERPASS[0]
+					+ "!<br>" + DTO.TeksTema + "</b>" + "<br><br>" + DTO.TeksPengumuman));
 			TaskUserDescription.setText("");
 			TaskUserDescriptionE.setText("");
 			TaskSaveUserDescription.setVisibility(View.GONE);
@@ -345,18 +330,13 @@ public class DaftarTugas extends AppCompatActivity {
 			}
 			if (objid == -1) {
 				throw new IndexOutOfBoundsException(
-					"Unable to find correct tugas with id: " + id + " inside ObjDaftarTugas."
-				);
+						"Unable to find correct tugas with id: " + id + " inside ObjDaftarTugas.");
 			}
 
 			String[] tugas = DTO.ObjDaftarTugas.get(objid);
 			TaskTitle.setText(Html.fromHtml(tugas[1]));
-			TaskStatus.setText(
-				tugas[6] == "1" ? R.string.DONE : R.string.HASNT_DONE
-			);
-			TaskDescription.setText(Html.fromHtml(
-				"<i>" + tugas[3] + " (" + tugas[4] + ")</i><br>" + tugas[2]
-			));
+			TaskStatus.setText(tugas[6] == "1" ? R.string.DONE : R.string.HASNT_DONE);
+			TaskDescription.setText(Html.fromHtml("<i>" + tugas[3] + " (" + tugas[4] + ")</i><br>" + tugas[2]));
 			TaskUserDescription.setText(tugas[7]);
 			TaskUserDescription.setVisibility(View.VISIBLE);
 			TaskUserDescriptionE.setText(tugas[7]);
@@ -370,10 +350,8 @@ public class DaftarTugas extends AppCompatActivity {
 
 		// Reflow content.
 		if (displayWidth <= 600 && lastOpened != id) {
-			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
-				(int) displayWidth,
-				LinearLayout.LayoutParams.MATCH_PARENT
-			);
+			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams((int) displayWidth,
+					LinearLayout.LayoutParams.MATCH_PARENT);
 			swipeContainer.setLayoutParams(lsv);
 			if (id == -2) {
 				// Hide back button.
@@ -440,10 +418,8 @@ public class DaftarTugas extends AppCompatActivity {
 					swipeContainer.setLayoutParams(_lsv);
 				}
 			}
-			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
-				(int) displayWidth,
-				LinearLayout.LayoutParams.MATCH_PARENT
-			);
+			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams((int) displayWidth,
+					LinearLayout.LayoutParams.MATCH_PARENT);
 			ContentScrollView.setLayoutParams(csv);
 		}
 
@@ -452,13 +428,13 @@ public class DaftarTugas extends AppCompatActivity {
 
 	public static boolean onListItemTouch(View v, MotionEvent event) {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN:
-				v.setBackgroundResource(R.color.orangeA200);
-				break;
+		case MotionEvent.ACTION_DOWN:
+			v.setBackgroundResource(R.color.orangeA200);
+			break;
 
-			default:
-				v.setBackgroundResource(R.color.white);
-				break;
+		default:
+			v.setBackgroundResource(R.color.white);
+			break;
 		}
 		return false;
 	}
@@ -477,15 +453,11 @@ public class DaftarTugas extends AppCompatActivity {
 
 		// Reflow content.
 		if (displayWidth > 600 && displayWidth > displayHeight) {
-			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.4),
-				LinearLayout.LayoutParams.MATCH_PARENT
-			);
+			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams((int) (displayWidth * 0.4),
+					LinearLayout.LayoutParams.MATCH_PARENT);
 			swipeContainer.setLayoutParams(lsv);
-			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams(
-				(int) (displayWidth * 0.6),
-				LinearLayout.LayoutParams.MATCH_PARENT
-			);
+			LinearLayout.LayoutParams csv = new LinearLayout.LayoutParams((int) (displayWidth * 0.6),
+					LinearLayout.LayoutParams.MATCH_PARENT);
 			ContentScrollView.setLayoutParams(csv);
 		}
 
@@ -495,39 +467,31 @@ public class DaftarTugas extends AppCompatActivity {
 		// Remove divider between items. Because we want to build ourself.
 		ListListView.setDivider(null);
 
-		// Add Offline mode to first row. Only if there is no Internet connection.
+		// Add Offline mode to first row. Only if there is no Internet
+		// connection.
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		if (! (networkInfo != null && networkInfo.isConnected())) {
+		if (!(networkInfo != null && networkInfo.isConnected())) {
 			LinearLayout OfflineModeLinearLayout = new LinearLayout(this);
-			ListView.LayoutParams paramomll = new ListView.LayoutParams(
-				ListView.LayoutParams.MATCH_PARENT,
-				(int) (70 * displayDensity)
-			);
+			ListView.LayoutParams paramomll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+					(int) (70 * displayDensity));
 			OfflineModeLinearLayout.setLayoutParams(paramomll);
 			OfflineModeLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 			OfflineModeLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
 			OfflineModeLinearLayout.setBackgroundResource(R.color.grey900);
 
 			View OfflineModeIcon = new View(this);
-			LinearLayout.LayoutParams paramomic = new LinearLayout.LayoutParams(
-				(int) (32 * displayDensity),
-				(int) (32 * displayDensity)
-			);
+			LinearLayout.LayoutParams paramomic = new LinearLayout.LayoutParams((int) (32 * displayDensity),
+					(int) (32 * displayDensity));
 			paramomic.setMargins((int) (16 * displayDensity), 0, 0, 0);
 			OfflineModeIcon.setLayoutParams(paramomic);
 			OfflineModeIcon.setBackgroundResource(R.drawable.ic_cloud_off);
 			OfflineModeLinearLayout.addView(OfflineModeIcon);
 
 			LinearLayout OfflineModeChildLinearLayout = new LinearLayout(this);
-			LinearLayout.LayoutParams paramomcll = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
-			paramomcll.setMargins(
-				(int) (24 * displayDensity), 0,
-				(int) (16 * displayDensity), 0
-			);
+			LinearLayout.LayoutParams paramomcll = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			paramomcll.setMargins((int) (24 * displayDensity), 0, (int) (16 * displayDensity), 0);
 			OfflineModeChildLinearLayout.setLayoutParams(paramomcll);
 			OfflineModeChildLinearLayout.setOrientation(LinearLayout.VERTICAL);
 			OfflineModeChildLinearLayout.setGravity(Gravity.START);
@@ -537,10 +501,8 @@ public class DaftarTugas extends AppCompatActivity {
 			OfflineModeTextView.setSingleLine();
 			OfflineModeTextView.setMaxLines(1);
 			OfflineModeTextView.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramomtv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramomtv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			OfflineModeTextView.setLayoutParams(paramomtv);
 			OfflineModeTextView.setTextColor(ContextCompat.getColor(this, R.color.whitePrimary));
 			OfflineModeTextView.setTextSize(16); // In sp.
@@ -552,10 +514,8 @@ public class DaftarTugas extends AppCompatActivity {
 			OfflineModeChildTextView.setSingleLine();
 			OfflineModeChildTextView.setMaxLines(1);
 			OfflineModeChildTextView.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramomctv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramomctv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			OfflineModeChildTextView.setLayoutParams(paramomctv);
 			OfflineModeChildTextView.setTextColor(ContextCompat.getColor(this, R.color.whiteSecondary));
 			OfflineModeChildTextView.setTextSize(14); // In sp.
@@ -570,10 +530,8 @@ public class DaftarTugas extends AppCompatActivity {
 		// Add Pengumuman at the second row.
 		// (If there is Internet connection, first row.)
 		LinearLayout PengumumanLinearLayout = new LinearLayout(this);
-		ListView.LayoutParams parampll = new ListView.LayoutParams(
-			ListView.LayoutParams.MATCH_PARENT,
-			(int) (72 * displayDensity)
-		);
+		ListView.LayoutParams parampll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+				(int) (72 * displayDensity));
 		PengumumanLinearLayout.setOrientation(LinearLayout.VERTICAL);
 		PengumumanLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
 		PengumumanLinearLayout.setLayoutParams(parampll);
@@ -584,14 +542,9 @@ public class DaftarTugas extends AppCompatActivity {
 		PengumumanTextView.setMaxLines(1);
 		PengumumanTextView.setEllipsize(TruncateAt.END);
 		PengumumanTextView.setTextColor(ContextCompat.getColor(this, R.color.blackPrimary));
-		LinearLayout.LayoutParams paramptv = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.MATCH_PARENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT
-		);
-		paramptv.setMargins(
-			(int) (72 * displayDensity), 0,
-			(int) (16 * displayDensity), 0
-		);
+		LinearLayout.LayoutParams paramptv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		paramptv.setMargins((int) (72 * displayDensity), 0, (int) (16 * displayDensity), 0);
 		PengumumanTextView.setTextSize(16); // In sp.
 		PengumumanTextView.setLayoutParams(paramptv);
 
@@ -603,14 +556,9 @@ public class DaftarTugas extends AppCompatActivity {
 		TemaTextView.setMaxLines(1);
 		TemaTextView.setEllipsize(TruncateAt.END);
 		TemaTextView.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
-		LinearLayout.LayoutParams paramttv = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.MATCH_PARENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT
-		);
-		paramttv.setMargins(
-			(int) (72 * displayDensity), 0,
-			(int) (16 * displayDensity), 0
-		);
+		LinearLayout.LayoutParams paramttv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+		paramttv.setMargins((int) (72 * displayDensity), 0, (int) (16 * displayDensity), 0);
 		TemaTextView.setTextSize(14); // In sp.
 		TemaTextView.setLayoutParams(paramttv);
 
@@ -646,51 +594,35 @@ public class DaftarTugas extends AppCompatActivity {
 				last_day = tid;
 				String[] ymd = ti[5].split(",");
 				Calendar cal = Calendar.getInstance();
-				cal.set(
-					Integer.parseInt(ymd[0]),
-					Integer.parseInt(ymd[1]) - 1,
-					Integer.parseInt(ymd[2])
-				);
+				cal.set(Integer.parseInt(ymd[0]), Integer.parseInt(ymd[1]) - 1, Integer.parseInt(ymd[2]));
 
 				View separatorView = new View(this);
-				ListView.LayoutParams paramsw = new ListView.LayoutParams(
-					ListView.LayoutParams.MATCH_PARENT,
-					(int) (2 * displayDensity)
-				);
+				ListView.LayoutParams paramsw = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+						(int) (2 * displayDensity));
 				separatorView.setLayoutParams(paramsw);
 				separatorView.setBackgroundColor(ContextCompat.getColor(this, R.color.blackDivider));
 
 				ListArrayAdapter.addView(separatorView, false);
 
 				LinearLayout dayLL = new LinearLayout(this);
-				ListView.LayoutParams paramll = new ListView.LayoutParams(
-					ListView.LayoutParams.MATCH_PARENT,
-					(int) (46 * displayDensity) // Already subtracted by 2dp for divider.
+				ListView.LayoutParams paramll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+						(int) (46 * displayDensity) // Already subtracted by 2dp
+													// for divider.
 				);
 				dayLL.setLayoutParams(paramll);
 				dayLL.setOrientation(LinearLayout.VERTICAL);
 				dayLL.setGravity(Gravity.CENTER_VERTICAL);
 
 				TextView dayTextView = new TextView(this);
-				dayTextView.setText(Html.fromHtml(
-					"<b>" +
-					DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
-					cal.get(Calendar.DATE) + " " +
-					// mod 12 just in case somebody is stupid enough.
-					DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " +
-					cal.get(Calendar.YEAR) +
-					"</b>"
-				));
+				dayTextView.setText(Html.fromHtml("<b>" + DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", "
+						+ cal.get(Calendar.DATE) + " " +
+						// mod 12 just in case somebody is stupid enough.
+						DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " + cal.get(Calendar.YEAR) + "</b>"));
 				dayTextView.setTextSize(14);
 				dayTextView.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
-				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.WRAP_CONTENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT
-				);
-				paramd.setMargins(
-					(int) (16 * displayDensity), 0,
-					(int) (16 * displayDensity), 0
-				);
+				LinearLayout.LayoutParams paramd = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+				paramd.setMargins((int) (16 * displayDensity), 0, (int) (16 * displayDensity), 0);
 				dayTextView.setLayoutParams(paramd);
 
 				dayLL.addView(dayTextView);
@@ -700,20 +632,16 @@ public class DaftarTugas extends AppCompatActivity {
 			final int id = Integer.parseInt(ti[0]);
 
 			LinearLayout taskLL = new LinearLayout(this);
-			ListView.LayoutParams paramll = new ListView.LayoutParams(
-				ListView.LayoutParams.MATCH_PARENT,
-				(int) (70 * displayDensity)
-			);
+			ListView.LayoutParams paramll = new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT,
+					(int) (70 * displayDensity));
 			taskLL.setLayoutParams(paramll);
 			taskLL.setOrientation(LinearLayout.HORIZONTAL);
 			taskLL.setGravity(Gravity.CENTER_VERTICAL);
 			taskLL.setBackgroundResource(R.color.white);
 
 			CheckBox cb = new CheckBox(this);
-			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams(
-				(int) (32 * displayDensity),
-				(int) (32 * displayDensity)
-			);
+			LinearLayout.LayoutParams paramcb = new LinearLayout.LayoutParams((int) (32 * displayDensity),
+					(int) (32 * displayDensity));
 			paramcb.setMargins((int) (16 * displayDensity), 0, 0, 0);
 			cb.setLayoutParams(paramcb);
 			cb.setButtonDrawable(R.drawable.abc_btn_check_material);
@@ -749,14 +677,9 @@ public class DaftarTugas extends AppCompatActivity {
 			taskLL.addView(cb);
 
 			LinearLayout textLL = new LinearLayout(this);
-			LinearLayout.LayoutParams paramtll = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
-			paramtll.setMargins(
-				(int) (24 * displayDensity), 0,
-				(int) (16 * displayDensity), 0
-			);
+			LinearLayout.LayoutParams paramtll = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			paramtll.setMargins((int) (24 * displayDensity), 0, (int) (16 * displayDensity), 0);
 			textLL.setLayoutParams(paramtll);
 			textLL.setOrientation(LinearLayout.VERTICAL);
 			textLL.setGravity(Gravity.START);
@@ -766,10 +689,8 @@ public class DaftarTugas extends AppCompatActivity {
 			tv.setSingleLine();
 			tv.setMaxLines(1);
 			tv.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramtv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			tv.setLayoutParams(paramtv);
 			tv.setTextColor(ContextCompat.getColor(this, R.color.blackPrimary));
 			tv.setTextSize(16); // In sp.
@@ -777,17 +698,13 @@ public class DaftarTugas extends AppCompatActivity {
 			textLL.addView(tv);
 
 			TextView stv = new TextView(this);
-			stv.setText(Html.fromHtml(
-				"<i>" + ti[3] + " (" + ti[4] + ")</i>" +
-				(ti[2].length() < 1 ? "" : " | " + ti[2])
-			));
+			stv.setText(
+					Html.fromHtml("<i>" + ti[3] + " (" + ti[4] + ")</i>" + (ti[2].length() < 1 ? "" : " | " + ti[2])));
 			stv.setSingleLine();
 			stv.setMaxLines(1);
 			stv.setEllipsize(TruncateAt.END);
-			LinearLayout.LayoutParams paramstv = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT
-			);
+			LinearLayout.LayoutParams paramstv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			stv.setLayoutParams(paramstv);
 			stv.setTextColor(ContextCompat.getColor(this, R.color.blackSecondary));
 			stv.setTextSize(14); // In sp.
@@ -834,8 +751,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	private void parseDaftarTugas(String data) {
 		if (data != "") {
-			if (DONE == 2 && (data.compareTo("403") == 0 ||
-				IOFile.read(getApplicationContext(), "token.txt") == "")) {
+			if (DONE == 2 && (data.compareTo("403") == 0 || IOFile.read(getApplicationContext(), "token.txt") == "")) {
 				// Invalid token.
 				Toast.makeText(this, R.string.please_login, Toast.LENGTH_SHORT).show();
 
@@ -853,7 +769,8 @@ public class DaftarTugas extends AppCompatActivity {
 			textAmbilData.setVisibility(View.GONE);
 			swipeContainer.setVisibility(View.VISIBLE);
 			ContainerLinearLayout.setVisibility(View.VISIBLE);
-			if (pd != null) pd.dismiss();
+			if (pd != null)
+				pd.dismiss();
 
 			renderDaftarTugas();
 		}
@@ -874,10 +791,9 @@ public class DaftarTugas extends AppCompatActivity {
 		dlt.setMethod("POST");
 
 		String strUrlParam = "";
-		long lastSaved = (long) (IOFile.mtime(getApplicationContext(), "fetchdata.txt")/1e3);
+		long lastSaved = (long) (IOFile.mtime(getApplicationContext(), "fetchdata.txt") / 1e3);
 
-		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt")
-						.split("\n\\|\\|\\|\\|\\|\n");
+		String[] teks = IOFile.read(getApplicationContext(), "fetchdata.txt").split("\n\\|\\|\\|\\|\\|\n");
 		if (teks.length == 3) {
 			// Parse JSON data
 			DTO.L = null;
@@ -896,9 +812,8 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		try {
-			strUrlParam = "token=" + TOKEN +
-				"&lastsaved=" + lastSaved +
-				"&dataL=" + URLEncoder.encode(DTO.L.toString(), "UTF-8");
+			strUrlParam = "token=" + TOKEN + "&lastsaved=" + lastSaved + "&dataL="
+					+ URLEncoder.encode(DTO.L.toString(), "UTF-8");
 			if (IOFile.read(getApplicationContext(), "fetchdata.txt").length() > 0) {
 				strUrlParam += "&save=1";
 			} else {
@@ -910,11 +825,7 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		swipeContainer.setRefreshing(true);
-		dlt.run(
-			FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/api/transaction",
-			strUrlParam
-		);
+		dlt.run(FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID) + "/api/transaction", strUrlParam);
 	}
 
 	public void cancelEditNote(View view) {
@@ -982,21 +893,17 @@ public class DaftarTugas extends AppCompatActivity {
 			}
 			if (objid == -1) {
 				throw new IndexOutOfBoundsException(
-					"Unable to find correct tugas with id: " + lastOpened + " inside ObjDaftarTugas."
-				);
+						"Unable to find correct tugas with id: " + lastOpened + " inside ObjDaftarTugas.");
 			}
 
 			boolean enabled = DTO.ObjDaftarTugas.get(objid)[6].compareTo("1") == 0;
 			// Give user a feedback.
 			TaskStatus.setText("…");
-			updateTask(
-				lastOpened,
-				!(enabled ? true : false)
-			);
+			updateTask(lastOpened, !(enabled ? true : false));
 		}
 	}
 
-	private void saveDaftarTugas(){
+	private void saveDaftarTugas() {
 		if (!DTO.save()) {
 			// Failed to save.
 		}
@@ -1010,7 +917,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 		@Override
 		public boolean onAfterExecute(String result) {
-			DONE ++;
+			DONE++;
 
 			parseDaftarTugas(result);
 
@@ -1038,9 +945,7 @@ public class DaftarTugas extends AppCompatActivity {
 					public void onClick(DialogInterface dialog, int which) {
 						if (pd != null) {
 							pd.setTitle(rsc.getString(R.string.starting));
-							pd.setMessage(
-								rsc.getString(R.string.fetch_data)
-							);
+							pd.setMessage(rsc.getString(R.string.fetch_data));
 							pd.setIndeterminate(true);
 							pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 							pd.setCancelable(false);
@@ -1073,7 +978,8 @@ public class DaftarTugas extends AppCompatActivity {
 				AlertDialog dlg = dlgb.create();
 				dlg.show();
 
-				if (pd != null) pd.dismiss();
+				if (pd != null)
+					pd.dismiss();
 			}
 			return true;
 		}
@@ -1083,22 +989,22 @@ public class DaftarTugas extends AppCompatActivity {
 
 		@Override
 		public boolean onAfterExecute(String result) {
-			if (result == "") return false;
-			if (!OPENUpdateActivity) return false;
+			if (result == "")
+				return false;
+			if (!OPENUpdateActivity)
+				return false;
 
 			String[] version = result.split("\n");
 			if (version.length > 2 && Integer.parseInt(version[2]) > DaftarTugas.VERSION_CODE) {
 				runPerbarui();
 				OPENUpdateActivity = false;
 			} else {
-				File dir = new File(
-					Environment.getExternalStorageDirectory() +
-					"/DaftarTugas"
-				);
+				File dir = new File(Environment.getExternalStorageDirectory() + "/DaftarTugas");
 				dir.mkdirs();
 				File file = new File(dir, "DaftarTugas.apk");
 
-				if (file.exists()) file.delete();
+				if (file.exists())
+					file.delete();
 			}
 			return true;
 		}
@@ -1135,25 +1041,18 @@ public class DaftarTugas extends AppCompatActivity {
 	/**
 	 * Name of days in Indonesian.
 	 */
-	public static final String[] days = {
-		"Minggu",	"Senin",
-		"Selasa",	"Rabu",
-		"Kamis",	"Jumat",
-		"Sabtu"
-	};
+	public static final String[] days = { "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu" };
 
 	/**
 	 * Name of months in Indonesian.
 	 */
-	public static final String[] months = {
-		"Januari",	"Februari",	"Maret",
-		"April",	"Mei",		"Juni",
-		"Juli",		"Agustus",	"September",
-		"Oktober",	"November",	"Desember"
-	};
+	public static final String[] months = { "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+			"September", "Oktober", "November", "Desember" };
 
 	/**
-	 * <p>Convert from timestamp into relative date string (Indonesian).</p>
+	 * <p>
+	 * Convert from timestamp into relative date string (Indonesian).
+	 * </p>
 	 * <p>
 	 * For example:<br>
 	 * - If the timestamp is today, then: "Hari ini, &lt;time&gt;"<br>
@@ -1162,7 +1061,7 @@ public class DaftarTugas extends AppCompatActivity {
 	 * </p>
 	 *
 	 * @param timestamp
-	 *			Timestamp to be converted (in seconds).
+	 *            Timestamp to be converted (in seconds).
 	 *
 	 * @return Converted timestamp.
 	 */
@@ -1176,61 +1075,57 @@ public class DaftarTugas extends AppCompatActivity {
 
 		// GregorianCalendar of yesterday.
 		GregorianCalendar gcy = new GregorianCalendar();
-		gcy.setTimeInMillis(gcn.getTimeInMillis()-86400000);
+		gcy.setTimeInMillis(gcn.getTimeInMillis() - 86400000);
 		int yD = gcy.get(Calendar.DATE);
 		int yM = gcy.get(Calendar.MONTH);
 		int yY = gcy.get(Calendar.YEAR);
 
 		// GregorianCalendar of the timestamp.
 		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTimeInMillis(timestamp*1000);
+		gc.setTimeInMillis(timestamp * 1000);
 		int tD = gc.get(Calendar.DATE);
 		int tM = gc.get(Calendar.MONTH);
 		int tY = gc.get(Calendar.YEAR);
 
-		if (
-			nowD == tD &&
-			nowM == tM &&
-			nowY == tY
-		) {
+		if (nowD == tD && nowM == tM && nowY == tY) {
 			str += "Hari ini, ";
-		} else if (
-			yD == tD &&
-			yM == tM &&
-			yY == tY
-		) {
+		} else if (yD == tD && yM == tM && yY == tY) {
 			str += "Kemarin, ";
 		} else {
 			str += tD + " " + DaftarTugas.months[tM] + " " + tY + ", ";
 		}
 		String hour = "" + gc.get(Calendar.HOUR_OF_DAY);
 		String minute = "" + gc.get(Calendar.MINUTE);
-		if (hour.length() < 2) hour = "0" + hour;
-		if (minute.length() < 2) minute = "0" + minute;
+		if (hour.length() < 2)
+			hour = "0" + hour;
+		if (minute.length() < 2)
+			minute = "0" + minute;
 		str += hour + ":" + minute;
 
 		return str;
 	}
 
 	/**
-	 * <p>Convert from int into formatted String.</p>
+	 * <p>
+	 * Convert from int into formatted String.
+	 * </p>
 	 * <p>
 	 * For example:<br>
-	 * - n = 1,  length = 3: returns "001".
-	 * - n = 11, length = 4: returns "0011".
+	 * - n = 1, length = 3: returns "001". - n = 11, length = 4: returns "0011".
 	 * But,<br>
 	 * - n = 1111, length = 3: returns "1111".
 	 * </p>
 	 *
 	 * @param n
-	 *			Number to be converted.
+	 *            Number to be converted.
 	 * @param length
-	 *			Length of the formatted text.
+	 *            Length of the formatted text.
 	 *
 	 * @return Converted number.
 	 */
 	public static String formatNumber(int n, int length) {
-		if (Math.log10(n) > length) return "" + n;
+		if (Math.log10(n) > length)
+			return "" + n;
 
 		String str = "";
 		for (int i = 1; i < length - Math.floor(Math.log10(n)); i++) {
@@ -1269,8 +1164,7 @@ public class DaftarTugas extends AppCompatActivity {
 	/**
 	 * TugasListAdapter
 	 *
-	 * An adapter extended from BaseAdapter that is specialized for
-	 * DaftarTugas.
+	 * An adapter extended from BaseAdapter that is specialized for DaftarTugas.
 	 */
 	public static class TugasListAdapter extends BaseAdapter implements ListAdapter {
 

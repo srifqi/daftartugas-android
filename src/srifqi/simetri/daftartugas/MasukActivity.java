@@ -35,8 +35,7 @@ public class MasukActivity extends AppCompatActivity {
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
 
 		// Check version
-		String[] VERSION = IOFile.read(getApplicationContext(), "version.txt")
-				.trim().split("\n");
+		String[] VERSION = IOFile.read(getApplicationContext(), "version.txt").trim().split("\n");
 
 		if (VERSION.length > 2 && Integer.parseInt(VERSION[2]) > DaftarTugas.VERSION_CODE) {
 			this.finish();
@@ -91,13 +90,12 @@ public class MasukActivity extends AppCompatActivity {
 			return;
 		}
 
-		String strUrl = DaftarTugas.FETCHURL +
-			Setting.get(getApplicationContext(), Setting.PROJECT_ID) +
-			"/api/validation";
+		String strUrl = DaftarTugas.FETCHURL + Setting.get(getApplicationContext(), Setting.PROJECT_ID)
+				+ "/api/validation";
 		String strUrlParam = "";
 		try {
-			strUrlParam = "user|" + URLEncoder.encode(NamaPengguna, "UTF-8") +
-						 "|pass|" + URLEncoder.encode(KataSandi, "UTF-8");
+			strUrlParam = "user|" + URLEncoder.encode(NamaPengguna, "UTF-8") + "|pass|"
+					+ URLEncoder.encode(KataSandi, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// e.printStackTrace();
 		}
@@ -105,10 +103,11 @@ public class MasukActivity extends AppCompatActivity {
 		Random rnd = new Random();
 		rnd.setSeed(System.currentTimeMillis());
 		int seedb = rnd.nextInt(1024);
-		int seeda = rnd.nextInt(1024); seeda += seedb;
+		int seeda = rnd.nextInt(1024);
+		seeda += seedb;
 		try {
-			strUrlParam = "x=" + URLEncoder.encode(VigenereCipher.crypt(strUrlParam, seeda, seedb), "UTF-8") +
-					"&y=" + seeda + "&z=" + seedb;
+			strUrlParam = "x=" + URLEncoder.encode(VigenereCipher.crypt(strUrlParam, seeda, seedb), "UTF-8") + "&y="
+					+ seeda + "&z=" + seedb;
 		} catch (UnsupportedEncodingException e) {
 			// e.printStackTrace();
 		}
@@ -136,7 +135,8 @@ public class MasukActivity extends AppCompatActivity {
 
 		@Override
 		public boolean onAfterExecute(String result) {
-			if (result == "") return false;
+			if (result == "")
+				return false;
 			if (result.length() == 0) {
 				Toast.makeText(this.getContext(), R.string.failed_connect, Toast.LENGTH_SHORT).show();
 				this.onNoConnection();
@@ -153,12 +153,10 @@ public class MasukActivity extends AppCompatActivity {
 				editTextProjectID.setEnabled(true);
 			} else {
 				// Save data in an internal file "userpass.txt".
-				IOFile.write(getApplicationContext(), "userpass.txt",
-					editTextNamaPengguna.getText().toString()
-					+ "\n" +
+				IOFile.write(getApplicationContext(), "userpass.txt", editTextNamaPengguna.getText().toString() + "\n" +
 
-					// How can I saved password in plain text?
-					"..." // editTextKataSandi.getText().toString()
+				// How can I saved password in plain text?
+						"..." // editTextKataSandi.getText().toString()
 				);
 				// Save token in an internal file "token.txt".
 				IOFile.write(getApplicationContext(), "token.txt", result);

@@ -44,17 +44,18 @@ public class Setting {
 	 * Get the value of the selected setting.
 	 *
 	 * @param ctx
-	 *			Application context.
+	 *            Application context.
 	 * @param name
-	 *			Name of the selected setting.
+	 *            Name of the selected setting.
 	 *
 	 * @return The value of selected setting, empty if hasn't been set.
 	 */
 	public static String get(Context ctx, String name) {
 		String[] lines = IOFile.read(ctx, "DT.conf").split("\n");
-		for (int i = 0; i < lines.length; i ++) {
+		for (int i = 0; i < lines.length; i++) {
 			String[] li = lines[i].split(" = ");
-			if (li[0].compareTo(name) == 0) return li[1];
+			if (li[0].compareTo(name) == 0)
+				return li[1];
 		}
 		return "";
 	}
@@ -63,15 +64,17 @@ public class Setting {
 	 * Get the value of the selected setting as integer.
 	 *
 	 * @param ctx
-	 *			Application context.
+	 *            Application context.
 	 * @param name
-	 *			Name of the selected setting.
+	 *            Name of the selected setting.
 	 *
-	 * @return The value of selected setting (parseInt'ed), -1 if hasn't been set.
+	 * @return The value of selected setting (parseInt'ed), -1 if hasn't been
+	 *         set.
 	 */
 	public static int getAsInt(Context ctx, String name) {
 		String value = get(ctx, name);
-		if (value != "") return Integer.parseInt(value);
+		if (value != "")
+			return Integer.parseInt(value);
 		return -1;
 	}
 
@@ -79,18 +82,18 @@ public class Setting {
 	 * Set the value of the selected setting into given value.
 	 *
 	 * @param ctx
-	 *			Application context.
+	 *            Application context.
 	 * @param name
-	 *			Name of the selected setting.
+	 *            Name of the selected setting.
 	 * @param value
-	 *			Value to be set into the selected setting.
+	 *            Value to be set into the selected setting.
 	 *
 	 * @return Returns true on success, false on failure.
 	 */
 	public static boolean set(Context ctx, String name, String value) {
 		String[] lines = IOFile.read(ctx, "DT.conf").split("\n");
 		boolean set = false;
-		for (int i = 0; i < lines.length; i ++) {
+		for (int i = 0; i < lines.length; i++) {
 			String[] li = lines[i].split(" = ");
 			if (li[0].compareTo(name) == 0) {
 				li[1] = value;
@@ -109,11 +112,11 @@ public class Setting {
 	 * Set the value of the selected setting into given integer value.
 	 *
 	 * @param ctx
-	 *			Application context.
+	 *            Application context.
 	 * @param name
-	 *			Name of the selected setting.
+	 *            Name of the selected setting.
 	 * @param value
-	 *			Integer value to be set into the selected setting.
+	 *            Integer value to be set into the selected setting.
 	 *
 	 * @return Returns true on success, false on failure.
 	 */
@@ -123,7 +126,7 @@ public class Setting {
 
 	private static String join(String[] arr, String glue) {
 		String res = "";
-		for (int i = 0; i < arr.length; i ++) {
+		for (int i = 0; i < arr.length; i++) {
 			res += arr[i];
 			if (i < arr.length - 1) {
 				res += glue;

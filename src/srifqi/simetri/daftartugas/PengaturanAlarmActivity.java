@@ -95,19 +95,13 @@ public class PengaturanAlarmActivity extends AppCompatActivity {
 			AlarmTimeTimePicker.setCurrentMinute(alarmTimeM);
 		}
 
-		int alarmifhasntdone = Setting.getAsInt(
-			getApplicationContext(),
-			Setting.ALARM_ONLY_IF_HASNT_DONE
-		);
+		int alarmifhasntdone = Setting.getAsInt(getApplicationContext(), Setting.ALARM_ONLY_IF_HASNT_DONE);
 		if (alarmifhasntdone == 1) {
 			AlarmOnlyIfHasntDoneCheckBox.setChecked(true);
 			AlarmOnlyTomorrowCheckBox.setVisibility(View.VISIBLE);
 		}
 
-		int alarmonlytomorrow = Setting.getAsInt(
-			getApplicationContext(),
-			Setting.ALARM_ONLY_TOMORROW
-		);
+		int alarmonlytomorrow = Setting.getAsInt(getApplicationContext(), Setting.ALARM_ONLY_TOMORROW);
 		if (alarmonlytomorrow == 1) {
 			AlarmOnlyTomorrowCheckBox.setChecked(true);
 		} else {
@@ -116,28 +110,15 @@ public class PengaturanAlarmActivity extends AppCompatActivity {
 	}
 
 	public void setAlarm() {
-		Setting.set(
-			getApplicationContext(), Setting.ALARM_ENABLED,
-			AlarmEnabledCheckBox.isChecked() ? 1 : 0
-		);
+		Setting.set(getApplicationContext(), Setting.ALARM_ENABLED, AlarmEnabledCheckBox.isChecked() ? 1 : 0);
 
-		Setting.set(
-			getApplicationContext(), Setting.ALARM_TIME_HOUR,
-			AlarmTimeTimePicker.getCurrentHour()
-		);
-		Setting.set(
-			getApplicationContext(), Setting.ALARM_TIME_MINUTE,
-			AlarmTimeTimePicker.getCurrentMinute()
-		);
+		Setting.set(getApplicationContext(), Setting.ALARM_TIME_HOUR, AlarmTimeTimePicker.getCurrentHour());
+		Setting.set(getApplicationContext(), Setting.ALARM_TIME_MINUTE, AlarmTimeTimePicker.getCurrentMinute());
 
-		Setting.set(
-			getApplicationContext(), Setting.ALARM_ONLY_IF_HASNT_DONE,
-			AlarmOnlyIfHasntDoneCheckBox.isChecked() ? 1 : 0
-		);
-		Setting.set(
-			getApplicationContext(), Setting.ALARM_ONLY_TOMORROW,
-			AlarmOnlyTomorrowCheckBox.isChecked() ? 1 : 0
-		);
+		Setting.set(getApplicationContext(), Setting.ALARM_ONLY_IF_HASNT_DONE,
+				AlarmOnlyIfHasntDoneCheckBox.isChecked() ? 1 : 0);
+		Setting.set(getApplicationContext(), Setting.ALARM_ONLY_TOMORROW,
+				AlarmOnlyTomorrowCheckBox.isChecked() ? 1 : 0);
 
 		AlarmTugasReceiver.setAlarm(getApplicationContext());
 
