@@ -2,7 +2,6 @@ package srifqi.simetri.daftartugas;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Build;
@@ -21,8 +20,6 @@ import android.widget.TimePicker;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PengaturanSinkronasiActivity extends AppCompatActivity {
 
-	private Context ctx;
-
 	private Resources rsc;
 
 	private TextView SyncInfoTextView;
@@ -35,8 +32,6 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
-
-		ctx = this;
 
 		// Get resources.
 		rsc = getResources();
@@ -54,27 +49,7 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 
 			@Override
 			public void onClick(View v) {
-				AlertDialog.Builder dlgb = new AlertDialog.Builder(ctx);
-				dlgb.setMessage(R.string.ask_apply);
-
-				dlgb.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						setAutoSync();
-					}
-				});
-
-				dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						close();
-					}
-				});
-
-				AlertDialog dlg = dlgb.create();
-				dlg.show();
+				beforeClose();
 			}
 		});
 
@@ -142,9 +117,38 @@ public class PengaturanSinkronasiActivity extends AppCompatActivity {
 		AutoSyncTimePicker.setVisibility(visibility);
 	}
 
+	public void beforeClose() {
+		AlertDialog.Builder dlgb = new AlertDialog.Builder(this);
+		dlgb.setMessage(R.string.ask_apply);
+
+		dlgb.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				setAutoSync();
+			}
+		});
+
+		dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				close();
+			}
+		});
+
+		AlertDialog dlg = dlgb.create();
+		dlg.show();
+	}
+
 	public void close() {
 		this.finish();
 		this.finishActivity(RESULT_OK);
+	}
+
+	@Override
+	public void onBackPressed() {
+		beforeClose();
 	}
 
 	@Override

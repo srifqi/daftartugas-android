@@ -2,7 +2,6 @@ package srifqi.simetri.daftartugas;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +18,6 @@ import android.widget.TimePicker;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PengaturanAlarmActivity extends AppCompatActivity {
 
-	private Context ctx;
-
 	private CheckBox AlarmEnabledCheckBox;
 	private TimePicker AlarmTimeTimePicker;
 	private CheckBox AlarmOnlyIfHasntDoneCheckBox;
@@ -32,8 +29,6 @@ public class PengaturanAlarmActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 		Thread.setDefaultUncaughtExceptionHandler(new ErrorReporting.CustomUEH(this));
-
-		ctx = this;
 
 		setContentView(R.layout.activity_pengaturan_alarm);
 
@@ -48,27 +43,7 @@ public class PengaturanAlarmActivity extends AppCompatActivity {
 
 			@Override
 			public void onClick(View v) {
-				AlertDialog.Builder dlgb = new AlertDialog.Builder(ctx);
-				dlgb.setMessage(R.string.ask_apply);
-
-				dlgb.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						setAlarm();
-					}
-				});
-
-				dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						close();
-					}
-				});
-
-				AlertDialog dlg = dlgb.create();
-				dlg.show();
+				beforeClose();
 			}
 		});
 
@@ -164,9 +139,38 @@ public class PengaturanAlarmActivity extends AppCompatActivity {
 		AlarmOnlyTomorrowCheckBox.setVisibility(visibility);
 	}
 
+	public void beforeClose() {
+		AlertDialog.Builder dlgb = new AlertDialog.Builder(this);
+		dlgb.setMessage(R.string.ask_apply);
+
+		dlgb.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				setAlarm();
+			}
+		});
+
+		dlgb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				close();
+			}
+		});
+
+		AlertDialog dlg = dlgb.create();
+		dlg.show();
+	}
+
 	public void close() {
 		this.finish();
 		this.finishActivity(RESULT_OK);
+	}
+
+	@Override
+	public void onBackPressed() {
+		beforeClose();
 	}
 
 	@Override
