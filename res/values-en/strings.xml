@@ -36,6 +36,7 @@
 	<string name="no_connection">No connection available</string>
 	<string name="saved_in_server">Saved in server</string>
 	<string name="server_busy">Server busy, try again tomorrow</string>
+	<string name="site_blocked">There is interference when connecting to the server. Open in web browser?</string>
 
 	<!-- Login -->
 	<string name="title_activity_masuk">Login</string>
@@ -52,6 +53,7 @@
 	<!-- Settings -->
 	<string name="title_activity_pengaturan">Settings</string>
 	<string name="ask_apply">Apply changes?</string>
+	<string name="task_killer_notice">This feature doesn\'t work with task killers. Those apps will prevent Aplikasi Daftar Tugas to do this.</string>
 
 	<!-- Alarm settings -->
 	<string name="title_activity_pengaturan_alarm">Alarm</string>

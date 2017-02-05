@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -39,6 +40,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	private String saveData = "onSuccess";
 	private int readTimeout = 10000;
 	private int connectTimeout = 15000;
+	private String connectionStatus = "uninitialised";
 
 	/**
 	 * Function that will be called after done executing.
@@ -122,6 +124,20 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 	}
 
 	/**
+	 * Returns the connection status of the request.
+	 *
+	 * Can be:
+	 * - uninitialised: Hasn't been connected.
+	 * - initialised: Connection initialised.
+	 * - okay: Connection closed, no error thrown.
+	 * - busy: Connection closed, server busy.
+	 * - blocked: Connection closed, blocked.
+	 */
+	public String getConnectionStatus() {
+		return this.connectionStatus;
+	}
+
+	/**
 	 * Set to not to save to a file.
 	 */
 	public void dontSave() {
@@ -156,6 +172,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 		ConnectivityManager connMgr = (ConnectivityManager) this.ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
+			this.connectionStatus = "initialised";
 			this.execute(url, param);
 		} else {
 			this.onNoConnection();
@@ -190,13 +207,20 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 		try {
 			String res = this.downloadUrl(urls[0], urls[1]);
 			if (
-				res.contains("cpu") || res.contains("hostinger") ||
-				res.contains("CPU") || res.contains("Hostinger")
+				Pattern.compile("hostinger", Pattern.CASE_INSENSITIVE).matcher(res).find() ||
+				Pattern.compile("cpu", Pattern.CASE_INSENSITIVE).matcher(res).find()
 			) {
 				// Server is busy.
 				// Use R.string.server_busy to tell.
+				this.connectionStatus = "busy";
+				return this.readCache();
+			} else if (
+				Pattern.compile("bitninja", Pattern.CASE_INSENSITIVE).matcher(res).find()
+			) {
+				this.connectionStatus = "blocked";
 				return this.readCache();
 			} else {
+				this.connectionStatus = "okay";
 				return res;
 			}
 		} catch (IOException e) {

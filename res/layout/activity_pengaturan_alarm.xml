@@ -55,5 +55,11 @@
 			android:visibility="gone"
 			android:text="@string/alarm_only_tomorrow" />
 
+		<TextView
+		    android:id="@+id/TaskKillerNotice"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:text="@string/task_killer_notice" />
 	</LinearLayout>
 </LinearLayout>

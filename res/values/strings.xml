@@ -42,6 +42,7 @@
 	<string name="no_connection">Tidak ada koneksi tersedia</string>
 	<string name="saved_in_server">Tersimpan pada server</string>
 	<string name="server_busy">Server sibuk, coba lagi besok</string>
+	<string name="site_blocked">Terdapat gangguan saat menghubungkan ke server. Buka di peramban web?</string>
 
 	<!-- Login -->
 	<string name="title_activity_masuk">Masuk</string>
@@ -58,6 +59,7 @@
 	<!-- Settings -->
 	<string name="title_activity_pengaturan">Pengaturan</string>
 	<string name="ask_apply">Terapkan perubahan?</string>
+	<string name="task_killer_notice">Fitur ini tidak bekerja dengan aplikasi penonaktif tugas (task killers). Aplikasi tersebut akan mencegah Aplikasi Daftar Tugas untuk melakukan hal ini.</string>
 
 	<!-- Alarm settings -->
 	<string name="title_activity_pengaturan_alarm">Alarm</string>

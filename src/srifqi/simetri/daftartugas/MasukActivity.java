@@ -142,6 +142,12 @@ public class MasukActivity extends AppCompatActivity {
 				this.onNoConnection();
 				return false;
 			}
+
+			if (this.getConnectionStatus() == "blocked") {
+				DaftarTugas.AlertBlocked(MasukActivity.this);
+				return false;
+			}
+
 			// Login failed.
 			// Either both or one of user and password may wrong.
 			if (result.trim().length() == 3) {

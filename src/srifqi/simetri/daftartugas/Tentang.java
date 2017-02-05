@@ -62,6 +62,15 @@ public class Tentang extends Activity {
 
 		@Override
 		public boolean onAfterExecute(String result) {
+			if (this.getConnectionStatus() == "blocked") {
+				DaftarTugas.AlertBlocked(Tentang.this);
+				return false;
+			}
+
+			if (this.getConnectionStatus() != "okay") {
+				return false;
+			}
+
 			if (result != "") {
 				TOS = result;
 				TOSdlgb.setMessage(TOS);

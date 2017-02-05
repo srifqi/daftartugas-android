@@ -36,6 +36,7 @@
 	<string name="no_connection">Aucune connexion disponible</string>
 	<string name="saved_in_server">Enregistré dans le serveur</string>
 	<string name="server_busy">Serveur occupé, réessayez demain</string>
+	<string name="site_blocked">Il ya de interférence lors de la connexion au serveur. Ouvrir dans le navigateur web?</string>
 
 	<!-- Login -->
 	<string name="title_activity_masuk">Entrer</string>
@@ -52,6 +53,7 @@
 	<!-- Settings -->
 	<string name="title_activity_pengaturan">Paramètres</string>
 	<string name="ask_apply">Appliquer les modifications?</string>
+	<string name="task_killer_notice">Cette fonctionnalité ne fonctionne pas avec les tueurs de tâches (task killers). Ces applications vont empêcher Aplikasi Daftar Tugas de le faire.</string>
 
 	<!-- Alarm settings -->
 	<string name="title_activity_pengaturan_alarm">Alarme</string>

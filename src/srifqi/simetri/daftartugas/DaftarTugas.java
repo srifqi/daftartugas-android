@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -996,7 +997,7 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 	}
 
-	private void saveDaftarTugas(){
+	private void saveDaftarTugas() {
 		if (!DTO.save()) {
 			// Failed to save.
 		}
@@ -1022,6 +1023,10 @@ public class DaftarTugas extends AppCompatActivity {
 
 			if (DONE == 2) {
 				swipeContainer.setRefreshing(false);
+			}
+
+			if (this.getConnectionStatus() == "blocked") {
+				AlertBlocked(DaftarTugas.this);
 			}
 			return true;
 		}
@@ -1135,7 +1140,7 @@ public class DaftarTugas extends AppCompatActivity {
 	/**
 	 * Name of days in Indonesian.
 	 */
-	public static final String[] days = {
+	public final static String[] days = {
 		"Minggu",	"Senin",
 		"Selasa",	"Rabu",
 		"Kamis",	"Jumat",
@@ -1145,7 +1150,7 @@ public class DaftarTugas extends AppCompatActivity {
 	/**
 	 * Name of months in Indonesian.
 	 */
-	public static final String[] months = {
+	public final static String[] months = {
 		"Januari",	"Februari",	"Maret",
 		"April",	"Mei",		"Juni",
 		"Juli",		"Agustus",	"September",
@@ -1310,5 +1315,47 @@ public class DaftarTugas extends AppCompatActivity {
 		public boolean isEnabled(int position) {
 			return this.Enabled.get(position);
 		}
+	}
+
+	/**
+	 * AlertBlocked
+	 *
+	 * Shows a dialog which tells that the connection to server is blocked.
+	 */
+	public static void AlertBlocked(final Context ctx) {
+		AlertDialog.Builder dlgb = new AlertDialog.Builder(ctx);
+		dlgb.setMessage(R.string.site_blocked);
+
+		dlgb.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Intent intent = new Intent(
+					Intent.ACTION_VIEW,
+					Uri.parse(DaftarTugas.FETCHURL + "android_test")
+				);
+				ctx.startActivity(intent);
+			}
+		});
+
+		dlgb.setNeutralButton(R.string.no, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+
+		dlgb.setOnCancelListener(new OnCancelListener() {
+
+			@Override
+			public void onCancel(DialogInterface dialog) {
+
+			}
+
+		});
+
+		AlertDialog dlg = dlgb.create();
+		dlg.show();
 	}
 }

@@ -31,6 +31,7 @@ import android.widget.TextView;
 public class AlarmTugasActivity extends Activity {
 
 	private Display display;
+	private float displayHeight;
 	private float displayDensity;
 
 	private TextView TimeTextView;
@@ -41,7 +42,6 @@ public class AlarmTugasActivity extends Activity {
 	private DaftarTugasObj DTO;
 	private DaftarTugas.TugasListAdapter ListArrayAdapter;
 
-	private AudioManager am;
 	private OnAudioFocusChangeListener audioFocusChangeListener;
 	private MediaPlayer mp;
 	private boolean mpReleased = false;
@@ -58,6 +58,7 @@ public class AlarmTugasActivity extends Activity {
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		display.getMetrics(metrics);
+		displayHeight = metrics.heightPixels;
 		displayDensity = metrics.density;
 
 		TimeTextView = (TextView) findViewById(R.id.TimeTextView);
@@ -95,6 +96,9 @@ public class AlarmTugasActivity extends Activity {
 		// Remove divider between items. Because we want to build ourself.
 		AlarmTugasListView.setDivider(null);
 
+		// Limit the amount of Tugas shown in Alarm.
+		int limit = (int) (((displayHeight / displayDensity) - 160) / 160);
+
 		// Make a TextView and add into Layout.
 		// ID;TASK;DESC;LESSON;TCODE;Y,M,D
 		String last_day = "";
@@ -107,7 +111,7 @@ public class AlarmTugasActivity extends Activity {
 			}
 
 			// Only shows 3 undone task.
-			if (task_num++ > 3) {
+			if (task_num++ > limit) {
 				break;
 			}
 
@@ -244,12 +248,6 @@ public class AlarmTugasActivity extends Activity {
 		mp.setLooping(true);
 		mp.setScreenOnWhilePlaying(true);
 
-		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		int result = am.requestAudioFocus(
-			audioFocusChangeListener, AudioManager.STREAM_MUSIC,
-			AudioManager.AUDIOFOCUS_GAIN
-		);
-
 		// http://stackoverflow.com/a/16252044
 		audioFocusChangeListener = new OnAudioFocusChangeListener() {
 
@@ -278,6 +276,12 @@ public class AlarmTugasActivity extends Activity {
 				}
 			}
 		};
+
+		AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = am.requestAudioFocus(
+			audioFocusChangeListener, AudioManager.STREAM_MUSIC,
+			AudioManager.AUDIOFOCUS_GAIN
+		);
 
 		if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 			mp.start();
@@ -336,7 +340,8 @@ public class AlarmTugasActivity extends Activity {
 		mp.release();
 		mpReleased = true;
 
-		am.abandonAudioFocus(audioFocusChangeListener);
+		AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		while (am.abandonAudioFocus(audioFocusChangeListener) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {}
 	}
 
 	public void stopAlarm(View v) {
