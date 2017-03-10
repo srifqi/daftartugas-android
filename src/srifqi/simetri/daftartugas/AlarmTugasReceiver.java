@@ -127,6 +127,11 @@ public class AlarmTugasReceiver extends BroadcastReceiver {
 	 */
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public static void setAlarm(Context ctx) {
+		// Alarm hasn't been set.
+		if (Setting.getAsInt(ctx, Setting.ALARM_ENABLED) == -1) {
+			return;
+		}
+
 		AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
 		Calendar calendar = Calendar.getInstance();

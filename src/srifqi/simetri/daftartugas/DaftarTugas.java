@@ -73,6 +73,8 @@ public class DaftarTugas extends AppCompatActivity {
 	private float displayWidth;
 	private float displayHeight;
 	private float displayDensity;
+	private boolean isLandscape = false;
+	private boolean canSideView = false;
 
 	private ProgressDialog pd;
 	private TextView textAmbilData;
@@ -144,6 +146,8 @@ public class DaftarTugas extends AppCompatActivity {
 		displayWidth = metrics.widthPixels;
 		displayHeight = metrics.heightPixels;
 		displayDensity = metrics.density;
+		isLandscape = displayWidth > displayHeight;
+		canSideView = displayWidth / displayDensity >= 600 && isLandscape;
 
 		toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
 		setSupportActionBar(toolbar1);
@@ -223,7 +227,7 @@ public class DaftarTugas extends AppCompatActivity {
 		if (savedInstanceState != null) {
 			String[] arr = savedInstanceState.getStringArray("displayAttrib");
 			openAtStart = Integer.parseInt(arr[0]);
-			openAtStart = (displayWidth > 600 && openAtStart == -2) ? -1 : openAtStart;
+			openAtStart = (canSideView && openAtStart == -2) ? -1 : openAtStart;
 			ListListView.setSelectionFromTop(
 				Integer.parseInt(arr[1]),
 				Integer.parseInt(arr[2])
@@ -275,13 +279,26 @@ public class DaftarTugas extends AppCompatActivity {
 		// It's okay to re-initiate because at onPause, pd already dismissed.
 		if (pd == null) pd = new ProgressDialog(DaftarTugas.this);
 
-		// Render Daftar Tugas.
-		renderDaftarTugas();
+		// Get new resolution.
+		DisplayMetrics metrics = new DisplayMetrics();
+		display.getMetrics(metrics);
+		displayWidth = metrics.widthPixels;
+		displayHeight = metrics.heightPixels;
+		displayDensity = metrics.density;
+		isLandscape = displayWidth > displayHeight;
+		canSideView = displayWidth / displayDensity >= 600 && isLandscape;
 
 		// Check for DT.conf, has it empty because of log out.
 		if (IOFile.read(getApplicationContext(), "DT.conf") == "") {
 			runMasuk();
 		}
+
+		// Render Daftar Tugas.
+		renderDaftarTugas();
+
+		// Re-set the alarms.
+		AlarmTugasReceiver.setAlarm(getApplicationContext());
+		AlarmSyncReceiver.setAutoSync(getApplicationContext());
 	}
 
 	@Override
@@ -305,7 +322,7 @@ public class DaftarTugas extends AppCompatActivity {
 
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (lastOpened != -2 && displayWidth <= 600) {
+			if (lastOpened != -2 && !canSideView) {
 				openContent(-2);
 				return true;
 			}
@@ -319,6 +336,7 @@ public class DaftarTugas extends AppCompatActivity {
 		openContent(id, true);
 	}
 
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	public void openContent(int id, boolean animate) {
 		// Show lists.
 		if (id == -2) {
@@ -370,12 +388,15 @@ public class DaftarTugas extends AppCompatActivity {
 		}
 
 		// Reflow content.
-		if (displayWidth <= 600 && lastOpened != id) {
+		if (!canSideView && lastOpened != id) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
 				(int) displayWidth,
 				LinearLayout.LayoutParams.MATCH_PARENT
 			);
 			swipeContainer.setLayoutParams(lsv);
+			if (android.os.Build.VERSION.SDK_INT >= 21) {
+				swipeContainer.setElevation(0);
+			}
 			if (id == -2) {
 				// Hide back button.
 				toolbar1.setNavigationIcon(null);
@@ -477,7 +498,7 @@ public class DaftarTugas extends AppCompatActivity {
 		int ListOffsetY = (ListViewFirstChild == null) ? 0 : ListViewFirstChild.getTop();
 
 		// Reflow content.
-		if (displayWidth > 600 && displayWidth > displayHeight) {
+		if (canSideView) {
 			LinearLayout.LayoutParams lsv = new LinearLayout.LayoutParams(
 				(int) (displayWidth * 0.4),
 				LinearLayout.LayoutParams.MATCH_PARENT
@@ -824,7 +845,7 @@ public class DaftarTugas extends AppCompatActivity {
 		ListListView.setSelectionFromTop(ListLastView, ListOffsetY);
 		ListListView.setScrollBarStyle(AbsListView.SCROLLBARS_INSIDE_OVERLAY);
 
-		if (displayWidth > 600) {
+		if (canSideView) {
 			openContent(lastOpened == -2 ? -1 : lastOpened);
 		} else {
 			if (lastOpened != -2) {

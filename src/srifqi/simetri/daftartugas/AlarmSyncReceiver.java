@@ -77,6 +77,11 @@ public class AlarmSyncReceiver extends BroadcastReceiver {
 	 */
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public static void setAutoSync(Context ctx) {
+		// Auto sync hasn't been set.
+		if (Setting.getAsInt(ctx, Setting.AUTO_SYNC) == -1) {
+			return;
+		}
+
 		AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
 		Calendar calendar = Calendar.getInstance();

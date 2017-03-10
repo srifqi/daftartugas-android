@@ -234,8 +234,16 @@ public class AlarmTugasActivity extends Activity {
 
 		AlarmTugasListView.setAdapter(ListArrayAdapter);
 
-		// http://stackoverflow.com/a/20177743
+		// http://stackoverflow.com/a/5687023
 		Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+		if (ringtone == null) {
+			ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+			if (ringtone == null) {
+				ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+			}
+		}
+
+		// http://stackoverflow.com/a/20177743
 		mp = new MediaPlayer();
 		try {
 			mp.setDataSource(getApplicationContext(), ringtone);
