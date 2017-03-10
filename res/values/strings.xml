@@ -2,7 +2,7 @@
 <resources>
 
 	<!-- App metadata -->
-	<string name="version">0.2-alpha-4</string>
+	<string name="version">0.2-beta</string>
 	<string name="app_name">Daftar Tugas</string>
 
 	<!-- Main task -->
