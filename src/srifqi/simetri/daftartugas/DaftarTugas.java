@@ -492,6 +492,11 @@ public class DaftarTugas extends AppCompatActivity {
 			return;
 		}
 
+		// You know, sometimes we can be crazy.
+		while (DTO.SortedDaftarTugas == null) {
+			DTO.read();
+		}
+
 		// Get last ListListView's scroll position.
 		int ListLastView = ListListView.getFirstVisiblePosition();
 		View ListViewFirstChild = ListListView.getChildAt(0);
@@ -696,10 +701,10 @@ public class DaftarTugas extends AppCompatActivity {
 				TextView dayTextView = new TextView(this);
 				dayTextView.setText(Html.fromHtml(
 					"<b>" +
-					DaftarTugas.days[cal.get(Calendar.DAY_OF_WEEK) - 1] + ", " +
+					DaftarTugas.days(cal.get(Calendar.DAY_OF_WEEK) - 1, this) + ", " +
 					cal.get(Calendar.DATE) + " " +
 					// mod 12 just in case somebody is stupid enough.
-					DaftarTugas.months[cal.get(Calendar.MONTH) % 12] + " " +
+					DaftarTugas.months(cal.get(Calendar.MONTH) % 12, this) + " " +
 					cal.get(Calendar.YEAR) +
 					"</b>"
 				));
@@ -1159,31 +1164,25 @@ public class DaftarTugas extends AppCompatActivity {
 	}
 
 	/**
-	 * Name of days in Indonesian.
+	 * Name of days.
 	 */
-	public final static String[] days = {
-		"Minggu",	"Senin",
-		"Selasa",	"Rabu",
-		"Kamis",	"Jumat",
-		"Sabtu"
+	public static String days(int i, Context ctx) {
+		return ctx.getResources().getString(R.string["day_" + i]);
 	};
 
 	/**
-	 * Name of months in Indonesian.
+	 * Name of months.
 	 */
-	public final static String[] months = {
-		"Januari",	"Februari",	"Maret",
-		"April",	"Mei",		"Juni",
-		"Juli",		"Agustus",	"September",
-		"Oktober",	"November",	"Desember"
+	public static String months(int i, Context ctx) {
+		return ctx.getResources().getString(R.string["month_" + i]);
 	};
 
 	/**
-	 * <p>Convert from timestamp into relative date string (Indonesian).</p>
+	 * <p>Convert from timestamp into relative date string.</p>
 	 * <p>
 	 * For example:<br>
-	 * - If the timestamp is today, then: "Hari ini, &lt;time&gt;"<br>
-	 * - If the timestamp is yesterday, then: "Kemarin, &lt;time&gt;"<br>
+	 * - If the timestamp is today, then: "Today, &lt;time&gt;"<br>
+	 * - If the timestamp is yesterday, then: "Yesterday, &lt;time&gt;"<br>
 	 * - Else: "&lt;date&gt; &lt;time&gt;"<br>
 	 * </p>
 	 *
@@ -1192,7 +1191,7 @@ public class DaftarTugas extends AppCompatActivity {
 	 *
 	 * @return Converted timestamp.
 	 */
-	public static String timestampToRelativeDateString(long timestamp) {
+	public static String timestampToRelativeDateString(long timestamp, Context ctx) {
 		String str = "";
 		// GregorianCalendar object of now.
 		GregorianCalendar gcn = new GregorianCalendar();
@@ -1219,15 +1218,15 @@ public class DaftarTugas extends AppCompatActivity {
 			nowM == tM &&
 			nowY == tY
 		) {
-			str += "Hari ini, ";
+			str += ctx.getResources().getString(R.string.today) + ", ";
 		} else if (
 			yD == tD &&
 			yM == tM &&
 			yY == tY
 		) {
-			str += "Kemarin, ";
+			str += ctx.getResources().getString(R.string.yesterday) + ", ";
 		} else {
-			str += tD + " " + DaftarTugas.months[tM] + " " + tY + ", ";
+			str += tD + " " + DaftarTugas.months(tM, ctx) + " " + tY + ", ";
 		}
 		String hour = "" + gc.get(Calendar.HOUR_OF_DAY);
 		String minute = "" + gc.get(Calendar.MINUTE);

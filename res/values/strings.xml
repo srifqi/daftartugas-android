@@ -125,4 +125,31 @@
 	<string name="copy_to_clipboard">Salin ke papan klip</string>
 	<string name="copied_to_clipboard">Disalin ke papan klip.</string>
 
+	<!-- Relative time -->
+	<string name="yesterday">Kemarin</string>
+	<string name="today">Hari ini</string>
+
+	<!-- Days -->
+	<string name="day_1">Ahad</string>
+	<string name="day_2">Senin</string>
+	<string name="day_3">Selasa</string>
+	<string name="day_4">Rabu</string>
+	<string name="day_5">Kamis</string>
+	<string name="day_6">Jumat</string>
+	<string name="day_7">Sabtu</string>
+
+	<!-- Months -->
+	<string name="month_1">Januari</string>
+	<string name="month_2">Februari</string>
+	<string name="month_3">Maret</string>
+	<string name="month_4">April</string>
+	<string name="month_5">Mei</string>
+	<string name="month_6">Juni</string>
+	<string name="month_7">Juli</string>
+	<string name="month_8">Agustus</string>
+	<string name="month_9">September</string>
+	<string name="month_10">Oktober</string>
+	<string name="month_11">November</string>
+	<string name="month_12">Desember</string>
+
 </resources>

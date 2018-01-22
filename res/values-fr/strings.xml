@@ -119,4 +119,31 @@
 	<string name="copy_to_clipboard">Copier dans le presse-papier</string>
 	<string name="copied_to_clipboard">Copié dans le presse-papier.</string>
 
+	<!-- Relative time -->
+	<string name="yesterday">Hier</string>
+	<string name="today">Aujourd'hui</string>
+
+	<!-- Days -->
+	<string name="day_1">Dimanche</string>
+	<string name="day_2">Lundi</string>
+	<string name="day_3">Mardi</string>
+	<string name="day_4">Mercredi</string>
+	<string name="day_5">Jeudi</string>
+	<string name="day_6">Vendredi</string>
+	<string name="day_7">Samedi</string>
+
+	<!-- Months -->
+	<string name="month_1">Janvier</string>
+	<string name="month_2">Février</string>
+	<string name="month_3">Mars</string>
+	<string name="month_4">Avril</string>
+	<string name="month_5">Mai</string>
+	<string name="month_6">Juin</string>
+	<string name="month_7">Juillet</string>
+	<string name="month_8">Août</string>
+	<string name="month_9">Septembre</string>
+	<string name="month_10">Octobre</string>
+	<string name="month_11">Novembre</string>
+	<string name="month_12">Décembre</string>
+
 </resources>
